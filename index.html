@@ -3,18 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tamal Debnath — Educator</title>
+<meta name="theme-color" content="#0b0b0b">
+
+<title>English Study Point — Tamal Debnath</title>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap');
 
 :root{
-  --bg:#f7f7f4;
-  --text:#151515;
-  --muted:#777;
-  --line:#deded8;
-  --dark:#151515;
+  --black:#080808;
+  --black2:#111;
+  --gold:#c9a96a;
+  --gold2:#e8d09b;
+  --cream:#f6f1e7;
   --white:#fff;
+  --muted:#aaa;
+  --line:rgba(201,169,106,.22);
 }
 
 *{
@@ -28,120 +32,204 @@ html{
 }
 
 body{
-  background:var(--bg);
-  color:var(--text);
+  background:var(--black);
+  color:white;
   font-family:"DM Sans",sans-serif;
   overflow-x:hidden;
 }
 
-a{
-  color:inherit;
-  text-decoration:none;
-}
+/* ---------- GLOBAL ---------- */
 
 .container{
-  width:min(1120px,90%);
+  width:min(1100px,90%);
   margin:auto;
 }
 
-/* NAV */
+a{
+  text-decoration:none;
+  color:inherit;
+}
+
+.gold{
+  color:var(--gold2);
+}
+
+.section{
+  padding:100px 0;
+}
+
+.section-label{
+  color:var(--gold);
+  text-transform:uppercase;
+  letter-spacing:3px;
+  font-size:10px;
+  font-weight:700;
+  margin-bottom:18px;
+}
+
+.section-title{
+  font-family:"Playfair Display",serif;
+  font-size:clamp(38px,8vw,72px);
+  line-height:1;
+  font-weight:500;
+  letter-spacing:-2px;
+}
+
+.section-text{
+  color:#aaa;
+  line-height:1.8;
+  font-size:15px;
+  margin-top:20px;
+}
+
+/* ---------- BACKGROUND ---------- */
+
+body:before{
+  content:"";
+  position:fixed;
+  width:600px;
+  height:600px;
+  border-radius:50%;
+  background:rgba(201,169,106,.055);
+  filter:blur(100px);
+  top:-250px;
+  right:-200px;
+  pointer-events:none;
+}
+
+body:after{
+  content:"";
+  position:fixed;
+  width:500px;
+  height:500px;
+  border-radius:50%;
+  background:rgba(201,169,106,.035);
+  filter:blur(100px);
+  bottom:-250px;
+  left:-200px;
+  pointer-events:none;
+}
+
+/* ---------- NAV ---------- */
 
 nav{
   position:fixed;
   top:0;
-  left:0;
   width:100%;
   z-index:1000;
-  transition:.3s;
+  transition:.35s;
 }
 
 nav.scrolled{
-  background:rgba(247,247,244,.88);
-  backdrop-filter:blur(18px);
+  background:rgba(8,8,8,.82);
+  backdrop-filter:blur(20px);
   border-bottom:1px solid var(--line);
 }
 
-.nav-inner{
-  height:78px;
+.nav{
+  height:72px;
   display:flex;
-  justify-content:space-between;
   align-items:center;
+  justify-content:space-between;
 }
 
-.logo{
+.brand{
   font-family:"Playfair Display",serif;
-  font-size:23px;
+  font-size:20px;
 }
 
-.logo span{
-  color:#888;
+.brand span{
+  color:var(--gold);
 }
 
 .nav-links{
   display:flex;
-  gap:28px;
-  list-style:none;
-  font-size:13px;
-  color:#666;
-}
-
-.nav-links a{
-  transition:.25s;
+  gap:26px;
+  align-items:center;
+  font-size:12px;
+  color:#aaa;
 }
 
 .nav-links a:hover{
-  color:#000;
+  color:white;
 }
 
-.nav-contact{
-  padding:10px 16px;
+.nav-btn{
   border:1px solid var(--line);
-  border-radius:100px;
+  padding:9px 14px;
+  border-radius:50px;
+  color:var(--gold2);
 }
 
-/* HERO */
+/* ---------- HERO ---------- */
 
 .hero{
   min-height:100vh;
   display:flex;
   align-items:center;
-  padding:130px 0 90px;
+  position:relative;
+  padding:130px 0 80px;
+}
+
+.hero:before{
+  content:"";
+  position:absolute;
+  width:1px;
+  height:180px;
+  background:linear-gradient(transparent,var(--gold),transparent);
+  right:12%;
+  top:30%;
+  opacity:.5;
 }
 
 .hero-content{
-  max-width:920px;
+  max-width:850px;
 }
 
-.kicker{
-  color:#888;
-  font-size:12px;
-  letter-spacing:2px;
+.eyebrow{
+  color:var(--gold);
+  font-size:10px;
+  letter-spacing:4px;
   text-transform:uppercase;
   margin-bottom:25px;
 }
 
 .hero h1{
   font-family:"Playfair Display",serif;
-  font-size:clamp(62px,10vw,125px);
-  line-height:.88;
-  letter-spacing:-6px;
   font-weight:500;
+  font-size:clamp(58px,14vw,130px);
+  line-height:.85;
+  letter-spacing:-6px;
 }
 
-.hero h1 em{
-  color:#8a8a8a;
-  font-style:normal;
+.hero h1 span{
+  color:var(--gold2);
 }
 
-.hero-description{
+.hero-subtitle{
+  margin-top:32px;
   max-width:650px;
-  margin-top:35px;
-  color:#696969;
   font-size:18px;
-  line-height:1.8;
+  line-height:1.7;
+  color:#aaa;
 }
 
-.actions{
+.hero-meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:9px;
+  margin-top:25px;
+}
+
+.meta{
+  border:1px solid var(--line);
+  color:#bbb;
+  border-radius:50px;
+  padding:9px 13px;
+  font-size:11px;
+}
+
+.buttons{
   display:flex;
   gap:12px;
   margin-top:32px;
@@ -149,336 +237,574 @@ nav.scrolled{
 }
 
 .btn{
-  padding:14px 21px;
-  border-radius:100px;
-  font-size:13px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:14px 20px;
+  border-radius:50px;
+  font-size:12px;
   font-weight:700;
   transition:.3s;
+}
+
+.btn-gold{
+  background:var(--gold);
+  color:#080808;
+}
+
+.btn-outline{
+  border:1px solid var(--line);
+  color:white;
 }
 
 .btn:hover{
   transform:translateY(-3px);
 }
 
-.primary{
-  background:var(--dark);
-  color:white;
+/* ---------- MARQUEE ---------- */
+
+.marquee{
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  overflow:hidden;
+  white-space:nowrap;
+  padding:16px 0;
+  color:#777;
+  font-size:10px;
+  letter-spacing:3px;
 }
 
-.secondary{
-  background:white;
-  border:1px solid var(--line);
+.marquee-inner{
+  display:inline-block;
+  animation:move 22s linear infinite;
 }
 
-/* SCROLL */
-
-.scroll{
-  margin-top:75px;
-  color:#999;
-  font-size:11px;
-  letter-spacing:2px;
-  display:flex;
-  align-items:center;
-  gap:12px;
+.marquee span{
+  margin:0 30px;
+  color:var(--gold);
 }
 
-.scroll span{
-  display:block;
-  width:45px;
-  height:1px;
-  background:#aaa;
+@keyframes move{
+  from{transform:translateX(0)}
+  to{transform:translateX(-50%)}
 }
 
-/* SECTIONS */
+/* ---------- PATH ---------- */
 
-section{
-  padding:120px 0;
-}
-
-.divider{
-  height:1px;
-  background:var(--line);
-}
-
-.section-layout{
+.path-grid{
   display:grid;
-  grid-template-columns:180px 1fr;
-  gap:75px;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin-top:40px;
 }
 
-.label{
+.path{
+  min-height:180px;
+  padding:28px;
+  border:1px solid var(--line);
+  background:linear-gradient(145deg,#111,#0b0b0b);
+  border-radius:20px;
+  transition:.4s;
+}
+
+.path:hover{
+  transform:translateY(-7px);
+  border-color:rgba(201,169,106,.55);
+}
+
+.path-number{
+  color:var(--gold);
   font-size:11px;
-  color:#999;
+}
+
+.path h3{
+  font-family:"Playfair Display",serif;
+  font-size:26px;
+  font-weight:500;
+  margin-top:40px;
+}
+
+.path p{
+  color:#888;
+  font-size:12px;
+  line-height:1.7;
+  margin-top:8px;
+}
+
+/* ---------- COURSES ---------- */
+
+.courses{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+  margin-top:45px;
+}
+
+.course{
+  position:relative;
+  border:1px solid var(--line);
+  border-radius:22px;
+  padding:27px;
+  background:#0e0e0e;
+  overflow:hidden;
+  transition:.4s;
+}
+
+.course:hover{
+  transform:translateY(-8px);
+  box-shadow:0 25px 70px rgba(0,0,0,.5);
+}
+
+.course.featured{
+  border-color:rgba(201,169,106,.7);
+}
+
+.badge{
+  position:absolute;
+  top:17px;
+  right:17px;
+  color:#0b0b0b;
+  background:var(--gold);
+  border-radius:50px;
+  padding:6px 9px;
+  font-size:9px;
+  font-weight:700;
+}
+
+.course-type{
+  color:var(--gold);
+  font-size:10px;
   letter-spacing:2px;
   text-transform:uppercase;
-  font-weight:700;
 }
 
-.section-content{
-  max-width:760px;
-}
-
-.section-content h2{
+.course h3{
   font-family:"Playfair Display",serif;
-  font-size:clamp(38px,5vw,62px);
+  font-size:29px;
   font-weight:500;
-  line-height:1.05;
-  letter-spacing:-2px;
+  margin-top:18px;
 }
 
-.section-content p{
-  color:#686868;
-  font-size:16px;
-  line-height:1.9;
-  margin-top:22px;
-}
-
-/* ABOUT */
-
-.about-intro{
-  font-size:22px!important;
-  color:#333!important;
-  line-height:1.65!important;
-}
-
-/* EXPERTISE */
-
-.tags{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  margin-top:32px;
-}
-
-.tag{
-  padding:12px 17px;
-  border:1px solid var(--line);
-  border-radius:100px;
-  background:#fff;
-  color:#555;
-  font-size:13px;
-  transition:.25s;
-}
-
-.tag:hover{
-  background:#151515;
-  color:white;
-  transform:translateY(-3px);
-}
-
-/* EXPERIENCE */
-
-.timeline{
-  margin-top:35px;
-}
-
-.timeline-row{
-  display:grid;
-  grid-template-columns:150px 1fr;
-  padding:25px 0;
-  border-top:1px solid var(--line);
-}
-
-.timeline-row:last-child{
-  border-bottom:1px solid var(--line);
-}
-
-.timeline-date{
-  color:#999;
-  font-size:12px;
-}
-
-.timeline-title{
-  font-size:17px;
+.price{
+  font-size:31px;
   font-weight:700;
+  margin-top:18px;
 }
 
-.timeline-description{
+.price small{
   color:#777;
-  font-size:13px;
-  margin-top:6px;
+  font-size:11px;
+  font-weight:400;
 }
 
-/* RESOURCES */
-
-.resource-box{
-  margin-top:35px;
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
+.course-info{
+  color:#888;
+  font-size:11px;
+  margin-top:7px;
 }
 
-.resource{
-  padding:25px;
-  background:white;
+.course ul{
+  list-style:none;
+  margin-top:23px;
+}
+
+.course li{
+  color:#aaa;
+  font-size:12px;
+  padding:8px 0;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+
+.course li:before{
+  content:"✓";
+  color:var(--gold);
+  margin-right:9px;
+}
+
+.course-btn{
+  display:block;
+  text-align:center;
+  margin-top:23px;
   border:1px solid var(--line);
-  border-radius:20px;
+  padding:12px;
+  border-radius:50px;
+  font-size:11px;
+  font-weight:700;
   transition:.3s;
 }
 
-.resource:hover{
-  transform:translateY(-5px);
-  box-shadow:0 20px 50px rgba(0,0,0,.07);
+.course-btn:hover{
+  background:var(--gold);
+  color:#080808;
 }
 
-.resource-number{
-  font-size:11px;
-  color:#aaa;
+/* ---------- MASTERCLASSES ---------- */
+
+.master-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin-top:40px;
 }
 
-.resource h3{
-  margin-top:20px;
+.master{
+  background:#111;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:18px;
+  padding:24px;
+}
+
+.master h3{
   font-family:"Playfair Display",serif;
   font-size:24px;
   font-weight:500;
 }
 
-.resource p{
-  margin-top:8px;
-  font-size:13px;
+.master-price{
+  color:var(--gold2);
+  font-size:20px;
+  font-weight:700;
+  margin-top:13px;
+}
+
+.master p{
   color:#777;
+  font-size:11px;
+  margin-top:5px;
+}
+
+/* ---------- DETAILS ---------- */
+
+.detail{
+  border-top:1px solid var(--line);
+  padding:24px 0;
+  display:grid;
+  grid-template-columns:170px 1fr;
+  gap:25px;
+}
+
+.detail-number{
+  color:var(--gold);
+  font-size:11px;
+}
+
+.detail h3{
+  font-size:16px;
+}
+
+.detail p{
+  color:#777;
+  font-size:12px;
+  margin-top:7px;
   line-height:1.7;
 }
 
-/* CONTACT */
+/* ---------- TEACHER ---------- */
 
-.contact-section{
-  padding-bottom:100px;
+.teacher{
+  display:grid;
+  grid-template-columns:300px 1fr;
+  gap:55px;
+  align-items:center;
 }
 
-.contact-card{
-  background:#151515;
-  color:white;
-  border-radius:30px;
-  padding:65px;
-  position:relative;
+.teacher-photo{
+  height:380px;
+  border-radius:22px;
+  border:1px solid var(--line);
+  background:
+  radial-gradient(circle at 50% 35%,#252525 0,#111 35%,#090909 70%);
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
   overflow:hidden;
 }
 
-.contact-card:after{
-  content:"";
-  position:absolute;
-  width:350px;
-  height:350px;
-  border-radius:50%;
-  right:-180px;
-  top:-180px;
-  background:rgba(255,255,255,.06);
-}
-
-.contact-card .label{
-  color:#888;
-}
-
-.contact-card h2{
+.teacher-photo:after{
+  content:"T";
   font-family:"Playfair Display",serif;
-  font-size:clamp(45px,7vw,78px);
-  line-height:.95;
-  font-weight:500;
-  margin-top:17px;
+  font-size:250px;
+  line-height:.7;
+  color:rgba(201,169,106,.12);
 }
 
-.contact-card p{
-  max-width:570px;
-  color:#aaa;
+.teacher-name{
+  font-family:"Playfair Display",serif;
+  font-size:50px;
+  font-weight:500;
+}
+
+.teacher-role{
+  color:var(--gold);
+  margin-top:8px;
+  font-size:12px;
+  letter-spacing:1px;
+}
+
+/* ---------- RESULTS ---------- */
+
+.results{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin-top:40px;
+}
+
+.result{
+  border:1px solid var(--line);
+  padding:30px 20px;
+  border-radius:20px;
+  text-align:center;
+}
+
+.result strong{
+  display:block;
+  font-family:"Playfair Display",serif;
+  font-size:43px;
+  color:var(--gold2);
+}
+
+.result span{
+  color:#888;
+  font-size:11px;
+}
+
+/* ---------- REVIEWS ---------- */
+
+.review{
+  max-width:760px;
+  border:1px solid var(--line);
+  padding:38px;
+  border-radius:22px;
+  margin-top:40px;
+  background:#0d0d0d;
+}
+
+.stars{
+  color:var(--gold);
+  letter-spacing:4px;
+}
+
+.review p{
+  font-family:"Playfair Display",serif;
+  font-size:25px;
+  line-height:1.5;
+  margin-top:20px;
+  color:#ddd;
+}
+
+.review small{
+  display:block;
+  margin-top:20px;
+  color:#777;
+}
+
+/* ---------- BRANCHES ---------- */
+
+.branches{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+  margin-top:40px;
+}
+
+.branch{
+  padding:30px;
+  border:1px solid var(--line);
+  border-radius:20px;
+  background:#101010;
+}
+
+.branch-label{
+  color:var(--gold);
+  font-size:10px;
+  letter-spacing:2px;
+}
+
+.branch h3{
+  font-family:"Playfair Display",serif;
+  font-size:30px;
+  font-weight:500;
+  margin-top:16px;
+}
+
+.branch p{
+  color:#888;
+  font-size:13px;
   line-height:1.8;
+  margin-top:10px;
+}
+
+/* ---------- CONTACT ---------- */
+
+.contact{
+  background:
+  radial-gradient(circle at 80% 20%,rgba(201,169,106,.14),transparent 30%),
+  #111;
+  border:1px solid var(--line);
+  border-radius:28px;
+  padding:55px 35px;
+  text-align:center;
+}
+
+.contact h2{
+  font-family:"Playfair Display",serif;
+  font-size:clamp(48px,10vw,80px);
+  font-weight:500;
+  margin-top:10px;
+}
+
+.phone{
+  color:var(--gold2);
+  font-size:20px;
   margin-top:18px;
 }
 
-.contact-button{
-  display:inline-block;
-  margin-top:30px;
-  padding:14px 21px;
-  background:white;
-  color:#111;
-  border-radius:100px;
-  font-size:13px;
-  font-weight:700;
+/* ---------- SOCIAL ---------- */
+
+.socials{
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:25px;
+}
+
+.social{
+  border:1px solid var(--line);
+  border-radius:50px;
+  padding:10px 15px;
+  font-size:11px;
+  color:#bbb;
   transition:.3s;
 }
 
-.contact-button:hover{
-  transform:translateY(-3px);
+.social:hover{
+  background:var(--gold);
+  color:#080808;
 }
 
-/* FOOTER */
+/* ---------- FOOTER ---------- */
 
 footer{
-  border-top:1px solid var(--line);
-  padding:32px 0;
+  padding:35px 0 90px;
+  color:#666;
+  font-size:10px;
+  text-align:center;
+  letter-spacing:1px;
 }
 
-.footer{
-  display:flex;
-  justify-content:space-between;
-  color:#999;
-  font-size:12px;
+/* ---------- BOTTOM MOBILE NAV ---------- */
+
+.bottom-nav{
+  display:none;
 }
 
-/* ANIMATION */
+/* ---------- REVEAL ---------- */
 
 .reveal{
   opacity:0;
   transform:translateY(25px);
-  transition:.8s ease;
+  transition:1s ease;
 }
 
-.reveal.visible{
+.reveal.show{
   opacity:1;
-  transform:translateY(0);
+  transform:none;
 }
 
-/* MOBILE */
+/* ---------- MOBILE ---------- */
 
-@media(max-width:750px){
+@media(max-width:760px){
+
+  .container{
+    width:90%;
+  }
 
   .nav-links{
     display:none;
   }
 
   .hero{
-    min-height:auto;
-    padding:145px 0 90px;
+    min-height:100svh;
+    padding-top:125px;
   }
 
   .hero h1{
-    font-size:clamp(58px,18vw,90px);
+    font-size:19vw;
     letter-spacing:-4px;
   }
 
-  .hero-description{
-    font-size:16px;
+  .hero-subtitle{
+    font-size:15px;
   }
 
-  section{
-    padding:85px 0;
+  .section{
+    padding:80px 0;
   }
 
-  .section-layout{
-    grid-template-columns:1fr;
-    gap:25px;
-  }
-
-  .section-content h2{
-    font-size:40px;
-  }
-
-  .resource-box{
+  .path-grid,
+  .courses,
+  .master-grid,
+  .results{
     grid-template-columns:1fr;
   }
 
-  .timeline-row{
-    grid-template-columns:100px 1fr;
+  .teacher{
+    grid-template-columns:1fr;
+    gap:30px;
   }
 
-  .contact-card{
-    padding:40px 28px;
-    border-radius:24px;
+  .teacher-photo{
+    height:300px;
   }
 
-  .footer{
-    flex-direction:column;
-    gap:8px;
+  .teacher-name{
+    font-size:42px;
+  }
+
+  .branches{
+    grid-template-columns:1fr;
+  }
+
+  .detail{
+    grid-template-columns:80px 1fr;
+  }
+
+  .review{
+    padding:25px;
+  }
+
+  .review p{
+    font-size:20px;
+  }
+
+  .bottom-nav{
+    position:fixed;
+    display:flex;
+    bottom:12px;
+    left:50%;
+    transform:translateX(-50%);
+    width:92%;
+    max-width:450px;
+    z-index:2000;
+    background:rgba(16,16,16,.92);
+    backdrop-filter:blur(20px);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:8px;
+    justify-content:space-around;
+  }
+
+  .bottom-nav a{
+    color:#999;
+    font-size:9px;
+    text-align:center;
+    padding:7px;
+  }
+
+  .bottom-nav a:first-child{
+    color:var(--gold2);
   }
 }
 </style>
@@ -486,73 +812,71 @@ footer{
 
 <body>
 
-<!-- NAVIGATION -->
+<!-- NAV -->
 
 <nav id="nav">
+<div class="container nav">
 
-<div class="container nav-inner">
-
-<a href="#home" class="logo">
-Tamal<span> Debnath</span>
+<a class="brand" href="#home">
+English <span>Study Point</span>
 </a>
 
-<ul class="nav-links">
-<li><a href="#about">About</a></li>
-<li><a href="#expertise">Expertise</a></li>
-<li><a href="#experience">Journey</a></li>
-<li><a href="#contact" class="nav-contact">Contact</a></li>
-</ul>
-
+<div class="nav-links">
+<a href="#courses">Courses</a>
+<a href="#results">Results</a>
+<a href="#teacher">Teacher</a>
+<a href="#branches">Branches</a>
+<a href="#contact" class="nav-btn">Enrol Now</a>
 </div>
 
+</div>
 </nav>
 
 
 <!-- HERO -->
 
-<main id="home">
-
-<section class="hero">
+<section class="hero" id="home">
 
 <div class="container">
 
 <div class="hero-content reveal">
 
-<div class="kicker">
-Educator · Mentor · Guide
+<div class="eyebrow">
+English Study Point
 </div>
 
 <h1>
-Tamal<br>
-<em>Debnath.</em>
+Master English.<br>
+<span>Build Confidence.</span>
 </h1>
 
-<p class="hero-description">
-Creating a thoughtful space for learning,
-understanding and growth — where students are
-encouraged to ask better questions and think deeper.
+<p class="hero-subtitle">
+Structured English Grammar learning for CBSE & TBSE
+students of Classes 8–12. Learn clearly, practise
+regularly and improve with expert guidance.
 </p>
 
-<div class="actions">
+<div class="hero-meta">
+<div class="meta">CBSE & TBSE</div>
+<div class="meta">Classes 8–12</div>
+<div class="meta">Online + Offline</div>
+<div class="meta">Expert Guidance</div>
+</div>
 
-<a href="#about" class="btn primary">
-Discover Tamal →
+<div class="buttons">
+
+<a href="#courses" class="btn btn-gold">
+Explore Courses →
 </a>
 
-<a
-href="https://wa.me/918014869813"
+<a href="https://wa.me/918731907809"
 target="_blank"
-class="btn secondary">
+class="btn btn-outline">
 WhatsApp
 </a>
 
 </div>
 
-<div class="scroll">
-<span></span>
-Scroll to explore
-</div>
-
 </div>
 
 </div>
@@ -560,83 +884,210 @@ Scroll to explore
 </section>
 
 
-<div class="divider"></div>
+<!-- MARQUEE -->
+
+<div class="marquee">
+<div class="marquee-inner">
+ENGLISH GRAMMAR
+<span>✦</span>
+LEARN
+<span>✦</span>
+PRACTISE
+<span>✦</span>
+MASTER
+<span>✦</span>
+CBSE
+<span>✦</span>
+TBSE
+<span>✦</span>
+ENGLISH GRAMMAR
+<span>✦</span>
+LEARN
+<span>✦</span>
+PRACTISE
+<span>✦</span>
+MASTER
+</div>
+</div>
 
 
-<!-- ABOUT -->
+<!-- LEARNING PATH -->
 
-<section id="about">
+<section class="section">
 
 <div class="container">
 
-<div class="section-layout">
-
-<div class="label">
-01 — About
+<div class="section-label">
+Choose Your Learning Path
 </div>
 
-<div class="section-content reveal">
-
-<h2>
-Learning begins with
-understanding.
+<h2 class="section-title reveal">
+Find the right way<br>
+to learn.
 </h2>
 
-<p class="about-intro">
-Tamal Debnath is an educator and mentor focused
-on making learning simple, meaningful and engaging.
-</p>
+<div class="path-grid">
 
+<div class="path reveal">
+<div class="path-number">01</div>
+<h3>Grammar Courses</h3>
 <p>
-The teaching approach is centred around clear
-explanations, curiosity and independent thinking.
-The aim is not only to learn an answer, but to
-understand the idea behind it.
+Structured courses covering important
+English grammar concepts.
 </p>
-
 </div>
 
-</div>
-
-</div>
-
-</section>
-
-
-<!-- EXPERTISE -->
-
-<section id="expertise">
-
-<div class="container">
-
-<div class="section-layout">
-
-<div class="label">
-02 — Expertise
-</div>
-
-<div class="section-content reveal">
-
-<h2>
-Knowledge, made
-clear.
-</h2>
-
+<div class="path reveal">
+<div class="path-number">02</div>
+<h3>Board Preparation</h3>
 <p>
-Add Tamal's actual subjects and areas of expertise
-here. These placeholder categories can be replaced
-with his real teaching subjects.
+Focused preparation for Classes 9–12
+and board examinations.
 </p>
+</div>
 
-<div class="tags">
-
-<div class="tag">Subject One</div>
-<div class="tag">Subject Two</div>
-<div class="tag">Concept Building</div>
-<div class="tag">Problem Solving</div>
-<div class="tag">Student Guidance</div>
+<div class="path reveal">
+<div class="path-number">03</div>
+<h3>Foundation English</h3>
+<p>
+Build strong fundamentals through
+simple explanations and practice.
+</p>
+</div>
 
 </div>
+
+</div>
+
+</section>
+
+
+<!-- COURSES -->
+
+<section class="section" id="courses">
+
+<div class="container">
+
+<div class="section-label">
+01 — Grammar Courses
+</div>
+
+<h2 class="section-title reveal">
+Learn one course<br>
+at a time.
+</h2>
+
+<p class="section-text reveal">
+Choose a complete grammar programme designed
+around structured learning, practice and guidance.
+</p>
+
+
+<div class="courses">
+
+<!-- BASIC -->
+
+<div class="course reveal">
+
+<div class="course-type">
+Grammar Programme
+</div>
+
+<h3>Basic Grammar</h3>
+
+<div class="price">
+₹2,000
+</div>
+
+<div class="course-info">
+10 Days · Online + Offline
+</div>
+
+<ul>
+<li>Tenses</li>
+<li>Subject–Verb Concord</li>
+<li>Articles</li>
+<li>Modals</li>
+<li>Prepositions</li>
+<li>Sentence Structure</li>
+<li>Practice & Final Test</li>
+</ul>
+
+<a href="#contact" class="course-btn">
+ENROL NOW →
+</a>
+
+</div>
+
+
+<!-- INTERMEDIATE -->
+
+<div class="course featured reveal">
+
+<div class="badge">POPULAR</div>
+
+<div class="course-type">
+Grammar Programme
+</div>
+
+<h3>Intermediate</h3>
+
+<div class="price">
+₹3,000
+</div>
+
+<div class="course-info">
+15 Days · Online + Offline
+</div>
+
+<ul>
+<li>Tenses</li>
+<li>Concord</li>
+<li>Articles & Modals</li>
+<li>Voice</li>
+<li>Narration</li>
+<li>Transformation</li>
+<li>Determiners & Tags</li>
+</ul>
+
+<a href="#contact" class="course-btn">
+ENROL NOW →
+</a>
+
+</div>
+
+
+<!-- ADVANCED -->
+
+<div class="course reveal">
+
+<div class="course-type">
+Grammar Programme
+</div>
+
+<h3>Advanced</h3>
+
+<div class="price">
+₹4,000
+</div>
+
+<div class="course-info">
+20 Days · Online + Offline
+</div>
+
+<ul>
+<li>Advanced Tenses</li>
+<li>Clauses</li>
+<li>Conditionals</li>
+<li>Voice & Narration</li>
+<li>Non-Finite Verbs</li>
+<li>Error Correction</li>
+<li>Advanced Practice</li>
+</ul>
+
+<a href="#contact" class="course-btn">
+ENROL NOW →
+</a>
 
 </div>
 
@@ -647,86 +1098,167 @@ with his real teaching subjects.
 </section>
 
 
-<!-- EXPERIENCE -->
+<!-- MASTERCLASSES -->
 
-<section id="experience">
+<section class="section">
 
 <div class="container">
 
-<div class="section-layout">
-
-<div class="label">
-03 — Journey
+<div class="section-label">
+02 — Individual Courses
 </div>
 
-<div class="section-content reveal">
-
-<h2>
-A journey built around
-education.
+<h2 class="section-title reveal">
+Master one topic.
 </h2>
 
-<div class="timeline">
+<p class="section-text">
+Don't need the complete course? Choose one focused
+masterclass and learn exactly what you need.
+</p>
 
-<div class="timeline-row">
+<div class="master-grid">
 
-<div class="timeline-date">
-Experience
+<div class="master reveal">
+<h3>Tense Masterclass</h3>
+<div class="master-price">₹799</div>
+<p>3 Days · Online + Offline</p>
 </div>
 
+<div class="master reveal">
+<h3>Narration Masterclass</h3>
+<div class="master-price">₹999</div>
+<p>4 Days · Online + Offline</p>
+</div>
+
+<div class="master reveal">
+<h3>Voice Masterclass</h3>
+<div class="master-price">₹799</div>
+<p>3 Days · Online + Offline</p>
+</div>
+
+<div class="master reveal">
+<h3>Articles & Determiners</h3>
+<div class="master-price">₹499</div>
+<p>2 Days · Online + Offline</p>
+</div>
+
+<div class="master reveal">
+<h3>Subject–Verb Concord</h3>
+<div class="master-price">₹499</div>
+<p>2 Days · Online + Offline</p>
+</div>
+
+<div class="master reveal">
+<h3>Modals & Prepositions</h3>
+<div class="master-price">₹699</div>
+<p>3 Days · Online + Offline</p>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- WHAT YOU GET -->
+
+<section class="section">
+
+<div class="container">
+
+<div class="section-label">
+03 — Your Learning
+</div>
+
+<h2 class="section-title reveal">
+More than a class.
+</h2>
+
+<div style="margin-top:40px">
+
+<div class="detail reveal">
+<div class="detail-number">01</div>
 <div>
-<div class="timeline-title">
-Teaching
-</div>
-
-<div class="timeline-description">
-Add the real school, institution, role and
-teaching experience here.
+<h3>Study Materials</h3>
+<p>Structured notes and useful learning materials.</p>
 </div>
 </div>
 
-</div>
-
-
-<div class="timeline-row">
-
-<div class="timeline-date">
-Mentorship
-</div>
-
+<div class="detail reveal">
+<div class="detail-number">02</div>
 <div>
-<div class="timeline-title">
-Student Guidance
-</div>
-
-<div class="timeline-description">
-Add verified information about mentorship
-and student support here.
+<h3>Practice Worksheets</h3>
+<p>Regular questions designed to strengthen understanding.</p>
 </div>
 </div>
 
-</div>
-
-
-<div class="timeline-row">
-
-<div class="timeline-date">
-Education
-</div>
-
+<div class="detail reveal">
+<div class="detail-number">03</div>
 <div>
-<div class="timeline-title">
-Qualifications
-</div>
-
-<div class="timeline-description">
-Add Tamal's actual degrees, certifications
-and educational qualifications here.
+<h3>Live Classes</h3>
+<p>Interactive online and offline learning sessions.</p>
 </div>
 </div>
 
+<div class="detail reveal">
+<div class="detail-number">04</div>
+<div>
+<h3>Doubt Support</h3>
+<p>Get help when a concept isn't clear.</p>
+</div>
 </div>
 
+<div class="detail reveal">
+<div class="detail-number">05</div>
+<div>
+<h3>Final Assessment</h3>
+<p>Test your learning after completing the programme.</p>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- TEACHER -->
+
+<section class="section" id="teacher">
+
+<div class="container">
+
+<div class="section-label">
+04 — Meet Your Teacher
+</div>
+
+<div class="teacher">
+
+<div class="teacher-photo reveal"></div>
+
+<div class="reveal">
+
+<div class="teacher-name">
+Tamal Debnath
+</div>
+
+<div class="teacher-role">
+FOUNDER & ENGLISH EDUCATOR · ENGLISH STUDY POINT
+</div>
+
+<p class="section-text">
+Helping students understand English grammar through
+simple explanations, regular practice and
+examination-focused learning.
+</p>
+
+<div class="buttons">
+<a href="tel:8731907809" class="btn btn-gold">
+Call Tamal
+</a>
 </div>
 
 </div>
@@ -738,67 +1270,130 @@ and educational qualifications here.
 </section>
 
 
-<!-- RESOURCES -->
+<!-- RESULTS -->
 
-<section>
+<section class="section" id="results">
 
 <div class="container">
 
-<div class="section-layout">
-
-<div class="label">
-04 — Resources
+<div class="section-label">
+05 — Results
 </div>
 
-<div class="section-content reveal">
-
-<h2>
-A simple place to
-keep learning.
+<h2 class="section-title reveal">
+Our students.<br>
+Our results.
 </h2>
 
-<p>
-Student resources can be added here as the website
-grows — notes, study materials, guides and useful
-learning links.
+<p class="section-text">
+Add only verified student achievements and results here.
 </p>
 
-<div class="resource-box">
+<div class="results">
 
-<div class="resource">
-
-<div class="resource-number">
-01
+<div class="result reveal">
+<strong>95/100</strong>
+<span>English · Class 10</span>
 </div>
 
-<h3>
-Study Materials
-</h3>
+<div class="result reveal">
+<strong>99/100</strong>
+<span>English · Class 10</span>
+</div>
+
+<div class="result reveal">
+<strong>90+</strong>
+<span>Verified Student Scores</span>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- REVIEWS -->
+
+<section class="section">
+
+<div class="container">
+
+<div class="section-label">
+06 — Student Voice
+</div>
+
+<h2 class="section-title reveal">
+What students say.
+</h2>
+
+<div class="review reveal">
+
+<div class="stars">
+★★★★★
+</div>
 
 <p>
-Notes and useful educational materials.
+“Add a genuine student review here about
+the teaching, explanations or practice.”
+</p>
+
+<small>
+— Student · Class 10
+</small>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- BRANCHES -->
+
+<section class="section" id="branches">
+
+<div class="container">
+
+<div class="section-label">
+07 — Our Centres
+</div>
+
+<h2 class="section-title reveal">
+Find us.
+</h2>
+
+<div class="branches">
+
+<div class="branch reveal">
+
+<div class="branch-label">
+KULAI BRANCH
+</div>
+
+<h3>Kulai</h3>
+
+<p>
+Thakur Palli<br>
+Near Kulai Kalibari
 </p>
 
 </div>
 
 
-<div class="resource">
+<div class="branch reveal">
 
-<div class="resource-number">
-02
+<div class="branch-label">
+AMBASSA BRANCH
 </div>
 
-<h3>
-Learning Guides
-</h3>
+<h3>Ambassa</h3>
 
 <p>
-Guides and resources for better preparation.
+Ambassa Bazar<br>
+Near Panchashree / 1st Floor,
+Chatrabandhu Library
 </p>
-
-</div>
-
-</div>
 
 </div>
 
@@ -811,32 +1406,70 @@ Guides and resources for better preparation.
 
 <!-- CONTACT -->
 
-<section id="contact" class="contact-section">
+<section class="section" id="contact">
 
 <div class="container">
 
-<div class="contact-card reveal">
+<div class="contact reveal">
 
-<div class="label">
-05 — Contact
+<div class="section-label">
+08 — Enrolment & Contact
 </div>
 
 <h2>
-Let's talk.
+Start learning.
 </h2>
 
-<p>
-For educational questions, professional enquiries
-or meaningful conversations, connect with Tamal
-directly.
+<p class="section-text">
+Choose your course and contact English Study Point
+for online or offline enrolment.
 </p>
 
+<div class="phone">
++91 8731907809
+</div>
+
+<div class="buttons" style="justify-content:center">
+
 <a
-href="https://wa.me/918014869813"
+href="https://wa.me/918731907809"
 target="_blank"
-class="contact-button">
-Start a conversation →
+class="btn btn-gold">
+WhatsApp →
 </a>
+
+<a
+href="tel:8731907809"
+class="btn btn-outline">
+Call Now
+</a>
+
+</div>
+
+<div class="socials">
+
+<a
+class="social"
+href="https://www.instagram.com/english_study_pointt/"
+target="_blank">
+Instagram
+</a>
+
+<a
+class="social"
+href="https://www.facebook.com/share/IBBftHeciy/"
+target="_blank">
+Facebook
+</a>
+
+<a
+class="social"
+href="https://whatsapp.com/channel/0029VagKYCH2ER6jaIQgQX2A"
+target="_blank">
+WhatsApp Channel
+</a>
+
+</div>
 
 </div>
 
@@ -844,38 +1477,41 @@ Start a conversation →
 
 </section>
 
-</main>
-
-
-<!-- FOOTER -->
 
 <footer>
 
 <div class="container">
 
-<div class="footer">
-
-<div>
-© <span id="year"></span> Tamal Debnath
-</div>
-
-<div>
-Educator · Mentor · Guide
-</div>
-
-</div>
+ENGLISH STUDY POINT · TAMAL DEBNATH<br><br>
+© <span id="year"></span> All Rights Reserved.
 
 </div>
 
 </footer>
 
 
+<!-- MOBILE NAV -->
+
+<div class="bottom-nav">
+
+<a href="#home">⌂<br>Home</a>
+
+<a href="#courses">◈<br>Courses</a>
+
+<a href="#results">✦<br>Results</a>
+
+<a href="#teacher">◯<br>About</a>
+
+<a href="#contact">☎<br>Contact</a>
+
+</div>
+
+
 <script>
 
-/* NAV SCROLL */
+/* NAV */
 
 window.addEventListener("scroll",()=>{
-
 const nav=document.getElementById("nav");
 
 if(window.scrollY>30){
@@ -883,17 +1519,16 @@ nav.classList.add("scrolled");
 }else{
 nav.classList.remove("scrolled");
 }
-
 });
 
 
 /* REVEAL */
 
 const observer=new IntersectionObserver(
-entries=>{
+(entries)=>{
 entries.forEach(entry=>{
 if(entry.isIntersecting){
-entry.target.classList.add("visible");
+entry.target.classList.add("show");
 }
 });
 },
