@@ -3,597 +3,914 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tamal Debnath | Educator & Mentor</title>
+<title>Tamal Debnath — Educator</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;scroll-behavior:smooth}
-:root{
-  --bg:#050914;
-  --card:rgba(255,255,255,.07);
-  --border:rgba(255,255,255,.13);
-  --text:#fff;
-  --muted:#9ba8bc;
-  --blue:#00d9ff;
-  --purple:#735cff;
-  --green:#25d366;
-}
-body{
-  font-family:Arial,sans-serif;
-  color:var(--text);
-  background:
-  radial-gradient(circle at 10% 10%,rgba(115,92,255,.22),transparent 28%),
-  radial-gradient(circle at 90% 20%,rgba(0,217,255,.13),transparent 25%),
-  linear-gradient(135deg,#050914,#081321);
-  line-height:1.6;
-}
-a{text-decoration:none;color:inherit}
-.container{width:min(92%,1180px);margin:auto}
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap');
 
-header{
-  position:fixed;top:0;left:0;width:100%;z-index:999;
-  background:rgba(5,9,20,.8);
-  backdrop-filter:blur(18px);
-  border-bottom:1px solid var(--border)
+:root{
+  --bg:#f7f7f4;
+  --text:#151515;
+  --muted:#777;
+  --line:#deded8;
+  --dark:#151515;
+  --white:#fff;
 }
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:"DM Sans",sans-serif;
+  overflow-x:hidden;
+}
+
+a{
+  color:inherit;
+  text-decoration:none;
+}
+
+.container{
+  width:min(1120px,90%);
+  margin:auto;
+}
+
+/* NAV */
+
 nav{
-  min-height:75px;display:flex;
-  justify-content:space-between;align-items:center
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  z-index:1000;
+  transition:.3s;
 }
-.logo{font-size:23px;font-weight:900}
-.logo span{color:var(--blue)}
+
+nav.scrolled{
+  background:rgba(247,247,244,.88);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--line);
+}
+
+.nav-inner{
+  height:78px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.logo{
+  font-family:"Playfair Display",serif;
+  font-size:23px;
+}
+
+.logo span{
+  color:#888;
+}
+
 .nav-links{
-  display:flex;gap:24px;list-style:none;align-items:center
+  display:flex;
+  gap:28px;
+  list-style:none;
+  font-size:13px;
+  color:#666;
 }
-.nav-links a{font-size:14px;color:#cbd5e1;font-weight:700}
-.nav-btn{
-  padding:10px 17px;border-radius:999px;
-  background:linear-gradient(90deg,var(--purple),#4e8cff);
-  color:white!important
+
+.nav-links a{
+  transition:.25s;
 }
+
+.nav-links a:hover{
+  color:#000;
+}
+
+.nav-contact{
+  padding:10px 16px;
+  border:1px solid var(--line);
+  border-radius:100px;
+}
+
+/* HERO */
 
 .hero{
-  min-height:100vh;display:flex;align-items:center;
-  padding:130px 0 70px
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  padding:130px 0 90px;
 }
-.hero-grid{
-  display:grid;grid-template-columns:1.1fr .9fr;
-  gap:65px;align-items:center
+
+.hero-content{
+  max-width:920px;
 }
-.badge{
-  display:inline-block;padding:8px 14px;border-radius:999px;
-  border:1px solid rgba(0,217,255,.3);
-  color:#8deaff;background:rgba(0,217,255,.06);
-  font-size:12px;font-weight:900;letter-spacing:1px;
-  margin-bottom:20px
+
+.kicker{
+  color:#888;
+  font-size:12px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  margin-bottom:25px;
 }
-h1{
-  font-size:clamp(45px,7vw,82px);
-  line-height:.98;letter-spacing:-4px
+
+.hero h1{
+  font-family:"Playfair Display",serif;
+  font-size:clamp(62px,10vw,125px);
+  line-height:.88;
+  letter-spacing:-6px;
+  font-weight:500;
 }
-.gradient{
-  background:linear-gradient(90deg,#fff,var(--blue),#9c8cff);
-  -webkit-background-clip:text;
-  background-clip:text;color:transparent
+
+.hero h1 em{
+  color:#8a8a8a;
+  font-style:normal;
 }
-.hero-text{
-  color:var(--muted);font-size:18px;
-  max-width:650px;margin-top:25px
+
+.hero-description{
+  max-width:650px;
+  margin-top:35px;
+  color:#696969;
+  font-size:18px;
+  line-height:1.8;
 }
-.buttons{display:flex;flex-wrap:wrap;gap:13px;margin-top:30px}
+
+.actions{
+  display:flex;
+  gap:12px;
+  margin-top:32px;
+  flex-wrap:wrap;
+}
+
 .btn{
-  display:inline-flex;align-items:center;justify-content:center;
-  padding:14px 20px;border-radius:14px;
-  font-size:14px;font-weight:800;transition:.25s
+  padding:14px 21px;
+  border-radius:100px;
+  font-size:13px;
+  font-weight:700;
+  transition:.3s;
 }
-.btn:hover{transform:translateY(-3px)}
+
+.btn:hover{
+  transform:translateY(-3px);
+}
+
 .primary{
-  background:linear-gradient(90deg,var(--purple),#4e8cff);
-  box-shadow:0 15px 40px rgba(115,92,255,.25)
-}
-.secondary{background:var(--card);border:1px solid var(--border)}
-
-.profile{
-  padding:35px;border:1px solid var(--border);
-  border-radius:30px;background:var(--card);
-  box-shadow:0 30px 80px rgba(0,0,0,.3)
-}
-.avatar{
-  width:135px;height:135px;border-radius:50%;
-  display:grid;place-items:center;font-size:43px;font-weight:900;
-  background:linear-gradient(135deg,var(--purple),var(--blue));
-  margin-bottom:25px
-}
-.profile h2{font-size:31px}
-.profile p{color:var(--muted)}
-.stats{
-  display:grid;grid-template-columns:1fr 1fr;
-  gap:12px;margin-top:25px
-}
-.stat{
-  padding:17px;border-radius:16px;
-  background:rgba(255,255,255,.045);
-  border:1px solid var(--border)
-}
-.stat strong{display:block;font-size:23px}
-
-section{padding:100px 0}
-.heading{max-width:720px;margin-bottom:45px}
-.eyebrow{
-  color:var(--blue);font-size:12px;font-weight:900;
-  text-transform:uppercase;letter-spacing:2px
-}
-.heading h2{
-  font-size:clamp(32px,5vw,55px);
-  line-height:1.05;margin-top:9px
-}
-.heading p{color:var(--muted);margin-top:14px}
-
-.about{
-  display:grid;grid-template-columns:1fr 1fr;gap:20px
-}
-.glass{
-  padding:30px;border:1px solid var(--border);
-  border-radius:24px;background:var(--card)
-}
-.glass h3{font-size:24px;margin-bottom:12px}
-.glass p{color:var(--muted)}
-
-.learning-grid{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:18px
-}
-.learning-card{
-  min-height:240px;padding:28px;border-radius:23px;
-  border:1px solid var(--border);background:var(--card);
-  transition:.3s;position:relative
-}
-.learning-card:hover{
-  transform:translateY(-8px);
-  border-color:rgba(0,217,255,.4)
-}
-.number{
-  position:absolute;right:20px;top:18px;color:#59677c
-}
-.icon{
-  width:55px;height:55px;border-radius:16px;
-  display:grid;place-items:center;font-size:25px;
-  background:rgba(115,92,255,.18);
-  border:1px solid var(--border);
-  margin-bottom:20px
-}
-.learning-card h3{font-size:21px;margin-bottom:8px}
-.learning-card p{color:var(--muted);font-size:14px}
-.more{
-  display:inline-block;margin-top:18px;
-  color:var(--blue);font-size:13px;font-weight:900
+  background:var(--dark);
+  color:white;
 }
 
-.subjects{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:18px
+.secondary{
+  background:white;
+  border:1px solid var(--line);
 }
-.subject{
-  padding:25px;border-radius:21px;
-  border:1px solid var(--border);background:var(--card)
-}
-.subject-icon{font-size:28px;margin-bottom:13px}
-.subject p{color:var(--muted);font-size:14px}
 
-.timeline{max-width:850px;position:relative}
-.timeline:before{
-  content:"";position:absolute;left:9px;top:0;bottom:0;
-  width:2px;background:linear-gradient(var(--purple),var(--blue))
-}
-.item{
-  position:relative;padding-left:45px;margin-bottom:35px
-}
-.dot{
-  position:absolute;left:0;top:6px;width:20px;height:20px;
-  border-radius:50%;background:var(--blue);
-  box-shadow:0 0 20px rgba(0,217,255,.7)
-}
-.date{color:var(--blue);font-size:12px;font-weight:900}
-.item h3{font-size:21px}
-.item p{color:var(--muted)}
+/* SCROLL */
 
-.achievements{
-  display:grid;grid-template-columns:repeat(4,1fr);gap:15px
+.scroll{
+  margin-top:75px;
+  color:#999;
+  font-size:11px;
+  letter-spacing:2px;
+  display:flex;
+  align-items:center;
+  gap:12px;
 }
-.achievement{
-  text-align:center;padding:28px 15px;
-  border-radius:20px;border:1px solid var(--border);
-  background:var(--card)
-}
-.achievement strong{display:block;font-size:35px}
-.achievement span{color:var(--muted);font-size:13px}
 
-.quote{
-  max-width:850px;margin:auto;text-align:center;
-  padding:45px 30px;border:1px solid var(--border);
-  border-radius:28px;background:var(--card)
+.scroll span{
+  display:block;
+  width:45px;
+  height:1px;
+  background:#aaa;
 }
-.quote p{font-size:25px;font-weight:700}
-.quote small{display:block;color:var(--muted);margin-top:18px}
 
-.contact{
-  padding:45px;border-radius:30px;border:1px solid var(--border);
-  background:linear-gradient(120deg,rgba(115,92,255,.18),rgba(0,217,255,.07));
-  display:flex;justify-content:space-between;
-  align-items:center;gap:30px
+/* SECTIONS */
+
+section{
+  padding:120px 0;
 }
-.contact h2{font-size:clamp(30px,5vw,48px);line-height:1.05}
-.contact p{color:var(--muted);margin-top:10px}
-.whatsapp{background:var(--green);color:#04130a}
+
+.divider{
+  height:1px;
+  background:var(--line);
+}
+
+.section-layout{
+  display:grid;
+  grid-template-columns:180px 1fr;
+  gap:75px;
+}
+
+.label{
+  font-size:11px;
+  color:#999;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  font-weight:700;
+}
+
+.section-content{
+  max-width:760px;
+}
+
+.section-content h2{
+  font-family:"Playfair Display",serif;
+  font-size:clamp(38px,5vw,62px);
+  font-weight:500;
+  line-height:1.05;
+  letter-spacing:-2px;
+}
+
+.section-content p{
+  color:#686868;
+  font-size:16px;
+  line-height:1.9;
+  margin-top:22px;
+}
+
+/* ABOUT */
+
+.about-intro{
+  font-size:22px!important;
+  color:#333!important;
+  line-height:1.65!important;
+}
+
+/* EXPERTISE */
+
+.tags{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:32px;
+}
+
+.tag{
+  padding:12px 17px;
+  border:1px solid var(--line);
+  border-radius:100px;
+  background:#fff;
+  color:#555;
+  font-size:13px;
+  transition:.25s;
+}
+
+.tag:hover{
+  background:#151515;
+  color:white;
+  transform:translateY(-3px);
+}
+
+/* EXPERIENCE */
+
+.timeline{
+  margin-top:35px;
+}
+
+.timeline-row{
+  display:grid;
+  grid-template-columns:150px 1fr;
+  padding:25px 0;
+  border-top:1px solid var(--line);
+}
+
+.timeline-row:last-child{
+  border-bottom:1px solid var(--line);
+}
+
+.timeline-date{
+  color:#999;
+  font-size:12px;
+}
+
+.timeline-title{
+  font-size:17px;
+  font-weight:700;
+}
+
+.timeline-description{
+  color:#777;
+  font-size:13px;
+  margin-top:6px;
+}
+
+/* RESOURCES */
+
+.resource-box{
+  margin-top:35px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.resource{
+  padding:25px;
+  background:white;
+  border:1px solid var(--line);
+  border-radius:20px;
+  transition:.3s;
+}
+
+.resource:hover{
+  transform:translateY(-5px);
+  box-shadow:0 20px 50px rgba(0,0,0,.07);
+}
+
+.resource-number{
+  font-size:11px;
+  color:#aaa;
+}
+
+.resource h3{
+  margin-top:20px;
+  font-family:"Playfair Display",serif;
+  font-size:24px;
+  font-weight:500;
+}
+
+.resource p{
+  margin-top:8px;
+  font-size:13px;
+  color:#777;
+  line-height:1.7;
+}
+
+/* CONTACT */
+
+.contact-section{
+  padding-bottom:100px;
+}
+
+.contact-card{
+  background:#151515;
+  color:white;
+  border-radius:30px;
+  padding:65px;
+  position:relative;
+  overflow:hidden;
+}
+
+.contact-card:after{
+  content:"";
+  position:absolute;
+  width:350px;
+  height:350px;
+  border-radius:50%;
+  right:-180px;
+  top:-180px;
+  background:rgba(255,255,255,.06);
+}
+
+.contact-card .label{
+  color:#888;
+}
+
+.contact-card h2{
+  font-family:"Playfair Display",serif;
+  font-size:clamp(45px,7vw,78px);
+  line-height:.95;
+  font-weight:500;
+  margin-top:17px;
+}
+
+.contact-card p{
+  max-width:570px;
+  color:#aaa;
+  line-height:1.8;
+  margin-top:18px;
+}
+
+.contact-button{
+  display:inline-block;
+  margin-top:30px;
+  padding:14px 21px;
+  background:white;
+  color:#111;
+  border-radius:100px;
+  font-size:13px;
+  font-weight:700;
+  transition:.3s;
+}
+
+.contact-button:hover{
+  transform:translateY(-3px);
+}
+
+/* FOOTER */
 
 footer{
-  border-top:1px solid var(--border);
-  padding:35px 0;text-align:center;
-  color:var(--muted);font-size:13px
+  border-top:1px solid var(--line);
+  padding:32px 0;
 }
 
-@media(max-width:900px){
-  .hero-grid,.about{grid-template-columns:1fr}
-  .learning-grid,.subjects{grid-template-columns:repeat(2,1fr)}
-  .achievements{grid-template-columns:repeat(2,1fr)}
-  .nav-links{display:none}
+.footer{
+  display:flex;
+  justify-content:space-between;
+  color:#999;
+  font-size:12px;
 }
-@media(max-width:600px){
-  section{padding:75px 0}
-  .learning-grid,.subjects{grid-template-columns:1fr}
-  .contact{flex-direction:column;align-items:flex-start;padding:30px}
-  .contact .btn{width:100%}
-  h1{letter-spacing:-2.5px}
+
+/* ANIMATION */
+
+.reveal{
+  opacity:0;
+  transform:translateY(25px);
+  transition:.8s ease;
+}
+
+.reveal.visible{
+  opacity:1;
+  transform:translateY(0);
+}
+
+/* MOBILE */
+
+@media(max-width:750px){
+
+  .nav-links{
+    display:none;
+  }
+
+  .hero{
+    min-height:auto;
+    padding:145px 0 90px;
+  }
+
+  .hero h1{
+    font-size:clamp(58px,18vw,90px);
+    letter-spacing:-4px;
+  }
+
+  .hero-description{
+    font-size:16px;
+  }
+
+  section{
+    padding:85px 0;
+  }
+
+  .section-layout{
+    grid-template-columns:1fr;
+    gap:25px;
+  }
+
+  .section-content h2{
+    font-size:40px;
+  }
+
+  .resource-box{
+    grid-template-columns:1fr;
+  }
+
+  .timeline-row{
+    grid-template-columns:100px 1fr;
+  }
+
+  .contact-card{
+    padding:40px 28px;
+    border-radius:24px;
+  }
+
+  .footer{
+    flex-direction:column;
+    gap:8px;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<header>
-<div class="container">
-<nav>
-<a href="#home" class="logo">Tamal<span>.</span></a>
+<!-- NAVIGATION -->
+
+<nav id="nav">
+
+<div class="container nav-inner">
+
+<a href="#home" class="logo">
+Tamal<span> Debnath</span>
+</a>
 
 <ul class="nav-links">
 <li><a href="#about">About</a></li>
-<li><a href="#learning">Learning</a></li>
-<li><a href="#subjects">Subjects</a></li>
-<li><a href="#experience">Experience</a></li>
-<li><a href="#contact" class="nav-btn">Contact</a></li>
+<li><a href="#expertise">Expertise</a></li>
+<li><a href="#experience">Journey</a></li>
+<li><a href="#contact" class="nav-contact">Contact</a></li>
 </ul>
 
-</nav>
 </div>
-</header>
+
+</nav>
 
 
-<section class="hero" id="home">
+<!-- HERO -->
+
+<main id="home">
+
+<section class="hero">
+
 <div class="container">
-<div class="hero-grid">
 
-<div>
-<div class="badge">✦ EDUCATOR • MENTOR • TEACHER</div>
+<div class="hero-content reveal">
+
+<div class="kicker">
+Educator · Mentor · Guide
+</div>
 
 <h1>
-Learn Better.<br>
-<span class="gradient">Think Bigger.</span>
+Tamal<br>
+<em>Debnath.</em>
 </h1>
 
-<p class="hero-text">
-Welcome to the professional portfolio of
-<strong>Tamal Debnath</strong> — a modern digital
-space for education, learning, mentorship and growth.
+<p class="hero-description">
+Creating a thoughtful space for learning,
+understanding and growth — where students are
+encouraged to ask better questions and think deeper.
 </p>
 
-<div class="buttons">
-<a href="#learning" class="btn primary">
-Explore Learning →
+<div class="actions">
+
+<a href="#about" class="btn primary">
+Discover Tamal →
 </a>
 
-<a href="https://wa.me/918014869813"
+<a
+href="https://wa.me/918014869813"
 target="_blank"
 class="btn secondary">
-💬 WhatsApp
+WhatsApp
 </a>
-</div>
-</div>
 
-
-<div class="profile">
-
-<div class="avatar">TD</div>
-
-<h2>Tamal Debnath</h2>
-<p>Educator & Mentor</p>
-
-<div class="stats">
-
-<div class="stat">
-<strong>🎓</strong>
-Learning
 </div>
 
-<div class="stat">
-<strong>💡</strong>
-Knowledge
-</div>
-
-<div class="stat">
-<strong>🚀</strong>
-Growth
-</div>
-
-<div class="stat">
-<strong>∞</strong>
-Possibility
+<div class="scroll">
+<span></span>
+Scroll to explore
 </div>
 
 </div>
 
 </div>
 
-</div>
-</div>
 </section>
 
+
+<div class="divider"></div>
+
+
+<!-- ABOUT -->
 
 <section id="about">
+
 <div class="container">
 
-<div class="heading">
-<div class="eyebrow">01 — About</div>
+<div class="section-layout">
+
+<div class="label">
+01 — About
+</div>
+
+<div class="section-content reveal">
 
 <h2>
-Education with
-<span class="gradient">purpose.</span>
+Learning begins with
+understanding.
 </h2>
 
-<p>
-A professional introduction to Tamal Debnath's
-teaching philosophy and approach.
+<p class="about-intro">
+Tamal Debnath is an educator and mentor focused
+on making learning simple, meaningful and engaging.
 </p>
-</div>
 
-<div class="about">
-
-<div class="glass">
-<h3>Who I Am</h3>
 <p>
-I am Tamal Debnath, an educator and mentor focused
-on creating a positive learning environment and
-helping students build confidence and understanding.
+The teaching approach is centred around clear
+explanations, curiosity and independent thinking.
+The aim is not only to learn an answer, but to
+understand the idea behind it.
 </p>
-</div>
 
-<div class="glass">
-<h3>My Approach</h3>
-<p>
-Learning becomes meaningful when concepts are clear,
-questions are encouraged and students are motivated
-to think independently.
-</p>
 </div>
 
 </div>
+
 </div>
+
 </section>
 
 
-<section id="learning">
+<!-- EXPERTISE -->
+
+<section id="expertise">
+
 <div class="container">
 
-<div class="heading">
-<div class="eyebrow">02 — Explore Learning</div>
+<div class="section-layout">
+
+<div class="label">
+02 — Expertise
+</div>
+
+<div class="section-content reveal">
 
 <h2>
-Discover.
-<span class="gradient">Learn.</span>
-Grow.
+Knowledge, made
+clear.
 </h2>
 
 <p>
-Explore different learning areas and discover
-opportunities for knowledge and personal development.
+Add Tamal's actual subjects and areas of expertise
+here. These placeholder categories can be replaced
+with his real teaching subjects.
 </p>
+
+<div class="tags">
+
+<div class="tag">Subject One</div>
+<div class="tag">Subject Two</div>
+<div class="tag">Concept Building</div>
+<div class="tag">Problem Solving</div>
+<div class="tag">Student Guidance</div>
+
 </div>
 
-<div class="learning-grid">
-
-
-<a href="#subjects" class="learning-card">
-<span class="number">01</span>
-<div class="icon">📚</div>
-<h3>Subjects</h3>
-<p>
-Explore academic subjects, concepts and
-learning areas.
-</p>
-<span class="more">Explore Subjects →</span>
-</a>
-
-
-<a href="#experience" class="learning-card">
-<span class="number">02</span>
-<div class="icon">🎓</div>
-<h3>Teaching Journey</h3>
-<p>
-Discover teaching experience, mentorship
-and professional development.
-</p>
-<span class="more">View Journey →</span>
-</a>
-
-
-<a href="#contact" class="learning-card">
-<span class="number">03</span>
-<div class="icon">💬</div>
-<h3>Ask & Connect</h3>
-<p>
-Have a question? Start a direct conversation
-with Tamal.
-</p>
-<span class="more">Contact →</span>
-</a>
-
-
-<a href="#about" class="learning-card">
-<span class="number">04</span>
-<div class="icon">🧠</div>
-<h3>Concept Building</h3>
-<p>
-Build strong foundations through clear
-conceptual understanding.
-</p>
-<span class="more">Learn More →</span>
-</a>
-
-
-<a href="#about" class="learning-card">
-<span class="number">05</span>
-<div class="icon">🚀</div>
-<h3>Skill Development</h3>
-<p>
-Develop confidence, creativity and
-lifelong learning habits.
-</p>
-<span class="more">Discover →</span>
-</a>
-
-
-<a href="#contact" class="learning-card">
-<span class="number">06</span>
-<div class="icon">✨</div>
-<h3>Future Opportunities</h3>
-<p>
-Connect for educational discussions,
-ideas and collaboration.
-</p>
-<span class="more">Get in Touch →</span>
-</a>
+</div>
 
 </div>
+
 </div>
+
 </section>
 
 
-<section id="subjects">
-<div class="container">
-
-<div class="heading">
-<div class="eyebrow">03 — Subjects</div>
-
-<h2>
-Learning
-<span class="gradient">Areas.</span>
-</h2>
-
-<p>
-These are placeholders. Replace them with Tamal's
-actual subjects.
-</p>
-</div>
-
-<div class="subjects">
-
-<div class="subject">
-<div class="subject-icon">📘</div>
-<h3>Main Subject</h3>
-<p>Add the primary subject taught by Tamal here.</p>
-</div>
-
-<div class="subject">
-<div class="subject-icon">🧮</div>
-<h3>Academic Learning</h3>
-<p>Add another academic subject here.</p>
-</div>
-
-<div class="subject">
-<div class="subject-icon">🧠</div>
-<h3>Concept Building</h3>
-<p>Clear explanations and strong foundations.</p>
-</div>
-
-<div class="subject">
-<div class="subject-icon">💡</div>
-<h3>Problem Solving</h3>
-<p>Logical thinking and practical understanding.</p>
-</div>
-
-<div class="subject">
-<div class="subject-icon">🎯</div>
-<h3>Student Guidance</h3>
-<p>Academic guidance and student support.</p>
-</div>
-
-<div class="subject">
-<div class="subject-icon">🚀</div>
-<h3>Personal Growth</h3>
-<p>Confidence and continuous development.</p>
-</div>
-
-</div>
-</div>
-</section>
-
+<!-- EXPERIENCE -->
 
 <section id="experience">
+
 <div class="container">
 
-<div class="heading">
-<div class="eyebrow">04 — Experience</div>
+<div class="section-layout">
+
+<div class="label">
+03 — Journey
+</div>
+
+<div class="section-content reveal">
 
 <h2>
-Teaching
-<span class="gradient">Journey.</span>
+A journey built around
+education.
 </h2>
-
-<p>
-Add Tamal's verified institutions, positions and
-professional experience here.
-</p>
-</div>
 
 <div class="timeline">
 
-<div class="item">
-<div class="dot"></div>
-<div class="date">TEACHING</div>
-<h3>Professional Teaching Experience</h3>
-<p>
-Add actual institution, teaching role,
-responsibilities and dates here.
-</p>
+<div class="timeline-row">
+
+<div class="timeline-date">
+Experience
 </div>
 
-<div class="item">
-<div class="dot"></div>
-<div class="date">MENTORSHIP</div>
-<h3>Student Mentorship</h3>
-<p>
-Add verified information about student guidance
-and academic support.
-</p>
+<div>
+<div class="timeline-title">
+Teaching
 </div>
 
-<div class="item">
-<div class="dot"></div>
-<div class="date">DEVELOPMENT</div>
-<h3>Professional Development</h3>
-<p>
-Add real certifications, workshops and
-professional development activities here.
-</p>
+<div class="timeline-description">
+Add the real school, institution, role and
+teaching experience here.
+</div>
 </div>
 
 </div>
+
+
+<div class="timeline-row">
+
+<div class="timeline-date">
+Mentorship
 </div>
+
+<div>
+<div class="timeline-title">
+Student Guidance
+</div>
+
+<div class="timeline-description">
+Add verified information about mentorship
+and student support here.
+</div>
+</div>
+
+</div>
+
+
+<div class="timeline-row">
+
+<div class="timeline-date">
+Education
+</div>
+
+<div>
+<div class="timeline-title">
+Qualifications
+</div>
+
+<div class="timeline-description">
+Add Tamal's actual degrees, certifications
+and educational qualifications here.
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
 </section>
 
 
+<!-- RESOURCES -->
+
 <section>
+
 <div class="container">
 
-<div class="heading">
-<div class="eyebrow">05 — Highlights</div>
+<div class="section-layout">
+
+<div class="label">
+04 — Resources
+</div>
+
+<div class="section-content reveal">
 
 <h2>
-Built around
-<span class
+A simple place to
+keep learning.
+</h2>
+
+<p>
+Student resources can be added here as the website
+grows — notes, study materials, guides and useful
+learning links.
+</p>
+
+<div class="resource-box">
+
+<div class="resource">
+
+<div class="resource-number">
+01
+</div>
+
+<h3>
+Study Materials
+</h3>
+
+<p>
+Notes and useful educational materials.
+</p>
+
+</div>
+
+
+<div class="resource">
+
+<div class="resource-number">
+02
+</div>
+
+<h3>
+Learning Guides
+</h3>
+
+<p>
+Guides and resources for better preparation.
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- CONTACT -->
+
+<section id="contact" class="contact-section">
+
+<div class="container">
+
+<div class="contact-card reveal">
+
+<div class="label">
+05 — Contact
+</div>
+
+<h2>
+Let's talk.
+</h2>
+
+<p>
+For educational questions, professional enquiries
+or meaningful conversations, connect with Tamal
+directly.
+</p>
+
+<a
+href="https://wa.me/918014869813"
+target="_blank"
+class="contact-button">
+Start a conversation →
+</a>
+
+</div>
+
+</div>
+
+</section>
+
+</main>
+
+
+<!-- FOOTER -->
+
+<footer>
+
+<div class="container">
+
+<div class="footer">
+
+<div>
+© <span id="year"></span> Tamal Debnath
+</div>
+
+<div>
+Educator · Mentor · Guide
+</div>
+
+</div>
+
+</div>
+
+</footer>
+
+
+<script>
+
+/* NAV SCROLL */
+
+window.addEventListener("scroll",()=>{
+
+const nav=document.getElementById("nav");
+
+if(window.scrollY>30){
+nav.classList.add("scrolled");
+}else{
+nav.classList.remove("scrolled");
+}
+
+});
+
+
+/* REVEAL */
+
+const observer=new IntersectionObserver(
+entries=>{
+entries.forEach(entry=>{
+if(entry.isIntersecting){
+entry.target.classList.add("visible");
+}
+});
+},
+{threshold:.12}
+);
+
+document.querySelectorAll(".reveal").forEach(el=>{
+observer.observe(el);
+});
+
+
+/* YEAR */
+
+document.getElementById("year").textContent=
+new Date().getFullYear();
+
+</script>
+
+</body>
+</html>
