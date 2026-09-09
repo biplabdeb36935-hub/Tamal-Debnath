@@ -1,1831 +1,599 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
-  <meta
-    name="description"
-    content="Tamal Debnath — Professional Educator & Mentor"
-  >
-
-  <meta
-    name="theme-color"
-    content="#07111f"
-  >
-
-  <title>Tamal Debnath | Educator & Mentor</title>
-
-  <style>
-    /* =========================
-       RESET
-    ========================== */
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      font-family:
-        Inter,
-        ui-sans-serif,
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
-
-      background: #050b14;
-      color: #f4f7fb;
-      line-height: 1.6;
-      overflow-x: hidden;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    button {
-      font: inherit;
-    }
-
-    img {
-      max-width: 100%;
-      display: block;
-    }
-
-    :root {
-      --bg: #050b14;
-      --bg2: #091525;
-      --card: rgba(255,255,255,0.055);
-      --border: rgba(255,255,255,0.11);
-      --text: #f7f9fc;
-      --muted: #aab6c7;
-      --primary: #63a7ff;
-      --primary2: #8c6cff;
-      --green: #35d49a;
-      --gold: #ffd36a;
-      --shadow: 0 25px 70px rgba(0,0,0,.35);
-      --radius: 24px;
-    }
-
-    /* =========================
-       BACKGROUND
-    ========================== */
-
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: -3;
-
-      background:
-        radial-gradient(
-          circle at 10% 10%,
-          rgba(99,167,255,.18),
-          transparent 28%
-        ),
-        radial-gradient(
-          circle at 90% 20%,
-          rgba(140,108,255,.16),
-          transparent 30%
-        ),
-        radial-gradient(
-          circle at 50% 100%,
-          rgba(53,212,154,.08),
-          transparent 30%
-        );
-    }
-
-    body::after {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: -2;
-      opacity: .18;
-
-      background-image:
-        linear-gradient(
-          rgba(255,255,255,.035) 1px,
-          transparent 1px
-        ),
-        linear-gradient(
-          90deg,
-          rgba(255,255,255,.035) 1px,
-          transparent 1px
-        );
-
-      background-size: 45px 45px;
-      mask-image: linear-gradient(
-        to bottom,
-        black,
-        transparent 85%
-      );
-    }
-
-    /* =========================
-       NAVBAR
-    ========================== */
-
-    header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: 1000;
-
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-
-      background: rgba(5,11,20,.72);
-      border-bottom: 1px solid rgba(255,255,255,.08);
-    }
-
-    .nav {
-      max-width: 1180px;
-      margin: auto;
-      height: 76px;
-      padding: 0 22px;
-
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .brand {
-      font-size: 21px;
-      font-weight: 850;
-      letter-spacing: -.5px;
-    }
-
-    .brand span {
-      color: var(--primary);
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 26px;
-      align-items: center;
-    }
-
-    .nav-links a {
-      color: #c8d2df;
-      font-size: 14px;
-      font-weight: 650;
-      transition: .25s ease;
-    }
-
-    .nav-links a:hover {
-      color: white;
-    }
-
-    .nav-cta {
-      padding: 11px 17px;
-      border-radius: 12px;
-      background: linear-gradient(
-        135deg,
-        var(--primary),
-        var(--primary2)
-      ) !important;
-
-      color: white !important;
-      box-shadow: 0 10px 30px rgba(99,167,255,.2);
-    }
-
-    .menu-btn {
-      display: none;
-      border: 0;
-      background: transparent;
-      color: white;
-      font-size: 27px;
-      cursor: pointer;
-    }
-
-    /* =========================
-       GENERAL
-    ========================== */
-
-    section {
-      padding: 110px 22px;
-      scroll-margin-top: 70px;
-    }
-
-    .container {
-      max-width: 1180px;
-      margin: auto;
-    }
-
-    .eyebrow {
-      color: var(--primary);
-      text-transform: uppercase;
-      letter-spacing: 3px;
-      font-size: 12px;
-      font-weight: 800;
-      margin-bottom: 12px;
-    }
-
-    .section-title {
-      font-size: clamp(32px, 5vw, 52px);
-      line-height: 1.05;
-      letter-spacing: -2px;
-      margin-bottom: 16px;
-    }
-
-    .section-text {
-      color: var(--muted);
-      max-width: 650px;
-      font-size: 16px;
-    }
-
-    /* =========================
-       HERO
-    ========================== */
-
-    .hero {
-      min-height: 100vh;
-      padding-top: 145px;
-
-      display: flex;
-      align-items: center;
-    }
-
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1.15fr .85fr;
-      gap: 70px;
-      align-items: center;
-    }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 9px;
-
-      padding: 8px 13px;
-      border: 1px solid var(--border);
-      border-radius: 999px;
-
-      color: #cbd7e8;
-      background: rgba(255,255,255,.045);
-
-      font-size: 12px;
-      font-weight: 700;
-      margin-bottom: 22px;
-    }
-
-    .badge-dot {
-      width: 8px;
-      height: 8px;
-      background: var(--green);
-      border-radius: 50%;
-      box-shadow: 0 0 14px var(--green);
-    }
-
-    .hero h1 {
-      font-size: clamp(48px, 8vw, 88px);
-      line-height: .96;
-      letter-spacing: -5px;
-      max-width: 850px;
-    }
-
-    .gradient-text {
-      background:
-        linear-gradient(
-          110deg,
-          #fff,
-          #78b7ff,
-          #9b82ff
-        );
-
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-
-    .hero-description {
-      margin-top: 25px;
-      max-width: 680px;
-      color: var(--muted);
-      font-size: 18px;
-    }
-
-    .hero-buttons {
-      margin-top: 32px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 13px;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 9px;
-
-      padding: 14px 20px;
-      border-radius: 14px;
-
-      font-weight: 800;
-      font-size: 14px;
-
-      transition:
-        transform .25s ease,
-        box-shadow .25s ease,
-        border-color .25s ease;
-    }
-
-    .btn:hover {
-      transform: translateY(-3px);
-    }
-
-    .btn-primary {
-      background:
-        linear-gradient(
-          135deg,
-          var(--primary),
-          var(--primary2)
-        );
-
-      box-shadow:
-        0 16px 35px rgba(99,167,255,.2);
-    }
-
-    .btn-secondary {
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,.045);
-      color: white;
-    }
-
-    /* HERO CARD */
-
-    .hero-card {
-      position: relative;
-    }
-
-    .profile-card {
-      position: relative;
-      padding: 35px;
-
-      min-height: 480px;
-
-      border-radius: 32px;
-      border: 1px solid var(--border);
-
-      background:
-        linear-gradient(
-          145deg,
-          rgba(255,255,255,.10),
-          rgba(255,255,255,.025)
-        );
-
-      box-shadow: var(--shadow);
-      overflow: hidden;
-    }
-
-    .profile-card::before {
-      content: "";
-      position: absolute;
-      width: 250px;
-      height: 250px;
-      border-radius: 50%;
-
-      background: rgba(99,167,255,.2);
-      filter: blur(60px);
-
-      top: -90px;
-      right: -80px;
-    }
-
-    .avatar {
-      width: 125px;
-      height: 125px;
-
-      margin-bottom: 28px;
-
-      border-radius: 50%;
-
-      display: grid;
-      place-items: center;
-
-      font-size: 48px;
-      font-weight: 900;
-
-      background:
-        linear-gradient(
-          135deg,
-          rgba(99,167,255,.28),
-          rgba(140,108,255,.3)
-        );
-
-      border: 1px solid rgba(255,255,255,.15);
-    }
-
-    .profile-card h2 {
-      font-size: 31px;
-      margin-bottom: 7px;
-    }
-
-    .profile-role {
-      color: var(--primary);
-      font-weight: 750;
-    }
-
-    .profile-card p {
-      color: var(--muted);
-      margin-top: 20px;
-    }
-
-    .mini-stats {
-      display: grid;
-      grid-template-columns: repeat(3,1fr);
-      gap: 10px;
-      margin-top: 30px;
-    }
-
-    .mini-stat {
-      padding: 15px 10px;
-      text-align: center;
-
-      background: rgba(255,255,255,.045);
-      border: 1px solid var(--border);
-      border-radius: 15px;
-    }
-
-    .mini-stat strong {
-      display: block;
-      font-size: 20px;
-    }
-
-    .mini-stat span {
-      color: var(--muted);
-      font-size: 11px;
-    }
-
-    /* =========================
-       MARQUEE
-    ========================== */
-
-    .marquee {
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-
-      overflow: hidden;
-      white-space: nowrap;
-
-      padding: 17px 0;
-
-      background: rgba(255,255,255,.025);
-    }
-
-    .marquee-track {
-      display: inline-block;
-      animation: scroll 22s linear infinite;
-    }
-
-    .marquee span {
-      margin: 0 25px;
-      color: #8796aa;
-      font-size: 13px;
-      font-weight: 800;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
-
-    @keyframes scroll {
-      from {
-        transform: translateX(0);
-      }
-      to {
-        transform: translateX(-35%);
-      }
-    }
-
-    /* =========================
-       ABOUT
-    ========================== */
-
-    .about-grid {
-      display: grid;
-      grid-template-columns: .9fr 1.1fr;
-      gap: 70px;
-      align-items: start;
-    }
-
-    .about-card {
-      padding: 30px;
-
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      background: var(--card);
-
-      box-shadow: var(--shadow);
-    }
-
-    .about-card p {
-      color: var(--muted);
-      margin-bottom: 18px;
-    }
-
-    .info-list {
-      display: grid;
-      gap: 12px;
-      margin-top: 25px;
-    }
-
-    .info-item {
-      display: flex;
-      gap: 13px;
-      align-items: flex-start;
-
-      padding: 14px;
-
-      border: 1px solid var(--border);
-      border-radius: 15px;
-
-      background: rgba(255,255,255,.025);
-    }
-
-    .info-icon {
-      font-size: 20px;
-    }
-
-    .info-item strong {
-      display: block;
-      font-size: 13px;
-    }
-
-    .info-item span {
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    /* =========================
-       CARDS
-    ========================== */
-
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(3,1fr);
-      gap: 18px;
-      margin-top: 45px;
-    }
-
-    .card {
-      padding: 28px;
-
-      min-height: 220px;
-
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-
-      background:
-        linear-gradient(
-          145deg,
-          rgba(255,255,255,.075),
-          rgba(255,255,255,.025)
-        );
-
-      transition:
-        transform .3s ease,
-        border-color .3s ease;
-    }
-
-    .card:hover {
-      transform: translateY(-7px);
-      border-color: rgba(99,167,255,.45);
-    }
-
-    .card-number {
-      color: var(--primary);
-      font-size: 12px;
-      font-weight: 900;
-      letter-spacing: 2px;
-    }
-
-    .card h3 {
-      margin-top: 25px;
-      font-size: 21px;
-    }
-
-    .card p {
-      color: var(--muted);
-      margin-top: 10px;
-      font-size: 14px;
-    }
-
-    /* =========================
-       EXPERIENCE
-    ========================== */
-
-    .timeline {
-      margin-top: 50px;
-      border-left: 1px solid rgba(255,255,255,.16);
-      padding-left: 30px;
-    }
-
-    .timeline-item {
-      position: relative;
-      margin-bottom: 35px;
-      padding: 25px;
-
-      border: 1px solid var(--border);
-      border-radius: 20px;
-
-      background: rgba(255,255,255,.035);
-    }
-
-    .timeline-item::before {
-      content: "";
-      position: absolute;
-
-      width: 12px;
-      height: 12px;
-
-      border-radius: 50%;
-
-      background: var(--primary);
-      box-shadow: 0 0 20px rgba(99,167,255,.7);
-
-      left: -37px;
-      top: 31px;
-    }
-
-    .timeline-date {
-      color: var(--primary);
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-
-    .timeline-item h3 {
-      margin-top: 7px;
-      font-size: 21px;
-    }
-
-    .timeline-item p {
-      color: var(--muted);
-      margin-top: 8px;
-    }
-
-    /* =========================
-       COURSES
-    ========================== */
-
-    .course-card {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      min-height: 290px;
-    }
-
-    .course-tag {
-      display: inline-block;
-      padding: 6px 10px;
-      border-radius: 999px;
-
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: 1px;
-
-      background: rgba(99,167,255,.12);
-      color: #9cc9ff;
-    }
-
-    .course-card ul {
-      list-style: none;
-      margin-top: 17px;
-    }
-
-    .course-card li {
-      color: var(--muted);
-      font-size: 13px;
-      margin: 8px 0;
-    }
-
-    .course-card li::before {
-      content: "✓";
-      color: var(--green);
-      margin-right: 8px;
-      font-weight: 900;
-    }
-
-    /* =========================
-       ACHIEVEMENTS
-    ========================== */
-
-    .achievement-grid {
-      display: grid;
-      grid-template-columns: repeat(4,1fr);
-      gap: 15px;
-      margin-top: 45px;
-    }
-
-    .achievement {
-      padding: 28px 20px;
-      text-align: center;
-
-      border-radius: 20px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,.04);
-    }
-
-    .achievement .icon {
-      font-size: 30px;
-    }
-
-    .achievement h3 {
-      margin-top: 10px;
-      font-size: 17px;
-    }
-
-    .achievement p {
-      color: var(--muted);
-      font-size: 12px;
-      margin-top: 6px;
-    }
-
-    /* =========================
-       TESTIMONIAL
-    ========================== */
-
-    .quote {
-      margin-top: 45px;
-      padding: 38px;
-
-      border-radius: 28px;
-      border: 1px solid var(--border);
-
-      background:
-        linear-gradient(
-          135deg,
-          rgba(99,167,255,.08),
-          rgba(140,108,255,.06)
-        );
-
-      text-align: center;
-    }
-
-    .quote-mark {
-      font-size: 55px;
-      line-height: .6;
-      color: var(--primary);
-    }
-
-    .quote p {
-      max-width: 760px;
-      margin: 20px auto;
-      font-size: 20px;
-      color: #dce5f0;
-    }
-
-    .quote small {
-      color: var(--muted);
-    }
-
-    /* =========================
-       CONTACT
-    ========================== */
-
-    .contact-box {
-      margin-top: 45px;
-      padding: 50px;
-
-      border-radius: 30px;
-      border: 1px solid var(--border);
-
-      background:
-        radial-gradient(
-          circle at 100% 0%,
-          rgba(99,167,255,.12),
-          transparent 40%
-        ),
-        rgba(255,255,255,.035);
-
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 30px;
-    }
-
-    .contact-box h3 {
-      font-size: 30px;
-    }
-
-    .contact-box p {
-      color: var(--muted);
-      margin-top: 8px;
-    }
-
-    .contact-buttons {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .whatsapp {
-      background: #168b63;
-      box-shadow: 0 14px 30px rgba(22,139,99,.2);
-    }
-
-    /* =========================
-       FOOTER
-    ========================== */
-
-    footer {
-      padding: 35px 22px;
-      border-top: 1px solid var(--border);
-      color: var(--muted);
-    }
-
-    .footer-inner {
-      max-width: 1180px;
-      margin: auto;
-
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .footer-brand {
-      color: white;
-      font-weight: 800;
-    }
-
-    .footer-links {
-      display: flex;
-      gap: 20px;
-      font-size: 13px;
-    }
-
-    /* =========================
-       REVEAL ANIMATION
-    ========================== */
-
-    .reveal {
-      opacity: 0;
-      transform: translateY(25px);
-      transition: .7s ease;
-    }
-
-    .reveal.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* =========================
-       MOBILE
-    ========================== */
-
-    @media (max-width: 900px) {
-
-      .nav-links {
-        position: absolute;
-        top: 76px;
-        left: 15px;
-        right: 15px;
-
-        display: none;
-        flex-direction: column;
-        align-items: stretch;
-
-        padding: 15px;
-
-        border: 1px solid var(--border);
-        border-radius: 18px;
-
-        background: rgba(7,15,27,.96);
-        backdrop-filter: blur(20px);
-      }
-
-      .nav-links.active {
-        display: flex;
-      }
-
-      .nav-links a {
-        padding: 12px;
-      }
-
-      .menu-btn {
-        display: block;
-      }
-
-      .hero-grid,
-      .about-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .hero {
-        padding-top: 120px;
-      }
-
-      .profile-card {
-        min-height: auto;
-      }
-
-      .cards {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .achievement-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .contact-box {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-    }
-
-    @media (max-width: 600px) {
-
-      section {
-        padding: 80px 18px;
-      }
-
-      .nav {
-        padding: 0 18px;
-      }
-
-      .hero h1 {
-        font-size: 50px;
-        letter-spacing: -3px;
-      }
-
-      .hero-description {
-        font-size: 16px;
-      }
-
-      .profile-card {
-        padding: 25px;
-      }
-
-      .cards,
-      .achievement-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .timeline {
-        padding-left: 22px;
-      }
-
-      .timeline-item::before {
-        left: -29px;
-      }
-
-      .contact-box {
-        padding: 30px 22px;
-      }
-
-      .contact-box h3 {
-        font-size: 25px;
-      }
-
-      .footer-inner {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .footer-links {
-        flex-wrap: wrap;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tamal Debnath | Educator & Mentor</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;scroll-behavior:smooth}
+:root{
+  --bg:#050914;
+  --card:rgba(255,255,255,.07);
+  --border:rgba(255,255,255,.13);
+  --text:#fff;
+  --muted:#9ba8bc;
+  --blue:#00d9ff;
+  --purple:#735cff;
+  --green:#25d366;
+}
+body{
+  font-family:Arial,sans-serif;
+  color:var(--text);
+  background:
+  radial-gradient(circle at 10% 10%,rgba(115,92,255,.22),transparent 28%),
+  radial-gradient(circle at 90% 20%,rgba(0,217,255,.13),transparent 25%),
+  linear-gradient(135deg,#050914,#081321);
+  line-height:1.6;
+}
+a{text-decoration:none;color:inherit}
+.container{width:min(92%,1180px);margin:auto}
+
+header{
+  position:fixed;top:0;left:0;width:100%;z-index:999;
+  background:rgba(5,9,20,.8);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--border)
+}
+nav{
+  min-height:75px;display:flex;
+  justify-content:space-between;align-items:center
+}
+.logo{font-size:23px;font-weight:900}
+.logo span{color:var(--blue)}
+.nav-links{
+  display:flex;gap:24px;list-style:none;align-items:center
+}
+.nav-links a{font-size:14px;color:#cbd5e1;font-weight:700}
+.nav-btn{
+  padding:10px 17px;border-radius:999px;
+  background:linear-gradient(90deg,var(--purple),#4e8cff);
+  color:white!important
+}
+
+.hero{
+  min-height:100vh;display:flex;align-items:center;
+  padding:130px 0 70px
+}
+.hero-grid{
+  display:grid;grid-template-columns:1.1fr .9fr;
+  gap:65px;align-items:center
+}
+.badge{
+  display:inline-block;padding:8px 14px;border-radius:999px;
+  border:1px solid rgba(0,217,255,.3);
+  color:#8deaff;background:rgba(0,217,255,.06);
+  font-size:12px;font-weight:900;letter-spacing:1px;
+  margin-bottom:20px
+}
+h1{
+  font-size:clamp(45px,7vw,82px);
+  line-height:.98;letter-spacing:-4px
+}
+.gradient{
+  background:linear-gradient(90deg,#fff,var(--blue),#9c8cff);
+  -webkit-background-clip:text;
+  background-clip:text;color:transparent
+}
+.hero-text{
+  color:var(--muted);font-size:18px;
+  max-width:650px;margin-top:25px
+}
+.buttons{display:flex;flex-wrap:wrap;gap:13px;margin-top:30px}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:14px 20px;border-radius:14px;
+  font-size:14px;font-weight:800;transition:.25s
+}
+.btn:hover{transform:translateY(-3px)}
+.primary{
+  background:linear-gradient(90deg,var(--purple),#4e8cff);
+  box-shadow:0 15px 40px rgba(115,92,255,.25)
+}
+.secondary{background:var(--card);border:1px solid var(--border)}
+
+.profile{
+  padding:35px;border:1px solid var(--border);
+  border-radius:30px;background:var(--card);
+  box-shadow:0 30px 80px rgba(0,0,0,.3)
+}
+.avatar{
+  width:135px;height:135px;border-radius:50%;
+  display:grid;place-items:center;font-size:43px;font-weight:900;
+  background:linear-gradient(135deg,var(--purple),var(--blue));
+  margin-bottom:25px
+}
+.profile h2{font-size:31px}
+.profile p{color:var(--muted)}
+.stats{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:12px;margin-top:25px
+}
+.stat{
+  padding:17px;border-radius:16px;
+  background:rgba(255,255,255,.045);
+  border:1px solid var(--border)
+}
+.stat strong{display:block;font-size:23px}
+
+section{padding:100px 0}
+.heading{max-width:720px;margin-bottom:45px}
+.eyebrow{
+  color:var(--blue);font-size:12px;font-weight:900;
+  text-transform:uppercase;letter-spacing:2px
+}
+.heading h2{
+  font-size:clamp(32px,5vw,55px);
+  line-height:1.05;margin-top:9px
+}
+.heading p{color:var(--muted);margin-top:14px}
+
+.about{
+  display:grid;grid-template-columns:1fr 1fr;gap:20px
+}
+.glass{
+  padding:30px;border:1px solid var(--border);
+  border-radius:24px;background:var(--card)
+}
+.glass h3{font-size:24px;margin-bottom:12px}
+.glass p{color:var(--muted)}
+
+.learning-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:18px
+}
+.learning-card{
+  min-height:240px;padding:28px;border-radius:23px;
+  border:1px solid var(--border);background:var(--card);
+  transition:.3s;position:relative
+}
+.learning-card:hover{
+  transform:translateY(-8px);
+  border-color:rgba(0,217,255,.4)
+}
+.number{
+  position:absolute;right:20px;top:18px;color:#59677c
+}
+.icon{
+  width:55px;height:55px;border-radius:16px;
+  display:grid;place-items:center;font-size:25px;
+  background:rgba(115,92,255,.18);
+  border:1px solid var(--border);
+  margin-bottom:20px
+}
+.learning-card h3{font-size:21px;margin-bottom:8px}
+.learning-card p{color:var(--muted);font-size:14px}
+.more{
+  display:inline-block;margin-top:18px;
+  color:var(--blue);font-size:13px;font-weight:900
+}
+
+.subjects{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:18px
+}
+.subject{
+  padding:25px;border-radius:21px;
+  border:1px solid var(--border);background:var(--card)
+}
+.subject-icon{font-size:28px;margin-bottom:13px}
+.subject p{color:var(--muted);font-size:14px}
+
+.timeline{max-width:850px;position:relative}
+.timeline:before{
+  content:"";position:absolute;left:9px;top:0;bottom:0;
+  width:2px;background:linear-gradient(var(--purple),var(--blue))
+}
+.item{
+  position:relative;padding-left:45px;margin-bottom:35px
+}
+.dot{
+  position:absolute;left:0;top:6px;width:20px;height:20px;
+  border-radius:50%;background:var(--blue);
+  box-shadow:0 0 20px rgba(0,217,255,.7)
+}
+.date{color:var(--blue);font-size:12px;font-weight:900}
+.item h3{font-size:21px}
+.item p{color:var(--muted)}
+
+.achievements{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:15px
+}
+.achievement{
+  text-align:center;padding:28px 15px;
+  border-radius:20px;border:1px solid var(--border);
+  background:var(--card)
+}
+.achievement strong{display:block;font-size:35px}
+.achievement span{color:var(--muted);font-size:13px}
+
+.quote{
+  max-width:850px;margin:auto;text-align:center;
+  padding:45px 30px;border:1px solid var(--border);
+  border-radius:28px;background:var(--card)
+}
+.quote p{font-size:25px;font-weight:700}
+.quote small{display:block;color:var(--muted);margin-top:18px}
+
+.contact{
+  padding:45px;border-radius:30px;border:1px solid var(--border);
+  background:linear-gradient(120deg,rgba(115,92,255,.18),rgba(0,217,255,.07));
+  display:flex;justify-content:space-between;
+  align-items:center;gap:30px
+}
+.contact h2{font-size:clamp(30px,5vw,48px);line-height:1.05}
+.contact p{color:var(--muted);margin-top:10px}
+.whatsapp{background:var(--green);color:#04130a}
+
+footer{
+  border-top:1px solid var(--border);
+  padding:35px 0;text-align:center;
+  color:var(--muted);font-size:13px
+}
+
+@media(max-width:900px){
+  .hero-grid,.about{grid-template-columns:1fr}
+  .learning-grid,.subjects{grid-template-columns:repeat(2,1fr)}
+  .achievements{grid-template-columns:repeat(2,1fr)}
+  .nav-links{display:none}
+}
+@media(max-width:600px){
+  section{padding:75px 0}
+  .learning-grid,.subjects{grid-template-columns:1fr}
+  .contact{flex-direction:column;align-items:flex-start;padding:30px}
+  .contact .btn{width:100%}
+  h1{letter-spacing:-2.5px}
+}
+</style>
 </head>
 
 <body>
 
-  <!-- =========================
-       NAVIGATION
-  ========================== -->
-
-  <header>
-    <nav class="nav">
-
-      <a href="#home" class="brand">
-        Tamal<span>.</span>
-      </a>
-
-      <button
-        class="menu-btn"
-        id="menuBtn"
-        aria-label="Open menu"
-      >
-        ☰
-      </button>
-
-      <div class="nav-links" id="navLinks">
-        <a href="#home">Home</a>
-        <a href="#about">About</a>
-        <a href="#subjects">Subjects</a>
-        <a href="#experience">Experience</a>
-        <a href="#courses">Courses</a>
-        <a href="#contact" class="nav-cta">Contact</a>
-      </div>
-
-    </nav>
-  </header>
-
-
-  <!-- =========================
-       HERO
-  ========================== -->
+<header>
+<div class="container">
+<nav>
+<a href="#home" class="logo">Tamal<span>.</span></a>
 
-  <main>
+<ul class="nav-links">
+<li><a href="#about">About</a></li>
+<li><a href="#learning">Learning</a></li>
+<li><a href="#subjects">Subjects</a></li>
+<li><a href="#experience">Experience</a></li>
+<li><a href="#contact" class="nav-btn">Contact</a></li>
+</ul>
 
-    <section class="hero" id="home">
+</nav>
+</div>
+</header>
 
-      <div class="container hero-grid">
+
+<section class="hero" id="home">
+<div class="container">
+<div class="hero-grid">
+
+<div>
+<div class="badge">✦ EDUCATOR • MENTOR • TEACHER</div>
+
+<h1>
+Learn Better.<br>
+<span class="gradient">Think Bigger.</span>
+</h1>
+
+<p class="hero-text">
+Welcome to the professional portfolio of
+<strong>Tamal Debnath</strong> — a modern digital
+space for education, learning, mentorship and growth.
+</p>
+
+<div class="buttons">
+<a href="#learning" class="btn primary">
+Explore Learning →
+</a>
+
+<a href="https://wa.me/918014869813"
+target="_blank"
+class="btn secondary">
+💬 WhatsApp
+</a>
+</div>
+</div>
+
+
+<div class="profile">
 
-        <div class="reveal">
-
-          <div class="badge">
-            <span class="badge-dot"></span>
-            Available for Academic Guidance
-          </div>
-
-          <h1>
-            Learn with
-            <span class="gradient-text">
-              clarity.
-            </span>
-            Grow with
-            <span class="gradient-text">
-              purpose.
-            </span>
-          </h1>
-
-          <p class="hero-description">
-            Welcome to the official portfolio of
-            <strong>Tamal Debnath</strong> —
-            an educator and mentor focused on meaningful
-            learning, student guidance and academic growth.
-          </p>
-
-          <div class="hero-buttons">
-
-            <a
-              class="btn btn-primary"
-              href="#courses"
-            >
-              Explore Learning →
-            </a>
-
-            <a
-              class="btn btn-secondary"
-              href="https://wa.me/918014869813"
-              target="_blank"
-              rel="noopener"
-            >
-              💬 WhatsApp
-            </a>
-
-          </div>
-
-        </div>
-
-
-        <div class="hero-card reveal">
-
-          <div class="profile-card">
-
-            <div class="avatar">
-              TD
-            </div>
-
-            <h2>
-              Tamal Debnath
-            </h2>
-
-            <div class="profile-role">
-              Educator • Mentor
-            </div>
-
-            <p>
-              A professional digital space for teaching,
-              mentorship, educational resources and
-              student-focused learning.
-            </p>
-
-            <div class="mini-stats">
-
-              <div class="mini-stat">
-                <strong>01</strong>
-                <span>Educator</span>
-              </div>
-
-              <div class="mini-stat">
-                <strong>24/7</strong>
-                <span>Learning</span>
-              </div>
-
-              <div class="mini-stat">
-                <strong>∞</strong>
-                <span>Growth</span>
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- =========================
-         MARQUEE
-    ========================== -->
-
-    <div class="marquee">
-
-      <div class="marquee-track">
-
-        <span>Education</span>
-        <span>Mentorship</span>
-        <span>Academic Growth</span>
-        <span>Student Success</span>
-        <span>Knowledge</span>
-        <span>Education</span>
-        <span>Mentorship</span>
-        <span>Academic Growth</span>
-
-      </div>
-
-    </div>
-
-
-    <!-- =========================
-         ABOUT
-    ========================== -->
-
-    <section id="about">
-
-      <div class="container about-grid">
-
-        <div class="reveal">
-
-          <div class="eyebrow">
-            About
-          </div>
-
-          <h2 class="section-title">
-            Education that goes beyond the classroom.
-          </h2>
-
-          <p class="section-text">
-            The goal is simple: make learning easier to
-            understand, more engaging and more useful
-            for students.
-          </p>
-
-        </div>
-
-
-        <div class="about-card reveal">
-
-          <p>
-            Hello, I’m <strong>Tamal Debnath</strong>.
-          </p>
-
-          <p>
-            This website represents my professional
-            educational profile, teaching philosophy and
-            learning journey.
-          </p>
-
-          <p>
-            Here you can discover subjects, academic
-            support, courses, experience and ways to
-            connect.
-          </p>
-
-          <div class="info-list">
-
-            <div class="info-item">
-              <div class="info-icon">🎓</div>
-              <div>
-                <strong>Teaching</strong>
-                <span>
-                  Student-focused academic learning
-                </span>
-              </div>
-            </div>
-
-            <div class="info-item">
-              <div class="info-icon">🧠</div>
-              <div>
-                <strong>Mentorship</strong>
-                <span>
-                  Guidance and learning support
-                </span>
-              </div>
-            </div>
-
-            <div class="info-item">
-              <div class="info-icon">🚀</div>
-              <div>
-                <strong>Growth</strong>
-                <span>
-                  Building skills and confidence
-                </span>
-              </div>
-            </div>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- =========================
-         SUBJECTS
-    ========================== -->
-
-    <section id="subjects">
-
-      <div class="container">
-
-        <div class="reveal">
-
-          <div class="eyebrow">
-            Expertise
-          </div>
-
-          <h2 class="section-title">
-            Subjects & Focus Areas
-          </h2>
-
-          <p class="section-text">
-            Replace these sections with Tamal Debnath’s
-            actual subjects and teaching specializations.
-          </p>
-
-        </div>
-
-
-        <div class="cards">
-
-          <article class="card reveal">
-
-            <div class="card-number">
-              01
-            </div>
-
-            <h3>
-              Main Subject
-            </h3>
-
-            <p>
-              Add the primary subject taught by
-              Tamal Debnath here.
-            </p>
-
-          </article>
-
-
-          <article class="card reveal">
-
-            <div class="card-number">
-              02
-            </div>
-
-            <h3>
-              Subject / Expertise
-            </h3>
-
-            <p>
-              Add another genuine subject or area
-              of academic expertise here.
-            </p>
-
-          </article>
-
-
-          <article class="card reveal">
-
-            <div class="card-number">
-              03
-            </div>
-
-            <h3>
-              Mentorship
-            </h3>
-
-            <p>
-              Student guidance, academic support
-              and personal development.
-            </p>
-
-          </article>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- =========================
-         EXPERIENCE
-    ========================== -->
-
-    <section id="experience">
-
-      <div class="container">
-
-        <div class="reveal">
-
-          <div class="eyebrow">
-            Career
-          </div>
-
-          <h2 class="section-title">
-            Teaching Experience
-          </h2>
-
-          <p class="section-text">
-            Add verified teaching positions,
-            institutions and dates here.
-          </p>
-
-        </div>
-
-
-        <div class="timeline">
-
-          <div class="timeline-item reveal">
-
-            <div class="timeline-date">
-              Experience 01
-            </div>
-
-            <h3>
-              Professional Teaching Experience
-            </h3>
-
-            <p>
-              Add institution, role, subjects and
-              responsibilities here.
-            </p>
-
-          </div>
-
-
-          <div class="timeline-item reveal">
-
-            <div class="timeline-date">
-              Experience 02
-            </div>
-
-            <h3>
-              Academic Mentorship
-            </h3>
-
-            <p>
-              Add genuine mentorship experience,
-              student support and academic work.
-            </p>
-
-          </div>
-
-
-          <div class="timeline-item reveal">
-
-            <div class="timeline-date">
-              Experience 03
-            </div>
-
-            <h3>
-              Educational Projects
-            </h3>
-
-            <p>
-              Add relevant educational projects,
-              workshops or initiatives.
-            </p>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- =========================
-         COURSES
-    ========================== -->
-
-    <section id="courses">
-
-      <div class="container">
-
-        <div class="reveal">
-
-          <div class="eyebrow">
-            Learning
-          </div>
-
-          <h2 class="section-title">
-            Courses & Programs
-          </h2>
-
-          <p class="section-text">
-            A premium section for your real courses,
-            classes or learning programs.
-          </p>
-
-        </div>
-
-
-        <div class="cards">
-
-          <article class="card course-card reveal">
-
-            <div>
-
-              <span class="course-tag">
-                FOUNDATION
-              </span>
-
-              <h3>
-                Foundation Learning
-              </h3>
-
-              <ul>
-                <li>Concept-focused learning</li>
-                <li>Structured lessons</li>
-                <li>Practice & revision</li>
-              </ul>
-
-            </div>
-
-            <a
-              class="btn btn-secondary"
-              href="https://wa.me/918014869813"
-              target="_blank"
-              rel="noopener"
-            >
-              Enquire on WhatsApp
-            </a>
-
-          </article>
-
-
-          <article class="card course-card reveal">
-
-            <div>
-
-              <span class="course-tag">
-                ADVANCED
-              </span>
-
-              <h3>
-                Advanced Learning
-              </h3>
-
-              <ul>
-                <li>Deep concept building</li>
-                <li>Problem solving</li>
-                <li>Academic guidance</li>
-              </ul>
-
-            </div>
-
-            <a
-              class="btn btn-secondary"
-              href="https://wa.me/918014869813"
-              target="_blank"
-              rel="noopener"
-            >
-              Enquire on WhatsApp
-            </a>
-
-          </article>
-
-
-          <article class="card course-card reveal">
-
-            <div>
-
-              <span class="course-tag">
-                MENTORSHIP
-              </span>
-
-              <h3>
-                Personal Guidance
-              </h3>
-
-              <ul>
-                <li>Study planning</li>
-                <li>Academic support</li>
-                <li>Progress guidance</li>
-              </ul>
-
-            </div>
-
-            <a
-              class="btn btn-secondary"
-              href="https://wa.me/918014869813"
-              target="_blank"
-              rel="noopener"
-            >
-              Enquire on WhatsApp
-            </a>
-
-          </article>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- =========================
-         ACHIEVEMENTS
-    ========================== -->
-
-    <section id="achievements">
-
-      <div class="container">
-
-        <div class="reveal">
-
-          <div class="eyebrow">
-            Highlights
-          </div>
-
-          <h2 class="section-title">
-            Professional Highlights
-          </h2>
-
-          <p class="section-text">
-            Replace these with real achievements,
-            certifications or milestones.
-          </p>
-
-        </div>
-
-
-        <div class="achievement-grid">
-
-          <div class="achievement reveal">
-            <div class="icon">🎓</div>
-            <h3>Education</h3>
-            <p>Verified qualification</p>
-          </div>
-
-          <div class="achievement reveal">
-            <div class="icon">🏆</div>
-            <h3>Achievement</h3>
-            <p>Verified milestone</p>
-          </div>
-
-          <div class="achievement reveal">
-            <div class="icon">📚</div>
-            <h3>Learning</h3>
-            <p>Academic development</p>
-          </div>
-
-          <div class="achievement reveal">
-            <div class="icon">⭐</div>
-            <h3>Recognition</h3>
-            <p>Verified recognition</p>
-          </div>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- =========================
-         TESTIMONIAL
-    ========================== -->
-
-    <section>
-
-      <div class="container">
-
-        <div class="quote reveal">
-
-          <div class="quote-mark">
-            “
-          </div>
-
-          <p>
-            Great education is not only about
-            remembering information. It is about
-            understanding ideas, asking better questions
-            and becoming confident enough to learn.
-          </p>
-
-          <small>
-            — Teaching Philosophy
-          </small>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- =========================
-         CONTACT
-    ========================== -->
-
-    <section id="contact">
-
-      <div class="container">
-
-        <div class="contact-box reveal">
-
-          <div>
-
-            <div class="eyebrow">
-              Contact
-            </div>
-
-            <h3>
-              Let’s connect.
-            </h3>
-
-            <p>
-              For academic enquiries, mentorship or
-              professional communication, get in touch.
-            </p>
-
-          </div>
-
-
-          <div class="contact-buttons">
-
-            <a
-              class="btn whatsapp"
-              href="https://wa.me/918014869813"
-              target="_blank"
-              rel="noopener"
-            >
-              💬 WhatsApp
-            </a>
-
-            <a
-              class="btn btn-secondary"
-              href="tel:+918014869813"
-            >
-              📞 Call
-            </a>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </section>
-
-  </main>
-
-
-  <!-- =========================
-       FOOTER
-  ========================== -->
-
-  <footer>
-
-    <div class="footer-inner">
-
-      <div>
-        <div class="footer-brand">
-          Tamal Debnath
-        </div>
-
-        <small>
-          Educator & Mentor
-        </small>
-      </div>
-
-      <div class="footer-links">
-
-        <a href="#home">
-          Home
-        </a>
-
-        <a href="#about">
-          About
-        </a>
-
-        <a href="#contact">
-          Contact
-        </a>
-
-      </div>
-
-      <small>
-        © <span id="year"></span> Tamal Debnath
-      </small>
-
-    </div>
-
-  </footer>
-
-
-  <!-- =========================
-       JAVASCRIPT
-  ========================== -->
-
-  <script>
-
-    /* Mobile menu */
-
-    const menuBtn =
-      document.getElementById("menuBtn");
-
-    const navLinks =
-      document.getElementById("navLinks");
-
-    menuBtn.addEventListener("click", () => {
-      navLinks.classList.toggle("active");
-    });
-
-
-    /* Close mobile menu after click */
-
-    document
-      .querySelectorAll(".nav-links a")
-      .forEach(link => {
-
-        link.addEventListener("click", () => {
-          navLinks.classList.remove("active");
-        });
-
-      });
-
-
-    /* Reveal animation */
-
-    const observer =
-      new IntersectionObserver(
-        entries => {
-
-          entries.forEach(entry => {
-
-            if (entry.isIntersecting) {
-
-              entry.target.classList.add("show");
-
-              observer.unobserve(entry.target);
-
-            }
-
-          });
-
-        },
-        {
-          threshold: 0.12
-        }
-      );
-
-
-    document
-      .querySelectorAll(".reveal")
-      .forEach(element => {
-
-        observer.observe(element);
-
-      });
-
-
-    /* Current year */
-
-    document.getElementById("year").textContent =
-      new Date().getFullYear();
-
-  </script>
-
-</body>
-</html>
+<div class="avatar">TD</div>
+
+<h2>Tamal Debnath</h2>
+<p>Educator & Mentor</p>
+
+<div class="stats">
+
+<div class="stat">
+<strong>🎓</strong>
+Learning
+</div>
+
+<div class="stat">
+<strong>💡</strong>
+Knowledge
+</div>
+
+<div class="stat">
+<strong>🚀</strong>
+Growth
+</div>
+
+<div class="stat">
+<strong>∞</strong>
+Possibility
+</div>
+
+</div>
+
+</div>
+
+</div>
+</div>
+</section>
+
+
+<section id="about">
+<div class="container">
+
+<div class="heading">
+<div class="eyebrow">01 — About</div>
+
+<h2>
+Education with
+<span class="gradient">purpose.</span>
+</h2>
+
+<p>
+A professional introduction to Tamal Debnath's
+teaching philosophy and approach.
+</p>
+</div>
+
+<div class="about">
+
+<div class="glass">
+<h3>Who I Am</h3>
+<p>
+I am Tamal Debnath, an educator and mentor focused
+on creating a positive learning environment and
+helping students build confidence and understanding.
+</p>
+</div>
+
+<div class="glass">
+<h3>My Approach</h3>
+<p>
+Learning becomes meaningful when concepts are clear,
+questions are encouraged and students are motivated
+to think independently.
+</p>
+</div>
+
+</div>
+</div>
+</section>
+
+
+<section id="learning">
+<div class="container">
+
+<div class="heading">
+<div class="eyebrow">02 — Explore Learning</div>
+
+<h2>
+Discover.
+<span class="gradient">Learn.</span>
+Grow.
+</h2>
+
+<p>
+Explore different learning areas and discover
+opportunities for knowledge and personal development.
+</p>
+</div>
+
+<div class="learning-grid">
+
+
+<a href="#subjects" class="learning-card">
+<span class="number">01</span>
+<div class="icon">📚</div>
+<h3>Subjects</h3>
+<p>
+Explore academic subjects, concepts and
+learning areas.
+</p>
+<span class="more">Explore Subjects →</span>
+</a>
+
+
+<a href="#experience" class="learning-card">
+<span class="number">02</span>
+<div class="icon">🎓</div>
+<h3>Teaching Journey</h3>
+<p>
+Discover teaching experience, mentorship
+and professional development.
+</p>
+<span class="more">View Journey →</span>
+</a>
+
+
+<a href="#contact" class="learning-card">
+<span class="number">03</span>
+<div class="icon">💬</div>
+<h3>Ask & Connect</h3>
+<p>
+Have a question? Start a direct conversation
+with Tamal.
+</p>
+<span class="more">Contact →</span>
+</a>
+
+
+<a href="#about" class="learning-card">
+<span class="number">04</span>
+<div class="icon">🧠</div>
+<h3>Concept Building</h3>
+<p>
+Build strong foundations through clear
+conceptual understanding.
+</p>
+<span class="more">Learn More →</span>
+</a>
+
+
+<a href="#about" class="learning-card">
+<span class="number">05</span>
+<div class="icon">🚀</div>
+<h3>Skill Development</h3>
+<p>
+Develop confidence, creativity and
+lifelong learning habits.
+</p>
+<span class="more">Discover →</span>
+</a>
+
+
+<a href="#contact" class="learning-card">
+<span class="number">06</span>
+<div class="icon">✨</div>
+<h3>Future Opportunities</h3>
+<p>
+Connect for educational discussions,
+ideas and collaboration.
+</p>
+<span class="more">Get in Touch →</span>
+</a>
+
+</div>
+</div>
+</section>
+
+
+<section id="subjects">
+<div class="container">
+
+<div class="heading">
+<div class="eyebrow">03 — Subjects</div>
+
+<h2>
+Learning
+<span class="gradient">Areas.</span>
+</h2>
+
+<p>
+These are placeholders. Replace them with Tamal's
+actual subjects.
+</p>
+</div>
+
+<div class="subjects">
+
+<div class="subject">
+<div class="subject-icon">📘</div>
+<h3>Main Subject</h3>
+<p>Add the primary subject taught by Tamal here.</p>
+</div>
+
+<div class="subject">
+<div class="subject-icon">🧮</div>
+<h3>Academic Learning</h3>
+<p>Add another academic subject here.</p>
+</div>
+
+<div class="subject">
+<div class="subject-icon">🧠</div>
+<h3>Concept Building</h3>
+<p>Clear explanations and strong foundations.</p>
+</div>
+
+<div class="subject">
+<div class="subject-icon">💡</div>
+<h3>Problem Solving</h3>
+<p>Logical thinking and practical understanding.</p>
+</div>
+
+<div class="subject">
+<div class="subject-icon">🎯</div>
+<h3>Student Guidance</h3>
+<p>Academic guidance and student support.</p>
+</div>
+
+<div class="subject">
+<div class="subject-icon">🚀</div>
+<h3>Personal Growth</h3>
+<p>Confidence and continuous development.</p>
+</div>
+
+</div>
+</div>
+</section>
+
+
+<section id="experience">
+<div class="container">
+
+<div class="heading">
+<div class="eyebrow">04 — Experience</div>
+
+<h2>
+Teaching
+<span class="gradient">Journey.</span>
+</h2>
+
+<p>
+Add Tamal's verified institutions, positions and
+professional experience here.
+</p>
+</div>
+
+<div class="timeline">
+
+<div class="item">
+<div class="dot"></div>
+<div class="date">TEACHING</div>
+<h3>Professional Teaching Experience</h3>
+<p>
+Add actual institution, teaching role,
+responsibilities and dates here.
+</p>
+</div>
+
+<div class="item">
+<div class="dot"></div>
+<div class="date">MENTORSHIP</div>
+<h3>Student Mentorship</h3>
+<p>
+Add verified information about student guidance
+and academic support.
+</p>
+</div>
+
+<div class="item">
+<div class="dot"></div>
+<div class="date">DEVELOPMENT</div>
+<h3>Professional Development</h3>
+<p>
+Add real certifications, workshops and
+professional development activities here.
+</p>
+</div>
+
+</div>
+</div>
+</section>
+
+
+<section>
+<div class="container">
+
+<div class="heading">
+<div class="eyebrow">05 — Highlights</div>
+
+<h2>
+Built around
+<span class
