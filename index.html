@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Tamal Debnath | Educator & Mentor</title>
+
+<meta name="description" content="Official professional portfolio website of Tamal Debnath, Educator and Mentor.">
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f7f8fc;
+    color: #151827;
+    line-height: 1.6;
+}
+
+header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid #e8e8ee;
+}
+
+nav {
+    max-width: 1150px;
+    margin: auto;
+    height: 75px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 25px;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: 800;
+}
+
+.logo span {
+    color: #5b5ff0;
+}
+
+nav a {
+    text-decoration: none;
+    color: #333647;
+    margin-left: 22px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+nav a:hover {
+    color: #5b5ff0;
+}
+
+.hero {
+    min-height: 100vh;
+    padding: 150px 25px 80px;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(135deg, #f7f8ff, #eef0ff);
+}
+
+.hero-inner {
+    max-width: 1150px;
+    width: 100%;
+    margin: auto;
+    display: grid;
+    grid-template-columns: 1.3fr .7fr;
+    gap: 60px;
+    align-items: center;
+}
+
+.badge {
+    display: inline-block;
+    padding: 8px 15px;
+    background: #ffffff;
+    border: 1px solid #dedfff;
+    border-radius: 30px;
+    color: #5558dc;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+h1 {
+    font-size: clamp(45px, 7vw, 78px);
+    line-height: 1.05;
+    letter-spacing: -3px;
+    margin-bottom: 22px;
+}
+
+h1 span {
+    color: #5b5ff0;
+}
+
+.hero p {
+    max-width: 620px;
+    font-size: 18px;
+    color: #666b7d;
+    margin-bottom: 30px;
+}
+
+.buttons {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    display: inline-block;
+    padding: 14px 23px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: .3s;
+}
+
+.primary {
+    background: #151827;
+    color: white;
+}
+
+.primary:hover {
+    transform: translateY(-3px);
+}
+
+.secondary {
+    background: white;
+    color: #151827;
+    border: 1px solid #dddfea;
+}
+
+.profile-card {
+    background: white;
+    border-radius: 28px;
+    padding: 15px;
+    box-shadow: 0 25px 70px rgba(30,35,80,.12);
+    transform: rotate(2deg);
+}
+
+.profile-photo {
+    height: 390px;
+    border-radius: 20px;
+    background: linear-gradient(145deg,#dfe2ff,#ffffff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #656a7d;
+    font-weight: 700;
+}
+
+section {
+    padding: 100px 25px;
+}
+
+.container {
+    max-width: 1050px;
+    margin: auto;
+}
+
+.section-title {
+    margin-bottom: 45px;
+}
+
+.section-title small {
+    color: #5b5ff0;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.section-title h2 {
+    font-size: 42px;
+    margin-top: 8px;
+}
+
+.about {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 50px;
+}
+
+.about p {
+    color: #666b7d;
+    font-size: 17px;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 20px;
+}
+
+.card {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    border: 1px solid #e8e9f0;
+    transition: .3s;
+}
+
+.card:hover {
+    transform: translateY(-7px);
+    box-shadow: 0 15px 40px rgba(30,35,80,.08);
+}
+
+.card h3 {
+    margin-bottom: 10px;
+}
+
+.card p {
+    color: #707486;
+}
+
+.timeline {
+    border-left: 2px solid #dfe1ee;
+    padding-left: 25px;
+}
+
+.timeline-item {
+    margin-bottom: 35px;
+}
+
+.timeline-item h3 {
+    margin-bottom: 5px;
+}
+
+.timeline-item p {
+    color: #6d7181;
+}
+
+.highlight {
+    background: #151827;
+    color: white;
+}
+
+.highlight .section-title small {
+    color: #aeb1ff;
+}
+
+.achievement-grid {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 20px;
+}
+
+.achievement {
+    padding: 30px;
+    border: 1px solid #34384d;
+    border-radius: 20px;
+}
+
+.achievement p {
+    color: #b8bdcf;
+}
+
+.contact-box {
+    background: white;
+    border: 1px solid #e5e6ee;
+    border-radius: 25px;
+    padding: 45px;
+    text-align: center;
+}
+
+.contact-box p {
+    color: #6c7080;
+    margin: 12px auto 25px;
+    max-width: 600px;
+}
+
+footer {
+    padding: 35px 20px;
+    text-align: center;
+    background: #0f111b;
+    color: #aeb2c2;
+}
+
+@media(max-width: 800px) {
+    nav {
+        height: 65px;
+    }
+
+    nav .links {
+        display: none;
+    }
+
+    .hero-inner,
+    .about {
+        grid-template-columns: 1fr;
+    }
+
+    .hero {
+        padding-top: 120px;
+    }
+
+    .profile-card {
+        max-width: 420px;
+        margin: auto;
+    }
+
+    .cards,
+    .achievement-grid {
+        grid-template-columns: 1fr;
+    }
+
+    h1 {
+        letter-spacing: -2px;
+    }
+
+    .section-title h2 {
+        font-size: 34px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<nav>
+    <div class="logo">Tamal<span>.</span></div>
+
+    <div class="links">
+        <a href="#about">About</a>
+        <a href="#expertise">Expertise</a>
+        <a href="#experience">Experience</a>
+        <a href="#achievements">Achievements</a>
+        <a href="#education">Education</a>
+        <a href="#contact">Contact</a>
+    </div>
+</nav>
+</header>
+
+<main>
+
+<section class="hero">
+<div class="hero-inner">
+
+<div>
+    <div class="badge">EDUCATOR • MENTOR • TEACHER</div>
+
+    <h1>
+        Inspiring minds.<br>
+        Building <span>futures.</span>
+    </h1>
+
+    <p>
+        Welcome to the official professional website of
+        <strong>Tamal Debnath</strong> — dedicated to meaningful
+        education, mentorship and student development.
+    </p>
+
+    <div class="buttons">
+        <a class="btn primary" href="#about">Explore Profile</a>
+        <a class="btn secondary" href="#contact">Contact Me</a>
+    </div>
+</div>
+
+<div class="profile-card">
+    <div class="profile-photo">
+        YOUR PROFESSIONAL PHOTO<br>
+        CAN BE ADDED HERE
+    </div>
+</div>
+
+</div>
+</section>
+
+
+<section id="about">
+<div class="container">
+
+<div class="section-title">
+    <small>About</small>
+    <h2>About Tamal Debnath</h2>
+</div>
+
+<div class="about">
+<div>
+    <p>
+        Tamal Debnath is an educator committed to creating a
+        positive, engaging and student-focused learning environment.
+    </p>
+</div>
+
+<div>
+    <p>
+        Through teaching and mentorship, the goal is to help students
+        develop strong knowledge, confidence, curiosity and lifelong
+        learning skills.
+    </p>
+</div>
+</div>
+
+</div>
+</section>
+
+
+<section id="expertise">
+<div class="container">
+
+<div class="section-title">
+    <small>Expertise</small>
+    <h2>Subjects & Expertise</h2>
+</div>
+
+<div class="cards">
+
+<div class="card">
+    <h3>Subject 01</h3>
+    <p>Add the main subject taught by Tamal Debnath here.</p>
+</div>
+
+<div class="card">
+    <h3>Subject 02</h3>
+    <p>Add another subject or area of expertise here.</p>
+</div>
+
+<div class="card">
+    <h3>Mentorship</h3>
+    <p>Student guidance, academic support and personal development.</p>
+</div>
+
+</div>
+</div>
+</section>
+
+
+<section id="experience">
+<div class="container">
+
+<div class="section-title">
+    <small>Career</small>
+    <h2>Teaching Experience</h2>
+</div>
+
+<div class="timeline">
+
+<div class="timeline-item">
+    <h3>Professional Teaching Experience</h3>
+    <p>
+        Add the school/institution name, teaching position and
+        years of experience here.
+    </p>
+</div>
+
+<div class="timeline-item">
+    <h3>Student Mentorship</h3>
+    <p>
+        Add details about mentoring, academic guidance or
+        student activities here.
+    </p>
+</div>
+
+</div>
+</div>
+</section>
+
+
+<section id="achievements" class="highlight">
+<div class="container">
+
+<div class="section-title">
+    <small>Recognition</small>
+    <h2>Achievements</h2>
+</div>
+
+<div class="achievement-grid">
+
+<div class="achievement">
+    <h3>Achievement 01</h3>
+    <p>Add an award, recognition or professional achievement.</p>
+</div>
+
+<div class="achievement">
+    <h3>Achievement 02</h3>
+    <p>Add another important achievement here.</p>
+</div>
+
+<div class="achievement">
+    <h3>Achievement 03</h3>
+    <p>Add certification, award or educational milestone.</p>
+</div>
+
+</div>
+</div>
+</section>
+
+
+<section id="education">
+<div class="container">
+
+<div class="section-title">
+    <small>Education</small>
+    <h2>Qualifications</h2>
+</div>
+
+<div class="cards">
+
+<div class="card">
+    <h3>Degree / Qualification</h3>
+    <p>Add qualification details and institution name.</p>
+</div>
+
+<div class="card">
+    <h3>Certification</h3>
+    <p>Add professional certification or training details.</p>
+</div>
+
+<div class="card">
+    <h3>Professional Development</h3>
+    <p>Add workshops, courses or other educational achievements.</p>
+</div>
+
+</div>
+</div>
+</section>
+
+
+<section id="resources">
+<div class="container">
+
+<div class="section-title">
+    <small>For Students</small>
+    <h2>Student Resources</h2>
+</div>
+
+<div class="cards">
+
+<div class="card">
+    <h3>Study Materials</h3>
+    <p>Notes, learning materials and useful academic resources.</p>
+</div>
+
+<div class="card">
+    <h3>Assignments</h3>
+    <p>Important assignments and academic activities.</p>
+</div>
+
+<div class="card">
+    <h3>Useful Links</h3>
+    <p>Helpful educational websites and learning resources.</p>
+</div>
+
+</div>
+</div>
+</section>
+
+
+<section id="contact">
+<div class="container">
+
+<div class="contact-box">
+
+<div class="section-title">
+    <small>Get In Touch</small>
+    <h2>Contact Tamal Debnath</h2>
+</div>
+
+<p>
+    For professional, academic or educational enquiries,
+    please use the contact details provided below.
+</p>
+
+<a class="btn primary" href="mailto:YOUR-EMAIL@example.com">
+    Send an Email
+</a>
+
+</div>
+</div>
+</section>
+
+</main>
+
+<footer>
+    © 2026 Tamal Debnath. All Rights Reserved.
+</footer>
+
+</body>
+</html>
