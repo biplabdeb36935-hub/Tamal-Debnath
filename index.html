@@ -1,3558 +1,2208 @@
+{
+  "name": "tamal-learning-platform",
+  "version": "1.0.0",
+  "description": "TAMAL Learning Platform",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "better-sqlite3": "^11.3.0",
+    "express": "^4.21.1",
+    "express-session": "^1.18.1",
+    "qrcode": "^1.5.4"
+  }
+}const express = require("express");
+const session = require("express-session");
+const bcrypt = require("bcryptjs");
+const Database = require("better-sqlite3");
+const QRCode = require("qrcode");
+const path = require("path");
+const fs = require("fs");
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+/* =========================================================
+   TAMAL LEARNING PLATFORM
+   One-file connected learning platform
+   Student + Teacher + Courses + Payments + UPI + Live
+   ========================================================= */
+
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "CHANGE_THIS_SECRET_IN_REPLIT",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+      httpOnly: true,
+      sameSite: "lax"
+    }
+  })
+);
+
+/* =========================================================
+   DATABASE
+   ========================================================= */
+
+const db = new Database("tamal.db");
+
+db.pragma("journal_mode = WAL");
+
+db.exec(`
+CREATE TABLE IF NOT EXISTS settings (
+  id INTEGER PRIMARY KEY CHECK(id = 1),
+  platform_name TEXT DEFAULT 'TAMAL',
+  founder_name TEXT DEFAULT 'Founder',
+  founder_role TEXT DEFAULT 'Founder & Lead Educator',
+  founder_bio TEXT DEFAULT 'Learn. Practice. Master.',
+  founder_photo TEXT DEFAULT '/founder.jpg',
+  teacher_name TEXT DEFAULT 'TAMAL Teacher',
+  teacher_phone TEXT DEFAULT '',
+  teacher_email TEXT DEFAULT '',
+  upi_id TEXT DEFAULT '',
+  upi_name TEXT DEFAULT 'TAMAL',
+  whatsapp TEXT DEFAULT '',
+  google_map TEXT DEFAULT '',
+  instagram TEXT DEFAULT '',
+  youtube TEXT DEFAULT ''
+);
+
+CREATE TABLE IF NOT EXISTS teachers (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  email TEXT UNIQUE NOT NULL,
+  phone TEXT,
+  password TEXT NOT NULL,
+  active INTEGER DEFAULT 1,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS students (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  email TEXT UNIQUE NOT NULL,
+  phone TEXT,
+  password TEXT NOT NULL,
+  class_name TEXT,
+  school TEXT,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS courses (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  title TEXT NOT NULL,
+  description TEXT,
+  category TEXT,
+  mode TEXT DEFAULT 'ONLINE',
+  price REAL DEFAULT 0,
+  duration TEXT,
+  thumbnail TEXT,
+  syllabus TEXT,
+  teacher_id INTEGER,
+  published INTEGER DEFAULT 1,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY(teacher_id) REFERENCES teachers(id)
+);
+
+CREATE TABLE IF NOT EXISTS enrollments (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  student_id INTEGER NOT NULL,
+  course_id INTEGER NOT NULL,
+  mode TEXT DEFAULT 'ONLINE',
+  status TEXT DEFAULT 'ACTIVE',
+  start_date TEXT DEFAULT CURRENT_TIMESTAMP,
+  expiry_date TEXT,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(student_id, course_id),
+  FOREIGN KEY(student_id) REFERENCES students(id),
+  FOREIGN KEY(course_id) REFERENCES courses(id)
+);
+
+CREATE TABLE IF NOT EXISTS payments (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  student_id INTEGER NOT NULL,
+  course_id INTEGER NOT NULL,
+  amount REAL NOT NULL,
+  mode TEXT DEFAULT 'UPI',
+  utr TEXT,
+  status TEXT DEFAULT 'PENDING',
+  note TEXT,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+  verified_at TEXT,
+  FOREIGN KEY(student_id) REFERENCES students(id),
+  FOREIGN KEY(course_id) REFERENCES courses(id)
+);
+
+CREATE TABLE IF NOT EXISTS batches (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  title TEXT NOT NULL,
+  course_id INTEGER,
+  start_date TEXT,
+  class_time TEXT,
+  days TEXT,
+  mode TEXT DEFAULT 'ONLINE',
+  meeting_link TEXT,
+  capacity INTEGER DEFAULT 50,
+  status TEXT DEFAULT 'UPCOMING',
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS live_classes (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  title TEXT NOT NULL,
+  course_id INTEGER,
+  start_at TEXT NOT NULL,
+  duration INTEGER DEFAULT 60,
+  meeting_link TEXT,
+  status TEXT DEFAULT 'SCHEDULED',
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS posts (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  teacher_id INTEGER,
+  title TEXT NOT NULL,
+  content TEXT,
+  image_url TEXT,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS branches (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  address TEXT,
+  phone TEXT,
+  google_map TEXT,
+  timing TEXT,
+  active INTEGER DEFAULT 1
+);
+
+CREATE TABLE IF NOT EXISTS lessons (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  course_id INTEGER NOT NULL,
+  title TEXT NOT NULL,
+  description TEXT,
+  video_url TEXT,
+  position INTEGER DEFAULT 0,
+  published INTEGER DEFAULT 1
+);
+
+CREATE TABLE IF NOT EXISTS progress (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  student_id INTEGER NOT NULL,
+  lesson_id INTEGER NOT NULL,
+  completed INTEGER DEFAULT 0,
+  position REAL DEFAULT 0,
+  updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(student_id, lesson_id)
+);
+
+CREATE TABLE IF NOT EXISTS messages (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  student_id INTEGER,
+  teacher_id INTEGER,
+  sender_role TEXT NOT NULL,
+  message TEXT NOT NULL,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+  read_status INTEGER DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS notifications (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  student_id INTEGER,
+  teacher_id INTEGER,
+  title TEXT NOT NULL,
+  body TEXT,
+  read_status INTEGER DEFAULT 0,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+`);
+
+/* =========================================================
+   DEFAULT DATA
+   ========================================================= */
+
+const settingExists = db
+  .prepare("SELECT id FROM settings WHERE id = 1")
+  .get();
+
+if (!settingExists) {
+  db.prepare(`
+    INSERT INTO settings
+    (id, platform_name, founder_name, founder_role, founder_bio,
+     teacher_name, teacher_phone, teacher_email, upi_id, upi_name)
+    VALUES
+    (1, 'TAMAL', 'Founder', 'Founder & Lead Educator',
+     'Learn. Practice. Master.',
+     'TAMAL Teacher', '', '', '', 'TAMAL')
+  `).run();
+}
+
+/*
+   DEMO TEACHER IS CREATED ONLY IF NO TEACHER EXISTS.
+   CHANGE THIS PASSWORD AFTER FIRST LOGIN.
+*/
+const teacherCount = db
+  .prepare("SELECT COUNT(*) AS count FROM teachers")
+  .get().count;
+
+if (teacherCount === 0) {
+  const password = bcrypt.hashSync("Teacher@123", 12);
+
+  db.prepare(`
+    INSERT INTO teachers
+    (name,email,phone,password)
+    VALUES (?,?,?,?)
+  `).run(
+    "TAMAL Teacher",
+    "teacher@tamal.in",
+    "",
+    password
+  );
+}
+
+/* =========================================================
+   HELPERS
+   ========================================================= */
+
+function settings() {
+  return db.prepare("SELECT * FROM settings WHERE id = 1").get();
+}
+
+function esc(value = "") {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function teacherRequired(req, res, next) {
+  if (!req.session.teacherId) {
+    return res.redirect("/teacher/login");
+  }
+  next();
+}
+
+function studentRequired(req, res, next) {
+  if (!req.session.studentId) {
+    return res.redirect("/login");
+  }
+  next();
+}
+
+function layout(title, body, req) {
+  const s = settings();
+
+  return `
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
+ content="width=device-width, initial-scale=1.0,
+ maximum-scale=1.0,user-scalable=no">
 
-<meta name="theme-color" content="#6c4df6">
-
-<title>English Study Point</title>
+<title>${esc(title)} • ${esc(s.platform_name)}</title>
 
 <style>
-
-/* =========================================================
-   RESET
-========================================================= */
-
 *{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
-html{
-    scroll-behavior:smooth;
+ box-sizing:border-box;
+ margin:0;
+ padding:0;
 }
 
 body{
-    font-family:
-        Inter,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        Arial,
-        sans-serif;
-
-    background:#f6f5ff;
-    color:#171722;
-    overflow-x:hidden;
+ font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,
+ Arial,sans-serif;
+ background:#070710;
+ color:#fff;
+ min-height:100vh;
 }
 
-button,
-input,
-select{
-    font:inherit;
+a{
+ color:inherit;
+ text-decoration:none;
+}
+
+button,input,textarea,select{
+ font:inherit;
 }
 
 button{
-    cursor:pointer;
+ cursor:pointer;
 }
 
-
-/* =========================================================
-   APP
-========================================================= */
-
-.app{
-    min-height:100vh;
-    max-width:600px;
-    margin:auto;
-    background:#f7f6ff;
-    position:relative;
-    padding-bottom:90px;
+.top{
+ position:sticky;
+ top:0;
+ z-index:100;
+ backdrop-filter:blur(18px);
+ background:rgba(7,7,16,.86);
+ border-bottom:1px solid rgba(255,255,255,.08);
 }
 
-
-/* =========================================================
-   HEADER
-========================================================= */
-
-.header{
-    height:72px;
-    padding:14px 18px;
-
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-
-    background:#ffffff;
-
-    position:sticky;
-    top:0;
-
-    z-index:100;
-
-    border-bottom:1px solid #eeeeF7;
+.nav{
+ max-width:1200px;
+ margin:auto;
+ min-height:66px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ padding:10px 18px;
 }
 
 .brand{
-    display:flex;
-    align-items:center;
-    gap:10px;
+ display:flex;
+ align-items:center;
+ gap:10px;
+ font-weight:900;
+ font-size:22px;
 }
 
-.brand-logo{
-    width:42px;
-    height:42px;
-
-    border-radius:13px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #805df6,
-            #5a3bd8
-        );
-
-    color:#fff;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    font-size:20px;
-    font-weight:800;
-
-    box-shadow:
-        0 8px 18px
-        rgba(108,77,246,.25);
+.brandIcon{
+ width:38px;
+ height:38px;
+ border-radius:13px;
+ background:linear-gradient(135deg,#7c3cff,#16a7ff);
+ display:grid;
+ place-items:center;
+ box-shadow:0 0 30px rgba(100,70,255,.45);
 }
 
-.brand-text h2{
-    font-size:13px;
-    line-height:1.1;
+.navLinks{
+ display:flex;
+ gap:8px;
+ align-items:center;
 }
 
-.brand-text p{
-    color:#9998a7;
-    font-size:9px;
-    margin-top:3px;
+.navLinks a{
+ padding:9px 12px;
+ border-radius:10px;
+ color:#cfcfe4;
 }
 
-.header-buttons{
-    display:flex;
-    gap:8px;
+.navLinks a:hover{
+ background:#17172a;
+ color:#fff;
 }
 
-.icon-button{
-    width:40px;
-    height:40px;
-
-    border:none;
-
-    background:#f4f2ff;
-
-    border-radius:13px;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    font-size:18px;
-
-    color:#555;
+.container{
+ max-width:1200px;
+ margin:auto;
+ padding:25px 16px 100px;
 }
 
-
-/* =========================================================
-   PAGES
-========================================================= */
-
-.page{
-    display:none;
+.hero{
+ padding:35px 0 20px;
 }
 
-.page.active{
-    display:block;
+.hero h1{
+ font-size:clamp(32px,6vw,64px);
+ line-height:1;
+ margin-bottom:15px;
 }
 
-
-/* =========================================================
-   HOME
-========================================================= */
-
-.home{
-    padding-bottom:20px;
+.gradient{
+ background:linear-gradient(90deg,#fff,#9b7cff,#35b8ff);
+ -webkit-background-clip:text;
+ color:transparent;
 }
 
-.welcome{
-    padding:25px 20px 10px;
+.muted{
+ color:#9d9db2;
 }
 
-.welcome small{
-    color:#9694a4;
-    font-size:12px;
+.grid{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:16px;
 }
 
-.welcome h1{
-    margin-top:6px;
-    font-size:28px;
-    line-height:1.15;
+.card{
+ background:linear-gradient(
+  145deg,
+  rgba(28,24,52,.88),
+  rgba(12,12,25,.95)
+ );
+ border:1px solid rgba(255,255,255,.08);
+ border-radius:20px;
+ padding:18px;
+ box-shadow:0 20px 70px rgba(0,0,0,.25);
 }
 
-.welcome h1 span{
-    color:#6c4df6;
+.card:hover{
+ border-color:rgba(130,95,255,.45);
+ transform:translateY(-2px);
+ transition:.2s;
 }
 
-
-/* =========================================================
-   SEARCH
-========================================================= */
-
-.search-box{
-    margin:15px 20px;
-
-    height:52px;
-
-    background:#fff;
-
-    border-radius:16px;
-
-    display:flex;
-    align-items:center;
-
-    padding:0 15px;
-
-    box-shadow:
-        0 6px 20px
-        rgba(30,20,80,.05);
-
-    border:1px solid #eeeef5;
+.courseImg{
+ width:100%;
+ aspect-ratio:16/9;
+ object-fit:cover;
+ border-radius:15px;
+ background:#17172a;
+ margin-bottom:13px;
 }
 
-.search-box span{
-    font-size:18px;
-    color:#9b99a8;
+.btn{
+ display:inline-flex;
+ align-items:center;
+ justify-content:center;
+ gap:7px;
+ padding:12px 17px;
+ border:0;
+ border-radius:12px;
+ color:#fff;
+ background:linear-gradient(135deg,#713cff,#168fff);
+ font-weight:800;
+ margin-top:10px;
 }
 
-.search-box input{
-    flex:1;
-
-    border:none;
-    outline:none;
-
-    margin-left:10px;
-
-    background:transparent;
-
-    font-size:13px;
+.btn.secondary{
+ background:#1b1b31;
+ border:1px solid rgba(255,255,255,.1);
 }
 
-.search-box button{
-    border:none;
-    background:#eeeaff;
-
-    color:#6c4df6;
-
-    width:35px;
-    height:35px;
-
-    border-radius:10px;
+.btn.danger{
+ background:#8f243c;
 }
 
-
-/* =========================================================
-   HERO
-========================================================= */
-
-.hero-card{
-    margin:20px;
-
-    min-height:190px;
-
-    border-radius:25px;
-
-    overflow:hidden;
-
-    position:relative;
-
-    background:
-        linear-gradient(
-            135deg,
-            #6950ed,
-            #8069f7
-        );
-
-    color:#fff;
-
-    padding:25px;
-
-    box-shadow:
-        0 15px 35px
-        rgba(100,70,230,.25);
+.btn.green{
+ background:linear-gradient(135deg,#00a86b,#16c784);
 }
 
-.hero-card::after{
-    content:"";
-    position:absolute;
-
-    width:180px;
-    height:180px;
-
-    border-radius:50%;
-
-    background:rgba(255,255,255,.10);
-
-    right:-50px;
-    top:-50px;
+input,textarea,select{
+ width:100%;
+ padding:13px;
+ border-radius:12px;
+ border:1px solid #292941;
+ background:#0e0e1a;
+ color:#fff;
+ outline:none;
+ margin-top:7px;
 }
 
-.hero-card::before{
-    content:"";
-    position:absolute;
-
-    width:120px;
-    height:120px;
-
-    border:20px solid
-        rgba(255,255,255,.08);
-
-    border-radius:50%;
-
-    right:45px;
-    bottom:-60px;
+textarea{
+ min-height:120px;
+ resize:vertical;
 }
 
-.hero-content{
-    position:relative;
-    z-index:2;
-
-    max-width:70%;
+label{
+ display:block;
+ color:#aaaac0;
+ margin-top:13px;
+ font-size:14px;
 }
 
-.hero-content small{
-    font-size:10px;
-    opacity:.85;
+.form{
+ max-width:600px;
+ margin:30px auto;
 }
 
-.hero-content h2{
-    font-size:23px;
-    margin:8px 0;
+.form h2{
+ margin-bottom:15px;
 }
 
-.hero-content p{
-    font-size:11px;
-    line-height:1.5;
-    opacity:.85;
+.stats{
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:13px;
+ margin:20px 0;
 }
 
-.hero-button{
-    margin-top:18px;
-
-    border:none;
-
-    background:#fff;
-
-    color:#6348df;
-
-    padding:10px 17px;
-
-    border-radius:10px;
-
-    font-size:11px;
-    font-weight:700;
+.stat{
+ background:#111120;
+ border:1px solid #292941;
+ border-radius:17px;
+ padding:17px;
 }
 
-
-/* =========================================================
-   SECTION HEADER
-========================================================= */
-
-.section-header{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-
-    padding:10px 20px 14px;
+.stat strong{
+ display:block;
+ font-size:27px;
+ margin-top:6px;
 }
 
-.section-header h2{
-    font-size:18px;
+.section{
+ margin-top:32px;
 }
 
-.see-all{
-    border:none;
-    background:none;
-    color:#6c4df6;
-    font-size:11px;
-    font-weight:700;
+.sectionTitle{
+ font-size:24px;
+ margin-bottom:15px;
 }
 
-
-/* =========================================================
-   CATEGORY
-========================================================= */
-
-.categories{
-    display:flex;
-    gap:10px;
-
-    padding:0 20px 18px;
-
-    overflow-x:auto;
-
-    scrollbar-width:none;
+.row{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ gap:12px;
+ flex-wrap:wrap;
 }
 
-.categories::-webkit-scrollbar{
-    display:none;
-}
-
-.category{
-    flex:none;
-
-    padding:10px 15px;
-
-    border-radius:11px;
-
-    border:1px solid #e7e5f2;
-
-    background:#fff;
-
-    color:#777;
-
-    font-size:11px;
-}
-
-.category.active{
-    background:#6c4df6;
-    border-color:#6c4df6;
-    color:#fff;
-
-    box-shadow:
-        0 7px 16px
-        rgba(108,77,246,.2);
-}
-
-
-/* =========================================================
-   COURSE CARDS
-========================================================= */
-
-.course-list{
-    display:flex;
-    flex-direction:column;
-
-    gap:14px;
-
-    padding:0 20px;
-}
-
-.course-card{
-    background:#fff;
-
-    border-radius:20px;
-
-    padding:12px;
-
-    display:flex;
-    gap:13px;
-
-    border:1px solid #eeeef5;
-
-    box-shadow:
-        0 6px 20px
-        rgba(30,20,80,.045);
-
-    transition:.2s;
-}
-
-.course-card:active{
-    transform:scale(.98);
-}
-
-.course-image{
-    width:105px;
-    height:105px;
-
-    flex:none;
-
-    border-radius:15px;
-
-    position:relative;
-
-    overflow:hidden;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    font-size:39px;
-}
-
-.course-image.one{
-    background:
-        linear-gradient(
-            135deg,
-            #dce4ff,
-            #aebdff
-        );
-}
-
-.course-image.two{
-    background:
-        linear-gradient(
-            135deg,
-            #ffe2f0,
-            #f7b7d5
-        );
-}
-
-.course-image.three{
-    background:
-        linear-gradient(
-            135deg,
-            #e2f7ff,
-            #a9e8f5
-        );
-}
-
-.course-image.four{
-    background:
-        linear-gradient(
-            135deg,
-            #eee4ff,
-            #cbb1ff
-        );
-}
-
-.play{
-    position:absolute;
-
-    right:8px;
-    bottom:8px;
-
-    width:28px;
-    height:28px;
-
-    border-radius:50%;
-
-    background:#fff;
-
-    color:#6c4df6;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    font-size:11px;
-
-    box-shadow:
-        0 5px 12px
-        rgba(0,0,0,.15);
-}
-
-.course-info{
-    flex:1;
-
-    display:flex;
-    flex-direction:column;
-
-    min-width:0;
-}
-
-.course-info small{
-    color:#8e8b9d;
-    font-size:9px;
-}
-
-.course-info h3{
-    margin:5px 0;
-
-    font-size:15px;
-
-    line-height:1.25;
-}
-
-.course-info p{
-    color:#9997a5;
-
-    font-size:10px;
-
-    line-height:1.4;
-}
-
-.course-meta{
-    display:flex;
-    gap:9px;
-
-    margin-top:auto;
-
-    font-size:9px;
-    color:#8e8b9d;
-}
-
-.course-price{
-    margin-top:7px;
-
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
+.badge{
+ display:inline-block;
+ padding:5px 9px;
+ border-radius:999px;
+ background:#201c40;
+ color:#a993ff;
+ font-size:12px;
+ font-weight:800;
 }
 
 .price{
-    color:#282633;
-    font-size:14px;
-    font-weight:800;
+ font-size:24px;
+ font-weight:900;
 }
 
-.enroll-mini{
-    border:none;
-
-    background:#6c4df6;
-
-    color:#fff;
-
-    padding:7px 10px;
-
-    border-radius:8px;
-
-    font-size:9px;
+table{
+ width:100%;
+ border-collapse:collapse;
 }
 
-
-/* =========================================================
-   QUICK ACTIONS
-========================================================= */
-
-.quick-grid{
-    display:grid;
-
-    grid-template-columns:
-        repeat(4,1fr);
-
-    gap:10px;
-
-    padding:0 20px;
+th,td{
+ text-align:left;
+ padding:12px 8px;
+ border-bottom:1px solid #242438;
+ font-size:14px;
 }
 
-.quick{
-    background:#fff;
-
-    border:1px solid #eeeef5;
-
-    border-radius:15px;
-
-    padding:13px 5px;
-
-    text-align:center;
-
-    box-shadow:
-        0 5px 15px
-        rgba(30,20,80,.04);
+th{
+ color:#aaaac0;
 }
 
-.quick-icon{
-    font-size:22px;
-    margin-bottom:7px;
+.qr{
+ width:280px;
+ max-width:100%;
+ background:#fff;
+ padding:12px;
+ border-radius:16px;
 }
 
-.quick span{
-    display:block;
-    font-size:9px;
-    color:#666;
+.founder{
+ display:flex;
+ gap:20px;
+ align-items:center;
 }
 
-
-/* =========================================================
-   TEACHER CARD
-========================================================= */
-
-.teacher-card{
-    margin:0 20px;
-
-    background:#fff;
-
-    border-radius:20px;
-
-    padding:15px;
-
-    display:flex;
-    gap:14px;
-
-    align-items:center;
-
-    border:1px solid #eeeef5;
-
-    box-shadow:
-        0 6px 20px
-        rgba(30,20,80,.05);
+.founder img{
+ width:130px;
+ height:130px;
+ border-radius:50%;
+ object-fit:cover;
+ border:3px solid #7654ff;
+ box-shadow:0 0 40px rgba(118,84,255,.45);
 }
 
-.teacher-photo{
-    width:72px;
-    height:72px;
-
-    object-fit:cover;
-
-    border-radius:18px;
-
-    border:3px solid #eeeaff;
-
-    background:#eee;
+.post{
+ white-space:pre-wrap;
+ line-height:1.7;
 }
 
-.teacher-card small{
-    color:#8e8b9d;
-    font-size:9px;
+.bottom{
+ display:none;
 }
 
-.teacher-card h3{
-    margin:4px 0;
-    font-size:15px;
+@media(max-width:800px){
+
+ .grid{
+  grid-template-columns:1fr;
+ }
+
+ .stats{
+  grid-template-columns:repeat(2,1fr);
+ }
+
+ .navLinks{
+  display:none;
+ }
+
+ .container{
+  padding-bottom:100px;
+ }
+
+ .bottom{
+  display:flex;
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  z-index:200;
+  background:rgba(8,8,18,.96);
+  border-top:1px solid #292941;
+  justify-content:space-around;
+  padding:9px 4px;
+ }
+
+ .bottom a{
+  font-size:11px;
+  color:#aaaac0;
+  text-align:center;
+ }
+
+ .bottom span{
+  display:block;
+  font-size:20px;
+ }
+
+ .founder{
+  flex-direction:column;
+  text-align:center;
+ }
+
+ table{
+  font-size:12px;
+ }
+
+ .stats .stat strong{
+  font-size:22px;
+ }
 }
 
-.teacher-card p{
-    color:#9997a5;
-    font-size:10px;
-    line-height:1.4;
+.notice{
+ padding:14px;
+ border-radius:13px;
+ background:#15152a;
+ border:1px solid #2b2b45;
+ margin:12px 0;
 }
 
-
-/* =========================================================
-   COURSE PAGE
-========================================================= */
-
-.course-page-header{
-    padding:25px 20px 15px;
+.success{
+ border-color:#0b9d69;
+ background:#09261d;
 }
 
-.back{
-    border:none;
-    background:#fff;
-
-    width:40px;
-    height:40px;
-
-    border-radius:12px;
-
-    font-size:18px;
-
-    margin-bottom:20px;
+.warning{
+ border-color:#9b7b19;
+ background:#29220c;
 }
 
-.course-page-header h1{
-    font-size:26px;
+.error{
+ border-color:#9c2b45;
+ background:#2b1019;
 }
 
-.course-page-header p{
-    color:#9997a5;
-    font-size:11px;
-    margin-top:7px;
-}
-
-.filter-row{
-    display:flex;
-    gap:8px;
-
-    padding:0 20px 20px;
-
-    overflow:auto;
-}
-
-.filter{
-    flex:none;
-
-    border:1px solid #e5e3ef;
-
-    background:#fff;
-
-    padding:9px 13px;
-
-    border-radius:10px;
-
-    color:#777;
-
-    font-size:10px;
-}
-
-.filter.active{
-    background:#6c4df6;
-    border-color:#6c4df6;
-    color:#fff;
-}
-
-
-/* =========================================================
-   COURSE DETAIL
-========================================================= */
-
-.detail{
-    padding-bottom:30px;
-}
-
-.video{
-    margin:0 20px;
-
-    height:205px;
-
-    border-radius:22px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #6850e8,
-            #8974f7
-        );
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    position:relative;
-
-    overflow:hidden;
-}
-
-.video::before{
-    content:"";
-
-    position:absolute;
-
-    width:220px;
-    height:220px;
-
-    border-radius:50%;
-
-    border:35px solid
-        rgba(255,255,255,.08);
-
-    right:-70px;
-    top:-80px;
-}
-
-.video-play{
-    width:62px;
-    height:62px;
-
-    border-radius:50%;
-
-    border:none;
-
-    background:#fff;
-
-    color:#6c4df6;
-
-    font-size:22px;
-
-    position:relative;
-
-    z-index:2;
-
-    box-shadow:
-        0 10px 25px
-        rgba(0,0,0,.15);
-}
-
-.detail-content{
-    padding:22px 20px;
-}
-
-.detail-content h1{
-    font-size:24px;
-}
-
-.detail-content p{
-    color:#8f8d9c;
-    font-size:11px;
-    line-height:1.6;
-
-    margin-top:7px;
-}
-
-.detail-meta{
-    display:flex;
-    gap:18px;
-
-    margin-top:15px;
-
-    color:#777;
-
-    font-size:10px;
-}
-
-.lesson-title{
-    padding:0 20px 12px;
-
-    font-size:17px;
-}
-
-.lesson-list{
-    padding:0 20px;
+.list{
+ display:grid;
+ gap:10px;
 }
 
 .lesson{
-    background:#fff;
-
-    border:1px solid #eeeef5;
-
-    border-radius:15px;
-
-    padding:14px;
-
-    margin-bottom:10px;
-
-    display:flex;
-
-    align-items:center;
-
-    gap:12px;
+ padding:14px;
+ border:1px solid #27273b;
+ border-radius:13px;
+ background:#0e0e1b;
 }
 
-.lesson-number{
-    width:31px;
-    height:31px;
-
-    border-radius:9px;
-
-    background:#eeeaff;
-
-    color:#6c4df6;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    font-size:10px;
-    font-weight:700;
+small{
+ color:#8f8fa5;
 }
-
-.lesson-info{
-    flex:1;
-}
-
-.lesson-info h3{
-    font-size:11px;
-}
-
-.lesson-info p{
-    color:#aaa;
-    font-size:9px;
-    margin-top:3px;
-}
-
-.lesson-status{
-    color:#6c4df6;
-    font-size:13px;
-}
-
-.buy-bar{
-    position:fixed;
-
-    bottom:73px;
-
-    left:50%;
-
-    transform:translateX(-50%);
-
-    width:min(560px,calc(100% - 30px));
-
-    background:#fff;
-
-    padding:10px;
-
-    border-radius:17px;
-
-    box-shadow:
-        0 -5px 25px
-        rgba(20,10,70,.12);
-
-    display:flex;
-
-    align-items:center;
-
-    gap:12px;
-
-    z-index:90;
-}
-
-.buy-price{
-    padding-left:8px;
-}
-
-.buy-price small{
-    display:block;
-    color:#999;
-    font-size:8px;
-}
-
-.buy-price strong{
-    font-size:17px;
-}
-
-.buy-button{
-    flex:1;
-
-    height:45px;
-
-    border:none;
-
-    border-radius:12px;
-
-    color:#fff;
-
-    background:#6c4df6;
-
-    font-size:11px;
-    font-weight:700;
-}
-
-
-/* =========================================================
-   RESULTS
-========================================================= */
-
-.page-title{
-    padding:30px 20px 20px;
-}
-
-.page-title small{
-    color:#8f8d9c;
-}
-
-.page-title h1{
-    margin-top:5px;
-    font-size:27px;
-}
-
-.results-grid{
-    display:grid;
-
-    grid-template-columns:
-        repeat(2,1fr);
-
-    gap:12px;
-
-    padding:0 20px;
-}
-
-.result-card{
-    background:#fff;
-
-    padding:20px 15px;
-
-    border-radius:18px;
-
-    border:1px solid #eeeef5;
-
-    text-align:center;
-}
-
-.result-number{
-    color:#6c4df6;
-
-    font-size:29px;
-
-    font-weight:800;
-}
-
-.result-card h3{
-    font-size:12px;
-    margin-top:5px;
-}
-
-.result-card p{
-    color:#999;
-    font-size:9px;
-    margin-top:4px;
-}
-
-
-/* =========================================================
-   ABOUT
-========================================================= */
-
-.about-card{
-    margin:0 20px;
-
-    background:#fff;
-
-    border-radius:23px;
-
-    padding:22px;
-
-    text-align:center;
-
-    border:1px solid #eeeef5;
-}
-
-.about-photo{
-    width:125px;
-    height:125px;
-
-    border-radius:30px;
-
-    object-fit:cover;
-
-    border:5px solid #eeeaff;
-
-    margin:auto;
-}
-
-.about-card h2{
-    margin-top:15px;
-    font-size:21px;
-}
-
-.role{
-    color:#6c4df6;
-    font-size:10px;
-    font-weight:700;
-    margin-top:4px;
-}
-
-.about-card p{
-    color:#9694a4;
-    font-size:11px;
-    line-height:1.7;
-    margin-top:14px;
-}
-
-.about-features{
-    padding:20px;
-
-    display:grid;
-
-    grid-template-columns:
-        repeat(2,1fr);
-
-    gap:12px;
-}
-
-.about-feature{
-    background:#fff;
-
-    border:1px solid #eeeef5;
-
-    border-radius:17px;
-
-    padding:17px;
-}
-
-.about-feature b{
-    display:block;
-    margin-top:7px;
-    font-size:12px;
-}
-
-.about-feature span{
-    color:#999;
-    display:block;
-    margin-top:5px;
-    font-size:9px;
-}
-
-
-/* =========================================================
-   CONTACT
-========================================================= */
-
-.form-card{
-    margin:0 20px;
-
-    background:#fff;
-
-    border-radius:20px;
-
-    padding:20px;
-
-    border:1px solid #eeeef5;
-}
-
-.form-group{
-    margin-bottom:15px;
-}
-
-.form-group label{
-    display:block;
-
-    color:#666;
-
-    font-size:10px;
-    font-weight:700;
-
-    margin-bottom:6px;
-}
-
-.form-group input,
-.form-group select{
-    width:100%;
-
-    height:45px;
-
-    border:1px solid #e5e3ef;
-
-    border-radius:11px;
-
-    padding:0 12px;
-
-    outline:none;
-
-    background:#fafaff;
-
-    font-size:11px;
-}
-
-.form-group input:focus,
-.form-group select:focus{
-    border-color:#6c4df6;
-}
-
-.submit{
-    width:100%;
-
-    height:47px;
-
-    border:none;
-
-    border-radius:12px;
-
-    background:#6c4df6;
-
-    color:#fff;
-
-    font-size:11px;
-    font-weight:700;
-}
-
-
-/* =========================================================
-   BRANCH
-========================================================= */
-
-.branch-card{
-    margin:0 20px;
-
-    background:#fff;
-
-    border-radius:20px;
-
-    padding:25px;
-
-    text-align:center;
-
-    border:1px solid #eeeef5;
-}
-
-.map-icon{
-    width:70px;
-    height:70px;
-
-    margin:auto;
-
-    border-radius:22px;
-
-    background:#eeeaff;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    font-size:32px;
-}
-
-.branch-card h2{
-    margin-top:15px;
-}
-
-.branch-card p{
-    color:#999;
-
-    font-size:11px;
-
-    line-height:1.6;
-
-    margin-top:8px;
-}
-
-
-/* =========================================================
-   PROFILE MENU
-========================================================= */
-
-.overlay{
-    position:fixed;
-
-    inset:0;
-
-    background:rgba(20,15,40,.45);
-
-    display:none;
-
-    z-index:200;
-}
-
-.overlay.show{
-    display:block;
-}
-
-.side-panel{
-    position:fixed;
-
-    top:0;
-    right:-310px;
-
-    width:290px;
-    height:100vh;
-
-    background:#fff;
-
-    z-index:300;
-
-    padding:25px 18px;
-
-    transition:.3s;
-
-    box-shadow:
-        -10px 0 30px
-        rgba(0,0,0,.12);
-}
-
-.side-panel.show{
-    right:0;
-}
-
-.profile{
-    background:
-        linear-gradient(
-            135deg,
-            #6c4df6,
-            #866ef4
-        );
-
-    color:#fff;
-
-    padding:20px;
-
-    border-radius:20px;
-}
-
-.profile img{
-    width:55px;
-    height:55px;
-
-    object-fit:cover;
-
-    border-radius:16px;
-
-    border:3px solid rgba(255,255,255,.5);
-}
-
-.profile h3{
-    margin-top:10px;
-    font-size:16px;
-}
-
-.profile p{
-    font-size:9px;
-    opacity:.8;
-}
-
-.menu-items{
-    margin-top:20px;
-}
-
-.menu-item{
-    width:100%;
-
-    border:none;
-
-    background:none;
-
-    padding:14px 10px;
-
-    display:flex;
-
-    align-items:center;
-
-    gap:13px;
-
-    text-align:left;
-
-    border-radius:11px;
-
-    font-size:11px;
-}
-
-.menu-item:hover{
-    background:#f2efff;
-    color:#6c4df6;
-}
-
-.close-menu{
-    position:absolute;
-
-    top:22px;
-    right:17px;
-
-    border:none;
-
-    background:rgba(255,255,255,.2);
-
-    color:#fff;
-
-    width:32px;
-    height:32px;
-
-    border-radius:10px;
-}
-
-
-/* =========================================================
-   BOTTOM NAVIGATION
-========================================================= */
-
-.bottom-nav{
-    position:fixed;
-
-    bottom:0;
-
-    left:50%;
-
-    transform:translateX(-50%);
-
-    width:min(600px,100%);
-
-    height:72px;
-
-    background:#fff;
-
-    border-top:1px solid #eeeeF5;
-
-    display:grid;
-
-    grid-template-columns:
-        repeat(5,1fr);
-
-    z-index:150;
-
-    box-shadow:
-        0 -5px 20px
-        rgba(30,20,80,.05);
-}
-
-.nav-item{
-    border:none;
-
-    background:none;
-
-    color:#a4a1ae;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    flex-direction:column;
-
-    gap:4px;
-
-    font-size:9px;
-}
-
-.nav-icon{
-    font-size:19px;
-}
-
-.nav-item.active{
-    color:#6c4df6;
-}
-
-.nav-item.active .nav-icon{
-    transform:translateY(-1px);
-}
-
-
-/* =========================================================
-   TOAST
-========================================================= */
-
-.toast{
-    position:fixed;
-
-    left:50%;
-
-    bottom:92px;
-
-    transform:
-        translate(-50%,20px);
-
-    background:#22212b;
-
-    color:#fff;
-
-    padding:12px 18px;
-
-    border-radius:12px;
-
-    font-size:10px;
-
-    opacity:0;
-
-    pointer-events:none;
-
-    transition:.3s;
-
-    z-index:1000;
-
-    white-space:nowrap;
-}
-
-.toast.show{
-    opacity:1;
-
-    transform:
-        translate(-50%,0);
-}
-
-
-/* =========================================================
-   RESPONSIVE
-========================================================= */
-
-@media(min-width:601px){
-
-    body{
-        background:#e9e7f5;
-    }
-
-    .app{
-        box-shadow:
-            0 0 50px
-            rgba(30,20,80,.08);
-    }
-}
-
 </style>
 </head>
 
-
 <body>
 
+<header class="top">
+ <nav class="nav">
 
-<div class="app">
+  <a href="/" class="brand">
+   <span class="brandIcon">T</span>
+   ${esc(s.platform_name)}
+  </a>
 
+  <div class="navLinks">
+   <a href="/">Home</a>
+   <a href="/courses">Courses</a>
+   <a href="/offline">Offline</a>
+   <a href="/live">Live</a>
+   ${
+     req.session.studentId
+       ? `<a href="/student">My Learning</a>
+          <a href="/logout">Logout</a>`
+       : `<a href="/login">Student Login</a>`
+   }
+   <a href="/teacher/login">Teacher</a>
+  </div>
 
-<!-- =====================================================
-     HEADER
-===================================================== -->
-
-<header class="header">
-
-    <div class="brand">
-
-        <div class="brand-logo">
-            E
-        </div>
-
-        <div class="brand-text">
-
-            <h2>
-                ENGLISH STUDY POINT
-            </h2>
-
-            <p>
-                Learn. Practise. Master.
-            </p>
-
-        </div>
-
-    </div>
-
-
-    <div class="header-buttons">
-
-        <button
-            class="icon-button"
-            onclick="showToast('Notifications coming soon')">
-            🔔
-        </button>
-
-        <button
-            class="icon-button"
-            onclick="openSideMenu()">
-            👤
-        </button>
-
-    </div>
-
+ </nav>
 </header>
 
-
-
-<!-- =====================================================
-     HOME PAGE
-===================================================== -->
-
-<section
-    id="home"
-    class="page active home">
-
-
-    <div class="welcome">
-
-        <small>
-            👋 Welcome back!
-        </small>
-
-        <h1>
-            Learn English.
-            <br>
-            <span>Build Confidence.</span>
-        </h1>
-
-    </div>
-
-
-
-    <!-- SEARCH -->
-
-    <div class="search-box">
-
-        <span>⌕</span>
-
-        <input
-            type="text"
-            id="searchInput"
-            placeholder="Search your course">
-
-        <button
-            onclick="searchCourses()">
-            ⚙
-        </button>
-
-    </div>
-
-
-
-    <!-- HERO -->
-
-    <div class="hero-card">
-
-        <div class="hero-content">
-
-            <small>
-                ENGLISH GRAMMAR
-            </small>
-
-            <h2>
-                Master English
-                Grammar
-            </h2>
-
-            <p>
-                Learn grammar through simple
-                explanations and regular practice.
-            </p>
-
-            <button
-                class="hero-button"
-                onclick="openPage('courses')">
-
-                Start Learning →
-
-            </button>
-
-        </div>
-
-    </div>
-
-
-
-    <!-- CATEGORIES -->
-
-    <div class="section-header">
-
-        <h2>
-            Explore Topics
-        </h2>
-
-        <button
-            class="see-all"
-            onclick="openPage('courses')">
-            See all
-        </button>
-
-    </div>
-
-
-    <div class="categories">
-
-        <button
-            class="category active"
-            onclick="categoryFilter('all',this)">
-            All
-        </button>
-
-        <button
-            class="category"
-            onclick="categoryFilter('basic',this)">
-            Basic
-        </button>
-
-        <button
-            class="category"
-            onclick="categoryFilter('tenses',this)">
-            Tenses
-        </button>
-
-        <button
-            class="category"
-            onclick="categoryFilter('voice',this)">
-            Voice
-        </button>
-
-        <button
-            class="category"
-            onclick="categoryFilter('narration',this)">
-            Narration
-        </button>
-
-        <button
-            class="category"
-            onclick="categoryFilter('exam',this)">
-            Exam
-        </button>
-
-    </div>
-
-
-
-    <!-- COURSES -->
-
-    <div class="section-header">
-
-        <h2>
-            Popular Courses
-        </h2>
-
-        <button
-            class="see-all"
-            onclick="openPage('courses')">
-            View All
-        </button>
-
-    </div>
-
-
-    <div
-        class="course-list"
-        id="homeCourseList">
-    </div>
-
-
-
-    <!-- QUICK ACTIONS -->
-
-    <div class="section-header">
-
-        <h2>
-            Quick Access
-        </h2>
-
-    </div>
-
-
-    <div class="quick-grid">
-
-        <button
-            class="quick"
-            onclick="showToast('Quiz section coming soon')">
-
-            <div class="quick-icon">
-                📝
-            </div>
-
-            <span>
-                Quiz
-            </span>
-
-        </button>
-
-
-        <button
-            class="quick"
-            onclick="showToast('Notes section coming soon')">
-
-            <div class="quick-icon">
-                📚
-            </div>
-
-            <span>
-                Notes
-            </span>
-
-        </button>
-
-
-        <button
-            class="quick"
-            onclick="showToast('Doubt support available soon')">
-
-            <div class="quick-icon">
-                💬
-            </div>
-
-            <span>
-                Doubts
-            </span>
-
-        </button>
-
-
-        <button
-            class="quick"
-            onclick="openPage('results')">
-
-            <div class="quick-icon">
-                🏆
-            </div>
-
-            <span>
-                Results
-            </span>
-
-        </button>
-
-    </div>
-
-
-
-    <!-- TEACHER -->
-
-    <div class="section-header">
-
-        <h2>
-            Your Teacher
-        </h2>
-
-        <button
-            class="see-all"
-            onclick="openPage('about')">
-            View
-        </button>
-
-    </div>
-
-
-    <div class="teacher-card">
-
-        <img
-            src="teacher.jpg"
-            class="teacher-photo"
-            alt="Teacher">
-
-        <div>
-
-            <small>
-                FOUNDER & ENGLISH EDUCATOR
-            </small>
-
-            <h3>
-                Tamal Debnath
-            </h3>
-
-            <p>
-                Simple explanations,
-                regular practice and
-                exam-focused learning.
-            </p>
-
-        </div>
-
-    </div>
-
-
-</section>
-
-
-
-<!-- =====================================================
-     COURSES PAGE
-===================================================== -->
-
-<section
-    id="courses"
-    class="page">
-
-
-    <div class="course-page-header">
-
-        <button
-            class="back"
-            onclick="openPage('home')">
-            ←
-        </button>
-
-        <h1>
-            Courses
-        </h1>
-
-        <p>
-            Find the right course for your
-            English grammar preparation.
-        </p>
-
-    </div>
-
-
-
-    <div class="filter-row">
-
-        <button
-            class="filter active"
-            onclick="coursePageFilter('all',this)">
-            All Courses
-        </button>
-
-        <button
-            class="filter"
-            onclick="coursePageFilter('basic',this)">
-            Basic
-        </button>
-
-        <button
-            class="filter"
-            onclick="coursePageFilter('masterclass',this)">
-            Masterclass
-        </button>
-
-        <button
-            class="filter"
-            onclick="coursePageFilter('exam',this)">
-            Exam
-        </button>
-
-    </div>
-
-
-
-    <div
-        class="course-list"
-        id="coursePageList">
-    </div>
-
-
-</section>
-
-
-
-<!-- =====================================================
-     COURSE DETAIL PAGE
-===================================================== -->
-
-<section
-    id="detail"
-    class="page detail">
-
-
-    <div class="course-page-header">
-
-        <button
-            class="back"
-            onclick="openPage('courses')">
-            ←
-        </button>
-
-    </div>
-
-
-
-    <div class="video">
-
-        <button
-            class="video-play"
-            onclick="showToast('Video player demo')">
-            ▶
-        </button>
-
-    </div>
-
-
-
-    <div class="detail-content">
-
-        <h1 id="detailTitle">
-            Tense Masterclass
-        </h1>
-
-        <p id="detailDescription">
-            Understand English tenses with
-            simple explanations and practice.
-        </p>
-
-
-        <div class="detail-meta">
-
-            <span>
-                🎥 12 Lessons
-            </span>
-
-            <span>
-                ⏱ 3 Days
-            </span>
-
-            <span>
-                ⭐ 4.9
-            </span>
-
-        </div>
-
-    </div>
-
-
-
-    <h2 class="lesson-title">
-        Course Lessons
-    </h2>
-
-
-    <div
-        class="lesson-list"
-        id="lessonList">
-    </div>
-
-
-
-    <div class="buy-bar">
-
-        <div class="buy-price">
-
-            <small>
-                COURSE FEE
-            </small>
-
-            <strong id="detailPrice">
-                ₹799
-            </strong>
-
-        </div>
-
-
-        <button
-            class="buy-button"
-            onclick="openPage('contact')">
-
-            ENROLL NOW
-
-        </button>
-
-    </div>
-
-
-</section>
-
-
-
-<!-- =====================================================
-     RESULTS PAGE
-===================================================== -->
-
-<section
-    id="results"
-    class="page">
-
-
-    <div class="page-title">
-
-        <small>
-            🏆 RESULTS
-        </small>
-
-        <h1>
-            Student Results
-        </h1>
-
-    </div>
-
-
-    <div class="results-grid">
-
-        <div class="result-card">
-
-            <div class="result-number">
-                95/100
-            </div>
-
-            <h3>
-                English
-            </h3>
-
-            <p>
-                Class 10 Board
-            </p>
-
-        </div>
-
-
-        <div class="result-card">
-
-            <div class="result-number">
-                99/100
-            </div>
-
-            <h3>
-                Social Science
-            </h3>
-
-            <p>
-                Class 10 Board
-            </p>
-
-        </div>
-
-
-        <div class="result-card">
-
-            <div class="result-number">
-                15+
-            </div>
-
-            <h3>
-                Students
-            </h3>
-
-            <p>
-                Scoring 80+
-            </p>
-
-        </div>
-
-
-        <div class="result-card">
-
-            <div class="result-number">
-                11+
-            </div>
-
-            <h3>
-                Students
-            </h3>
-
-            <p>
-                Scoring 90+
-            </p>
-
-        </div>
-
-
-        <div class="result-card">
-
-            <div class="result-number">
-                A+
-            </div>
-
-            <h3>
-                Grammar
-            </h3>
-
-            <p>
-                Exam Focus
-            </p>
-
-        </div>
-
-
-        <div class="result-card">
-
-            <div class="result-number">
-                9–12
-            </div>
-
-            <h3>
-                Classes
-            </h3>
-
-            <p>
-                Board Preparation
-            </p>
-
-        </div>
-
-    </div>
-
-
-</section>
-
-
-
-<!-- =====================================================
-     ABOUT PAGE
-===================================================== -->
-
-<section
-    id="about"
-    class="page">
-
-
-    <div class="page-title">
-
-        <small>
-            👨‍🏫 ABOUT
-        </small>
-
-        <h1>
-            Meet Your Teacher
-        </h1>
-
-    </div>
-
-
-    <div class="about-card">
-
-        <img
-            src="teacher.jpg"
-            class="about-photo"
-            alt="Teacher">
-
-        <h2>
-            Tamal Debnath
-        </h2>
-
-        <div class="role">
-            FOUNDER & ENGLISH EDUCATOR
-        </div>
-
-        <p>
-            Helping students understand English
-            grammar through simple explanations,
-            regular practice and examination-focused
-            learning.
-        </p>
-
-    </div>
-
-
-
-    <div class="about-features">
-
-        <div class="about-feature">
-
-            <div>
-                📚
-            </div>
-
-            <b>
-                Board Preparation
-            </b>
-
-            <span>
-                Focused preparation for
-                Classes 9–12.
-            </span>
-
-        </div>
-
-
-        <div class="about-feature">
-
-            <div>
-                💻
-            </div>
-
-            <b>
-                Online Classes
-            </b>
-
-            <span>
-                Learn from anywhere.
-            </span>
-
-        </div>
-
-
-        <div class="about-feature">
-
-            <div>
-                📝
-            </div>
-
-            <b>
-                Practice Sets
-            </b>
-
-            <span>
-                Regular examination
-                practice.
-            </span>
-
-        </div>
-
-
-        <div class="about-feature">
-
-            <div>
-                🎯
-            </div>
-
-            <b>
-                Exam Focus
-            </b>
-
-            <span>
-                Learn what matters
-                for examinations.
-            </span>
-
-        </div>
-
-    </div>
-
-
-</section>
-
-
-
-<!-- =====================================================
-     CONTACT PAGE
-===================================================== -->
-
-<section
-    id="contact"
-    class="page">
-
-
-    <div class="page-title">
-
-        <small>
-            📝 ENROLMENT
-        </small>
-
-        <h1>
-            Start Learning
-        </h1>
-
-    </div>
-
-
-    <form
-        class="form-card"
-        onsubmit="submitEnrolment(event)">
-
-
-        <div class="form-group">
-
-            <label>
-                Student Name
-            </label>
-
-            <input
-                id="studentName"
-                type="text"
-                placeholder="Enter your name"
-                required>
-
-        </div>
-
-
-        <div class="form-group">
-
-            <label>
-                Class
-            </label>
-
-            <select
-                id="studentClass"
-                required>
-
-                <option value="">
-                    Select class
-                </option>
-
-                <option>
-                    Class 9
-                </option>
-
-                <option>
-                    Class 10
-                </option>
-
-                <option>
-                    Class 11
-                </option>
-
-                <option>
-                    Class 12
-                </option>
-
-            </select>
-
-        </div>
-
-
-        <div class="form-group">
-
-            <label>
-                School
-            </label>
-
-            <input
-                id="school"
-                type="text"
-                placeholder="Enter school name">
-
-        </div>
-
-
-        <div class="form-group">
-
-            <label>
-                WhatsApp Number
-            </label>
-
-            <input
-                id="phone"
-                type="tel"
-                placeholder="Enter WhatsApp number"
-                required>
-
-        </div>
-
-
-        <div class="form-group">
-
-            <label>
-                Preferred Mode
-            </label>
-
-            <select id="mode">
-
-                <option>
-                    Online
-                </option>
-
-                <option>
-                    Offline
-                </option>
-
-                <option>
-                    Online + Offline
-                </option>
-
-            </select>
-
-        </div>
-
-
-        <div class="form-group">
-
-            <label>
-                Preferred Class Time
-            </label>
-
-            <select id="time">
-
-                <option>
-                    Morning
-                </option>
-
-                <option>
-                    Afternoon
-                </option>
-
-                <option>
-                    Evening
-                </option>
-
-            </select>
-
-        </div>
-
-
-        <button
-            class="submit"
-            type="submit">
-
-            SEND ENROLMENT REQUEST
-
-        </button>
-
-
-    </form>
-
-
-</section>
-
-
-
-<!-- =====================================================
-     BRANCH PAGE
-===================================================== -->
-
-<section
-    id="branch"
-    class="page">
-
-
-    <div class="page-title">
-
-        <small>
-            📍 BRANCHES
-        </small>
-
-        <h1>
-            Our Centre
-        </h1>
-
-    </div>
-
-
-    <div class="branch-card">
-
-        <div class="map-icon">
-            📍
-        </div>
-
-        <h2>
-            Kulai Branch
-        </h2>
-
-        <p>
-            English Study Point<br>
-            Kulai, Tripura
-        </p>
-
-        <br>
-
-        <button
-            class="submit"
-            onclick="openPage('contact')">
-
-            CONTACT / ENROL
-
-        </button>
-
-    </div>
-
-
-</section>
-
-
-
-<!-- =====================================================
-     BOTTOM NAVIGATION
-===================================================== -->
-
-<nav class="bottom-nav">
-
-
-    <button
-        class="nav-item active"
-        data-page="home"
-        onclick="openPage('home')">
-
-        <span class="nav-icon">
-            🏠
-        </span>
-
-        Home
-
-    </button>
-
-
-    <button
-        class="nav-item"
-        data-page="courses"
-        onclick="openPage('courses')">
-
-        <span class="nav-icon">
-            📚
-        </span>
-
-        Courses
-
-    </button>
-
-
-    <button
-        class="nav-item"
-        data-page="results"
-        onclick="openPage('results')">
-
-        <span class="nav-icon">
-            🏆
-        </span>
-
-        Results
-
-    </button>
-
-
-    <button
-        class="nav-item"
-        data-page="about"
-        onclick="openPage('about')">
-
-        <span class="nav-icon">
-            👨‍🏫
-        </span>
-
-        About
-
-    </button>
-
-
-    <button
-        class="nav-item"
-        data-page="contact"
-        onclick="openPage('contact')">
-
-        <span class="nav-icon">
-            📝
-        </span>
-
-        Enrol
-
-    </button>
-
-
-</nav>
-
-
+<main class="container">
+${body}
+</main>
+
+<div class="bottom">
+ <a href="/"><span>⌂</span>Home</a>
+ <a href="/courses"><span>▣</span>Courses</a>
+ <a href="/live"><span>◉</span>Live</a>
+ ${
+   req.session.studentId
+   ? `<a href="/student"><span>👤</span>Profile</a>`
+   : `<a href="/login"><span>→</span>Login</a>`
+ }
 </div>
-
-
-
-<!-- =====================================================
-     SIDE MENU
-===================================================== -->
-
-<div
-    class="overlay"
-    id="overlay"
-    onclick="closeSideMenu()">
-</div>
-
-
-<div
-    class="side-panel"
-    id="sidePanel">
-
-
-    <button
-        class="close-menu"
-        onclick="closeSideMenu()">
-        ×
-    </button>
-
-
-    <div class="profile">
-
-        <img
-            src="teacher.jpg"
-            alt="Teacher">
-
-        <h3>
-            English Study Point
-        </h3>
-
-        <p>
-            Learn. Practise. Master.
-        </p>
-
-    </div>
-
-
-    <div class="menu-items">
-
-
-        <button
-            class="menu-item"
-            onclick="closeSideMenu();openPage('home')">
-
-            🏠
-            Home
-
-        </button>
-
-
-        <button
-            class="menu-item"
-            onclick="closeSideMenu();openPage('courses')">
-
-            📚
-            All Courses
-
-        </button>
-
-
-        <button
-            class="menu-item"
-            onclick="closeSideMenu();openPage('results')">
-
-            🏆
-            Results
-
-        </button>
-
-
-        <button
-            class="menu-item"
-            onclick="closeSideMenu();openPage('about')">
-
-            👨‍🏫
-            Teacher
-
-        </button>
-
-
-        <button
-            class="menu-item"
-            onclick="closeSideMenu();openPage('branch')">
-
-            📍
-            Branches
-
-        </button>
-
-
-        <button
-            class="menu-item"
-            onclick="closeSideMenu();openPage('contact')">
-
-            📞
-            Contact / Enrol
-
-        </button>
-
-
-        <button
-            class="menu-item"
-            onclick="showToast('Settings coming soon')">
-
-            ⚙️
-            Settings
-
-        </button>
-
-
-    </div>
-
-</div>
-
-
-
-<!-- =====================================================
-     TOAST
-===================================================== -->
-
-<div
-    class="toast"
-    id="toast">
-</div>
-
-
-
-<script>
-
-/* =========================================================
-   COURSE DATA
-========================================================= */
-
-const courses = [
-
-    {
-        id:1,
-
-        title:"Tense Masterclass",
-
-        category:"masterclass",
-
-        type:"tenses",
-
-        price:799,
-
-        duration:"3 Days",
-
-        lessons:12,
-
-        image:"one",
-
-        icon:"📖",
-
-        description:
-        "Master Present, Past, Future, Perfect and Continuous Tenses.",
-
-        topics:[
-            "Present Tense",
-            "Past Tense",
-            "Future Tense",
-            "Perfect Tenses",
-            "Continuous Tenses",
-            "Practice Questions"
-        ]
-    },
-
-
-    {
-        id:2,
-
-        title:"Basic Grammar Course",
-
-        category:"basic",
-
-        type:"basic",
-
-        price:2000,
-
-        duration:"10 Days",
-
-        lessons:20,
-
-        image:"two",
-
-        icon:"📚",
-
-        description:
-        "Build a strong English grammar foundation from the basics.",
-
-        topics:[
-            "Tenses",
-            "Articles",
-            "Subject-Verb Concord",
-            "Prepositions",
-            "Practice Sets",
-            "Doubt Support"
-        ]
-    },
-
-
-    {
-        id:3,
-
-        title:"Voice Masterclass",
-
-        category:"masterclass",
-
-        type:"voice",
-
-        price:799,
-
-        duration:"3 Days",
-
-        lessons:10,
-
-        image:"three",
-
-        icon:"🎙️",
-
-        description:
-        "Learn Active and Passive Voice with easy transformation rules.",
-
-        topics:[
-            "Active Voice",
-            "Passive Voice",
-            "Transformation",
-            "Questions",
-            "Imperative Sentences",
-            "Practice"
-        ]
-    },
-
-
-    {
-        id:4,
-
-        title:"Narration Masterclass",
-
-        category:"masterclass",
-
-        type:"narration",
-
-        price:799,
-
-        duration:"4 Days",
-
-        lessons:14,
-
-        image:"four",
-
-        icon:"💬",
-
-        description:
-        "Understand Direct and Indirect Speech through simple rules.",
-
-        topics:[
-            "Statements",
-            "Questions",
-            "Commands",
-            "Requests",
-            "Exclamations",
-            "Change of Tense"
-        ]
-    },
-
-
-    {
-        id:5,
-
-        title:"Articles & Determiners",
-
-        category:"exam",
-
-        type:"exam",
-
-        price:499,
-
-        duration:"2 Days",
-
-        lessons:8,
-
-        image:"one",
-
-        icon:"📝",
-
-        description:
-        "Learn A, An, The and important Determiner rules.",
-
-        topics:[
-            "A / An",
-            "The",
-            "Determiners",
-            "Common Errors",
-            "Exam Questions",
-            "Practice Set"
-        ]
-    },
-
-
-    {
-        id:6,
-
-        title:"Subject-Verb Concord",
-
-        category:"exam",
-
-        type:"exam",
-
-        price:499,
-
-        duration:"2 Days",
-
-        lessons:8,
-
-        image:"two",
-
-        icon:"✏️",
-
-        description:
-        "Master subject-verb agreement and solve exam questions.",
-
-        topics:[
-            "Basic Rules",
-            "Singular Subjects",
-            "Plural Subjects",
-            "Either / Neither",
-            "Common Errors",
-            "Exam Practice"
-        ]
-    }
-
-];
-
-
-
-/* =========================================================
-   PAGE NAVIGATION
-========================================================= */
-
-function openPage(pageName){
-
-    document
-        .querySelectorAll(".page")
-        .forEach(page=>{
-            page.classList.remove("active");
-        });
-
-
-    const page =
-        document.getElementById(pageName);
-
-    if(page){
-        page.classList.add("active");
-    }
-
-
-    document
-        .querySelectorAll(".nav-item")
-        .forEach(item=>{
-            item.classList.remove("active");
-        });
-
-
-    const nav =
-        document.querySelector(
-            `.nav-item[data-page="${pageName}"]`
-        );
-
-
-    if(nav){
-        nav.classList.add("active");
-    }
-
-
-    window.scrollTo({
-        top:0,
-        behavior:"smooth"
-    });
-
-
-    closeSideMenu();
-
-}
-
-
-
-/* =========================================================
-   COURSE CARD
-========================================================= */
-
-function createCourseCard(course){
-
-    return `
-
-        <article class="course-card"
-                 onclick="openCourse(${course.id})">
-
-            <div class="course-image ${course.image}">
-
-                ${course.icon}
-
-                <div class="play">
-                    ▶
-                </div>
-
-            </div>
-
-
-            <div class="course-info">
-
-                <small>
-                    ${course.category.toUpperCase()}
-                </small>
-
-                <h3>
-                    ${course.title}
-                </h3>
-
-                <p>
-                    ${course.description}
-                </p>
-
-
-                <div class="course-meta">
-
-                    <span>
-                        🎥 ${course.lessons} Lessons
-                    </span>
-
-                    <span>
-                        ⏱ ${course.duration}
-                    </span>
-
-                </div>
-
-
-                <div class="course-price">
-
-                    <div class="price">
-                        ₹${course.price}
-                    </div>
-
-                    <button
-                        class="enroll-mini"
-                        onclick="event.stopPropagation();openCourse(${course.id})">
-
-                        View
-
-                    </button>
-
-                </div>
-
-            </div>
-
-        </article>
-
-    `;
-
-}
-
-
-
-/* =========================================================
-   RENDER COURSES
-========================================================= */
-
-function renderCourses(list=courses){
-
-    const homeList =
-        document.getElementById(
-            "homeCourseList"
-        );
-
-    const coursePageList =
-        document.getElementById(
-            "coursePageList"
-        );
-
-
-    homeList.innerHTML =
-        list
-        .slice(0,4)
-        .map(createCourseCard)
-        .join("");
-
-
-    coursePageList.innerHTML =
-        list
-        .map(createCourseCard)
-        .join("");
-
-}
-
-
-
-/* =========================================================
-   OPEN COURSE
-========================================================= */
-
-function openCourse(id){
-
-    const course =
-        courses.find(c=>c.id===id);
-
-    if(!course){
-        return;
-    }
-
-
-    document.getElementById(
-        "detailTitle"
-    ).textContent =
-        course.title;
-
-
-    document.getElementById(
-        "detailDescription"
-    ).textContent =
-        course.description;
-
-
-    document.getElementById(
-        "detailPrice"
-    ).textContent =
-        "₹" + course.price;
-
-
-    const lessonList =
-        document.getElementById(
-            "lessonList"
-        );
-
-
-    lessonList.innerHTML =
-        course.topics
-        .map((topic,index)=>`
-
-            <div class="lesson">
-
-                <div class="lesson-number">
-                    ${String(index+1).padStart(2,"0")}
-                </div>
-
-                <div class="lesson-info">
-
-                    <h3>
-                        ${topic}
-                    </h3>
-
-                    <p>
-                        Video lesson • Practice
-                    </p>
-
-                </div>
-
-                <div class="lesson-status">
-                    ›
-                </div>
-
-            </div>
-
-        `)
-        .join("");
-
-
-    openPage("detail");
-
-}
-
-
-
-/* =========================================================
-   CATEGORY FILTER
-========================================================= */
-
-function categoryFilter(type,button){
-
-    document
-        .querySelectorAll(".category")
-        .forEach(btn=>{
-            btn.classList.remove("active");
-        });
-
-
-    button.classList.add("active");
-
-
-    let list;
-
-
-    if(type==="all"){
-
-        list=courses;
-
-    }else{
-
-        list =
-            courses.filter(
-                course =>
-                    course.type===type
-            );
-
-    }
-
-
-    document.getElementById(
-        "homeCourseList"
-    ).innerHTML =
-        list
-        .map(createCourseCard)
-        .join("");
-
-}
-
-
-
-/* =========================================================
-   COURSE PAGE FILTER
-========================================================= */
-
-function coursePageFilter(type,button){
-
-    document
-        .querySelectorAll(".filter")
-        .forEach(btn=>{
-            btn.classList.remove("active");
-        });
-
-
-    button.classList.add("active");
-
-
-    let list;
-
-
-    if(type==="all"){
-
-        list=courses;
-
-    }else{
-
-        list =
-            courses.filter(
-                course =>
-                    course.category===type
-            );
-
-    }
-
-
-    document.getElementById(
-        "coursePageList"
-    ).innerHTML =
-        list
-        .map(createCourseCard)
-        .join("");
-
-}
-
-
-
-/* =========================================================
-   SEARCH
-========================================================= */
-
-function searchCourses(){
-
-    const input =
-        document.getElementById(
-            "searchInput"
-        );
-
-    const value =
-        input.value
-        .trim()
-        .toLowerCase();
-
-
-    if(value===""){
-
-        renderCourses();
-
-        return;
-
-    }
-
-
-    const results =
-        courses.filter(course =>
-
-            course.title
-            .toLowerCase()
-            .includes(value)
-
-            ||
-
-            course.description
-            .toLowerCase()
-            .includes(value)
-
-            ||
-
-            course.type
-            .toLowerCase()
-            .includes(value)
-
-        );
-
-
-    document.getElementById(
-        "homeCourseList"
-    ).innerHTML =
-        results.length
-        ?
-        results
-        .map(createCourseCard)
-        .join("")
-        :
-        `
-
-        <div style="
-            background:#fff;
-            padding:30px;
-            border-radius:18px;
-            text-align:center;
-            color:#999;
-            font-size:12px;
-        ">
-
-            No courses found.
-
-        </div>
-
-        `;
-
-}
-
-
-
-/* =========================================================
-   SEARCH ENTER KEY
-========================================================= */
-
-document
-    .getElementById("searchInput")
-    .addEventListener(
-        "keydown",
-        function(event){
-
-            if(event.key==="Enter"){
-                searchCourses();
-            }
-
-        }
-    );
-
-
-
-/* =========================================================
-   SIDE MENU
-========================================================= */
-
-function openSideMenu(){
-
-    document
-        .getElementById("sidePanel")
-        .classList.add("show");
-
-
-    document
-        .getElementById("overlay")
-        .classList.add("show");
-
-}
-
-
-function closeSideMenu(){
-
-    document
-        .getElementById("sidePanel")
-        .classList.remove("show");
-
-
-    document
-        .getElementById("overlay")
-        .classList.remove("show");
-
-}
-
-
-
-/* =========================================================
-   TOAST
-========================================================= */
-
-let toastTimer;
-
-
-function showToast(message){
-
-    const toast =
-        document.getElementById(
-            "toast"
-        );
-
-
-    toast.textContent=message;
-
-    toast.classList.add("show");
-
-
-    clearTimeout(toastTimer);
-
-
-    toastTimer =
-        setTimeout(()=>{
-
-            toast.classList.remove(
-                "show"
-            );
-
-        },2500);
-
-}
-
-
-
-/* =========================================================
-   ENROLMENT FORM
-========================================================= */
-
-function submitEnrolment(event){
-
-    event.preventDefault();
-
-
-    const name =
-        document.getElementById(
-            "studentName"
-        ).value;
-
-
-    const cls =
-        document.getElementById(
-            "studentClass"
-        ).value;
-
-
-    const phone =
-        document.getElementById(
-            "phone"
-        ).value;
-
-
-    const mode =
-        document.getElementById(
-            "mode"
-        ).value;
-
-
-    showToast(
-        "Enrolment request received!"
-    );
-
-
-    setTimeout(()=>{
-
-        alert(
-            "Welcome to English Study Point!\n\n" +
-
-            "Student: " + name + "\n" +
-
-            "Class: " + cls + "\n" +
-
-            "WhatsApp: " + phone + "\n" +
-
-            "Mode: " + mode + "\n\n" +
-
-            "Your enrolment request has been received."
-        );
-
-    },300);
-
-
-}
-
-
-
-/* =========================================================
-   INITIAL LOAD
-========================================================= */
-
-renderCourses();
-
-
-</script>
 
 </body>
 </html>
-<div class="teacher">
-  <img src="15965.png" alt="English Study Point Teacher">
-  <div>
-    <h3>Tamal Debnath</h3>
-    <p>Founder & English Educator</p>
-    <p>English Study Point</p>
+`;
+}
+
+/* =========================================================
+   HOME
+   ========================================================= */
+
+app.get("/", (req,res)=>{
+
+ const s = settings();
+
+ const courses = db.prepare(`
+   SELECT * FROM courses
+   WHERE published=1
+   ORDER BY id DESC
+   LIMIT 6
+ `).all();
+
+ const posts = db.prepare(`
+   SELECT posts.*,teachers.name AS teacher_name
+   FROM posts
+   LEFT JOIN teachers ON teachers.id=posts.teacher_id
+   ORDER BY posts.id DESC
+   LIMIT 6
+ `).all();
+
+ res.send(layout("Home",`
+
+ <section class="hero">
+   <span class="badge">PREMIUM LEARNING PLATFORM</span>
+
+   <h1>
+    Learn.<br>
+    <span class="gradient">Practice. Master.</span>
+   </h1>
+
+   <p class="muted">
+    ${esc(s.founder_bio)}
+   </p>
+
+   <a class="btn" href="/courses">
+    Explore Courses →
+   </a>
+ </section>
+
+ <section class="section">
+  <h2 class="sectionTitle">Popular Courses</h2>
+
+  <div class="grid">
+
+  ${
+    courses.length
+      ? courses.map(c=>`
+        <div class="card">
+
+         ${
+          c.thumbnail
+          ? `<img class="courseImg"
+                  src="${esc(c.thumbnail)}"
+                  alt="">`
+          : `<div class="courseImg"></div>`
+         }
+
+         <span class="badge">${esc(c.mode)}</span>
+
+         <h3 style="margin-top:10px">
+          ${esc(c.title)}
+         </h3>
+
+         <p class="muted">
+          ${esc((c.description||"").slice(0,120))}
+         </p>
+
+         <div class="row" style="margin-top:14px">
+          <span class="price">
+           ₹${Number(c.price).toLocaleString("en-IN")}
+          </span>
+          <a class="btn" href="/course/${c.id}">
+           View
+          </a>
+         </div>
+
+        </div>
+      `).join("")
+      : `<div class="card">
+          <h3>Courses coming soon</h3>
+          <p class="muted">
+           Teacher dashboard se courses publish honge.
+          </p>
+         </div>`
+  }
+
   </div>
-</div>
+ </section>
+
+ <section class="section">
+  <h2 class="sectionTitle">Founder</h2>
+
+  <div class="card founder">
+
+   <img
+    src="${esc(s.founder_photo || "/founder.jpg")}"
+    onerror="this.src='/founder.jpg'"
+    alt="Founder">
+
+   <div>
+    <span class="badge">
+     ${esc(s.founder_role)}
+    </span>
+
+    <h2 style="margin-top:9px">
+     ${esc(s.founder_name)}
+    </h2>
+
+    <p class="muted" style="margin-top:9px">
+     ${esc(s.founder_bio)}
+    </p>
+   </div>
+
+  </div>
+ </section>
+
+ <section class="section">
+  <h2 class="sectionTitle">Latest Posts</h2>
+
+  <div class="grid">
+
+   ${
+    posts.map(p=>`
+     <div class="card">
+      <small>${esc(p.teacher_name || "TAMAL")}</small>
+      <h3 style="margin:8px 0">
+       ${esc(p.title)}
+      </h3>
+      <div class="post">
+       ${esc(p.content || "")}
+      </div>
+     </div>
+    `).join("")
+   }
+
+  </div>
+ </section>
+
+ `,req));
+});
+
+/* =========================================================
+   COURSES
+   ========================================================= */
+
+app.get("/courses",(req,res)=>{
+
+ const q = req.query.q || "";
+
+ const courses = db.prepare(`
+  SELECT * FROM courses
+  WHERE published=1
+  AND (
+    title LIKE ?
+    OR category LIKE ?
+    OR description LIKE ?
+  )
+  ORDER BY id DESC
+ `).all(
+  `%${q}%`,
+  `%${q}%`,
+  `%${q}%`
+ );
+
+ res.send(layout("Courses",`
+
+ <section class="hero">
+  <h1>Courses</h1>
+  <p class="muted">
+   Online aur offline learning.
+  </p>
+
+  <form style="margin-top:18px">
+   <input
+    name="q"
+    value="${esc(q)}"
+    placeholder="Search courses..."
+   >
+  </form>
+ </section>
+
+ <div class="grid">
+
+ ${
+ courses.map(c=>`
+  <div class="card">
+
+   ${
+    c.thumbnail
+    ? `<img class="courseImg"
+            src="${esc(c.thumbnail)}">`
+    : `<div class="courseImg"></div>`
+   }
+
+   <span class="badge">
+    ${esc(c.category || "Learning")}
+   </span>
+
+   <h2 style="margin:10px 0">
+    ${esc(c.title)}
+   </h2>
+
+   <p class="muted">
+    ${esc(c.description || "")}
+   </p>
+
+   <p style="margin-top:12px">
+    <b>Mode:</b> ${esc(c.mode)}
+   </p>
+
+   <p>
+    <b>Duration:</b> ${esc(c.duration || "-")}
+   </p>
+
+   <div class="row">
+    <span class="price">
+     ₹${Number(c.price).toLocaleString("en-IN")}
+    </span>
+
+    <a class="btn" href="/course/${c.id}">
+     Details
+    </a>
+   </div>
+
+  </div>
+ `).join("")
+ }
+
+ </div>
+
+ `,req));
+});
+
+/* =========================================================
+   COURSE DETAIL
+   ========================================================= */
+
+app.get("/course/:id",(req,res)=>{
+
+ const c = db.prepare(`
+  SELECT courses.*,teachers.name AS teacher_name
+  FROM courses
+  LEFT JOIN teachers ON teachers.id=courses.teacher_id
+  WHERE courses.id=?
+ `).get(req.params.id);
+
+ if(!c){
+  return res.status(404).send(
+   layout("Not Found",`
+    <div class="card">
+     Course not found.
+    </div>
+   `,req)
+  );
+ }
+
+ const lessons = db.prepare(`
+  SELECT * FROM lessons
+  WHERE course_id=?
+  ORDER BY position,id
+ `).all(c.id);
+
+ const enrolled = req.session.studentId
+  ? db.prepare(`
+      SELECT * FROM enrollments
+      WHERE student_id=? AND course_id=?
+    `).get(req.session.studentId,c.id)
+  : null;
+
+ res.send(layout(c.title,`
+
+ <div class="card">
+
+  ${
+   c.thumbnail
+   ? `<img class="courseImg" src="${esc(c.thumbnail)}">`
+   : ""
+  }
+
+  <span class="badge">
+   ${esc(c.mode)}
+  </span>
+
+  <h1 style="margin:12px 0">
+   ${esc(c.title)}
+  </h1>
+
+  <p class="muted">
+   ${esc(c.description || "")}
+  </p>
+
+  <div class="stats">
+
+   <div class="stat">
+    Mode
+    <strong>${esc(c.mode)}</strong>
+   </div>
+
+   <div class="stat">
+    Duration
+    <strong>${esc(c.duration || "-")}</strong>
+   </div>
+
+   <div class="stat">
+    Price
+    <strong>
+     ₹${Number(c.price).toLocaleString("en-IN")}
+    </strong>
+   </div>
+
+   <div class="stat">
+    Teacher
+    <strong>${esc(c.teacher_name || "-")}</strong>
+   </div>
+
+  </div>
+
+  <h2>What you will learn</h2>
+
+  <div class="notice" style="margin-top:12px">
+   ${esc(c.syllabus || "Structured lessons, practice and tests.")}
+  </div>
+
+  ${
+   enrolled
+   ? `<div class="notice success">
+       You are enrolled in this course.
+       <br>
+       Mode: ${esc(enrolled.mode)}
+       <br>
+       Status: ${esc(enrolled.status)}
+      </div>`
+   : c.price > 0
+     ? `
+       <div class="notice">
+        <b>Choose your mode</b>
+       </div>
+
+       <a class="btn"
+          href="/buy/${c.id}?mode=ONLINE">
+          Buy Online / UPI
+       </a>
+
+       <a class="btn secondary"
+          href="/buy/${c.id}?mode=OFFLINE">
+          Offline Enrolment
+       </a>
+       `
+     : `
+       ${
+        req.seconst express = require("express");
+const session = require("express-session");
+const bcrypt = require("bcryptjs");
+const Database = require("better-sqlite3");
+const QRCode = require("qrcode");
+const path = require("path");
+const fs = require("fs");
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+/* =========================================================
+   TAMAL LEARNING PLATFORM
+   One-file connected learning platform
+   Student + Teacher + Courses + Payments + UPI + Live
+   ========================================================= */
+
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "CHANGE_THIS_SECRET_IN_REPLIT",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+      httpOnly: true,
+      sameSite: "lax"
+    }
+  })
+);
+
+/* =========================================================
+   DATABASE
+   ========================================================= */
+
+const db = new Database("tamal.db");
+
+db.pragma("journal_mode = WAL");
+
+db.exec(`
+CREATE TABLE IF NOT EXISTS settings (
+  id INTEGER PRIMARY KEY CHECK(id = 1),
+  platform_name TEXT DEFAULT 'TAMAL',
+  founder_name TEXT DEFAULT 'Founder',
+  founder_role TEXT DEFAULT 'Founder & Lead Educator',
+  founder_bio TEXT DEFAULT 'Learn. Practice. Master.',
+  founder_photo TEXT DEFAULT '/founder.jpg',
+  teacher_name TEXT DEFAULT 'TAMAL Teacher',
+  teacher_phone TEXT DEFAULT '',
+  teacher_email TEXT DEFAULT '',
+  upi_id TEXT DEFAULT '',
+  upi_name TEXT DEFAULT 'TAMAL',
+  whatsapp TEXT DEFAULT '',
+  google_map TEXT DEFAULT '',
+  instagram TEXT DEFAULT '',
+  youtube TEXT DEFAULT ''
+);
+
+CREATE TABLE IF NOT EXISTS teachers (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  email TEXT UNIQUE NOT NULL,
+  phone TEXT,
+  password TEXT NOT NULL,
+  active INTEGER DEFAULT 1,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS students (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  email TEXT UNIQUE NOT NULL,
+  phone TEXT,
+  password TEXT NOT NULL,
+  class_name TEXT,
+  school TEXT,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS courses (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  title TEXT NOT NULL,
+  description TEXT,
+  category TEXT,
+  mode TEXT DEFAULT 'ONLINE',
+  price REAL DEFAULT 0,
+  duration TEXT,
+  thumbnail TEXT,
+  syllabus TEXT,
+  teacher_id INTEGER,
+  published INTEGER DEFAULT 1,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY(teacher_id) REFERENCES teachers(id)
+);
+
+CREATE TABLE IF NOT EXISTS enrollments (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  student_id INTEGER NOT NULL,
+  course_id INTEGER NOT NULL,
+  mode TEXT DEFAULT 'ONLINE',
+  status TEXT DEFAULT 'ACTIVE',
+  start_date TEXT DEFAULT CURRENT_TIMESTAMP,
+  expiry_date TEXT,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(student_id, course_id),
+  FOREIGN KEY(student_id) REFERENCES students(id),
+  FOREIGN KEY(course_id) REFERENCES courses(id)
+);
+
+CREATE TABLE IF NOT EXISTS payments (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  student_id INTEGER NOT NULL,
+  course_id INTEGER NOT NULL,
+  amount REAL NOT NULL,
+  mode TEXT DEFAULT 'UPI',
+  utr TEXT,
+  status TEXT DEFAULT 'PENDING',
+  note TEXT,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+  verified_at TEXT,
+  FOREIGN KEY(student_id) REFERENCES students(id),
+  FOREIGN KEY(course_id) REFERENCES courses(id)
+);
+
+CREATE TABLE IF NOT EXISTS batches (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  title TEXT NOT NULL,
+  course_id INTEGER,
+  start_date TEXT,
+  class_time TEXT,
+  days TEXT,
+  mode TEXT DEFAULT 'ONLINE',
+  meeting_link TEXT,
+  capacity INTEGER DEFAULT 50,
+  status TEXT DEFAULT 'UPCOMING',
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS live_classes (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  title TEXT NOT NULL,
+  course_id INTEGER,
+  start_at TEXT NOT NULL,
+  duration INTEGER DEFAULT 60,
+  meeting_link TEXT,
+  status TEXT DEFAULT 'SCHEDULED',
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS posts (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  teacher_id INTEGER,
+  title TEXT NOT NULL,
+  content TEXT,
+  image_url TEXT,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS branches (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  address TEXT,
+  phone TEXT,
+  google_map TEXT,
+  timing TEXT,
+  active INTEGER DEFAULT 1
+);
+
+CREATE TABLE IF NOT EXISTS lessons (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  course_id INTEGER NOT NULL,
+  title TEXT NOT NULL,
+  description TEXT,
+  video_url TEXT,
+  position INTEGER DEFAULT 0,
+  published INTEGER DEFAULT 1
+);
+
+CREATE TABLE IF NOT EXISTS progress (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  student_id INTEGER NOT NULL,
+  lesson_id INTEGER NOT NULL,
+  completed INTEGER DEFAULT 0,
+  position REAL DEFAULT 0,
+  updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(student_id, lesson_id)
+);
+
+CREATE TABLE IF NOT EXISTS messages (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  student_id INTEGER,
+  teacher_id INTEGER,
+  sender_role TEXT NOT NULL,
+  message TEXT NOT NULL,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+  read_status INTEGER DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS notifications (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  student_id INTEGER,
+  teacher_id INTEGER,
+  title TEXT NOT NULL,
+  body TEXT,
+  read_status INTEGER DEFAULT 0,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+`);
+
+/* =========================================================
+   DEFAULT DATA
+   ========================================================= */
+
+const settingExists = db
+  .prepare("SELECT id FROM settings WHERE id = 1")
+  .get();
+
+if (!settingExists) {
+  db.prepare(`
+    INSERT INTO settings
+    (id, platform_name, founder_name, founder_role, founder_bio,
+     teacher_name, teacher_phone, teacher_email, upi_id, upi_name)
+    VALUES
+    (1, 'TAMAL', 'Founder', 'Founder & Lead Educator',
+     'Learn. Practice. Master.',
+     'TAMAL Teacher', '', '', '', 'TAMAL')
+  `).run();
+}
+
+/*
+   DEMO TEACHER IS CREATED ONLY IF NO TEACHER EXISTS.
+   CHANGE THIS PASSWORD AFTER FIRST LOGIN.
+*/
+const teacherCount = db
+  .prepare("SELECT COUNT(*) AS count FROM teachers")
+  .get().count;
+
+if (teacherCount === 0) {
+  const password = bcrypt.hashSync("Teacher@123", 12);
+
+  db.prepare(`
+    INSERT INTO teachers
+    (name,email,phone,password)
+    VALUES (?,?,?,?)
+  `).run(
+    "TAMAL Teacher",
+    "teacher@tamal.in",
+    "",
+    password
+  );
+}
+
+/* =========================================================
+   HELPERS
+   ========================================================= */
+
+function settings() {
+  return db.prepare("SELECT * FROM settings WHERE id = 1").get();
+}
+
+function esc(value = "") {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function teacherRequired(req, res, next) {
+  if (!req.session.teacherId) {
+    return res.redirect("/teacher/login");
+  }
+  next();
+}
+
+function studentRequired(req, res, next) {
+  if (!req.session.studentId) {
+    return res.redirect("/login");
+  }
+  next();
+}
+
+function layout(title, body, req) {
+  const s = settings();
+
+  return `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+ content="width=device-width, initial-scale=1.0,
+ maximum-scale=1.0,user-scalable=no">
+
+<title>${esc(title)} • ${esc(s.platform_name)}</title>
 
 <style>
-.teacher{
+*{
+ box-sizing:border-box;
+ margin:0;
+ padding:0;
+}
+
+body{
+ font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,
+ Arial,sans-serif;
+ background:#070710;
+ color:#fff;
+ min-height:100vh;
+}
+
+a{
+ color:inherit;
+ text-decoration:none;
+}
+
+button,input,textarea,select{
+ font:inherit;
+}
+
+button{
+ cursor:pointer;
+}
+
+.top{
+ position:sticky;
+ top:0;
+ z-index:100;
+ backdrop-filter:blur(18px);
+ background:rgba(7,7,16,.86);
+ border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+.nav{
+ max-width:1200px;
+ margin:auto;
+ min-height:66px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ padding:10px 18px;
+}
+
+.brand{
+ display:flex;
+ align-items:center;
+ gap:10px;
+ font-weight:900;
+ font-size:22px;
+}
+
+.brandIcon{
+ width:38px;
+ height:38px;
+ border-radius:13px;
+ background:linear-gradient(135deg,#7c3cff,#16a7ff);
+ display:grid;
+ place-items:center;
+ box-shadow:0 0 30px rgba(100,70,255,.45);
+}
+
+.navLinks{
+ display:flex;
+ gap:8px;
+ align-items:center;
+}
+
+.navLinks a{
+ padding:9px 12px;
+ border-radius:10px;
+ color:#cfcfe4;
+}
+
+.navLinks a:hover{
+ background:#17172a;
+ color:#fff;
+}
+
+.container{
+ max-width:1200px;
+ margin:auto;
+ padding:25px 16px 100px;
+}
+
+.hero{
+ padding:35px 0 20px;
+}
+
+.hero h1{
+ font-size:clamp(32px,6vw,64px);
+ line-height:1;
+ margin-bottom:15px;
+}
+
+.gradient{
+ background:linear-gradient(90deg,#fff,#9b7cff,#35b8ff);
+ -webkit-background-clip:text;
+ color:transparent;
+}
+
+.muted{
+ color:#9d9db2;
+}
+
+.grid{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:16px;
+}
+
+.card{
+ background:linear-gradient(
+  145deg,
+  rgba(28,24,52,.88),
+  rgba(12,12,25,.95)
+ );
+ border:1px solid rgba(255,255,255,.08);
+ border-radius:20px;
+ padding:18px;
+ box-shadow:0 20px 70px rgba(0,0,0,.25);
+}
+
+.card:hover{
+ border-color:rgba(130,95,255,.45);
+ transform:translateY(-2px);
+ transition:.2s;
+}
+
+.courseImg{
+ width:100%;
+ aspect-ratio:16/9;
+ object-fit:cover;
+ border-radius:15px;
+ background:#17172a;
+ margin-bottom:13px;
+}
+
+.btn{
+ display:inline-flex;
+ align-items:center;
+ justify-content:center;
+ gap:7px;
+ padding:12px 17px;
+ border:0;
+ border-radius:12px;
+ color:#fff;
+ background:linear-gradient(135deg,#713cff,#168fff);
+ font-weight:800;
+ margin-top:10px;
+}
+
+.btn.secondary{
+ background:#1b1b31;
+ border:1px solid rgba(255,255,255,.1);
+}
+
+.btn.danger{
+ background:#8f243c;
+}
+
+.btn.green{
+ background:linear-gradient(135deg,#00a86b,#16c784);
+}
+
+input,textarea,select{
+ width:100%;
+ padding:13px;
+ border-radius:12px;
+ border:1px solid #292941;
+ background:#0e0e1a;
+ color:#fff;
+ outline:none;
+ margin-top:7px;
+}
+
+textarea{
+ min-height:120px;
+ resize:vertical;
+}
+
+label{
+ display:block;
+ color:#aaaac0;
+ margin-top:13px;
+ font-size:14px;
+}
+
+.form{
+ max-width:600px;
+ margin:30px auto;
+}
+
+.form h2{
+ margin-bottom:15px;
+}
+
+.stats{
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:13px;
+ margin:20px 0;
+}
+
+.stat{
+ background:#111120;
+ border:1px solid #292941;
+ border-radius:17px;
+ padding:17px;
+}
+
+.stat strong{
+ display:block;
+ font-size:27px;
+ margin-top:6px;
+}
+
+.section{
+ margin-top:32px;
+}
+
+.sectionTitle{
+ font-size:24px;
+ margin-bottom:15px;
+}
+
+.row{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ gap:12px;
+ flex-wrap:wrap;
+}
+
+.badge{
+ display:inline-block;
+ padding:5px 9px;
+ border-radius:999px;
+ background:#201c40;
+ color:#a993ff;
+ font-size:12px;
+ font-weight:800;
+}
+
+.price{
+ font-size:24px;
+ font-weight:900;
+}
+
+table{
+ width:100%;
+ border-collapse:collapse;
+}
+
+th,td{
+ text-align:left;
+ padding:12px 8px;
+ border-bottom:1px solid #242438;
+ font-size:14px;
+}
+
+th{
+ color:#aaaac0;
+}
+
+.qr{
+ width:280px;
+ max-width:100%;
+ background:#fff;
+ padding:12px;
+ border-radius:16px;
+}
+
+.founder{
+ display:flex;
+ gap:20px;
+ align-items:center;
+}
+
+.founder img{
+ width:130px;
+ height:130px;
+ border-radius:50%;
+ object-fit:cover;
+ border:3px solid #7654ff;
+ box-shadow:0 0 40px rgba(118,84,255,.45);
+}
+
+.post{
+ white-space:pre-wrap;
+ line-height:1.7;
+}
+
+.bottom{
+ display:none;
+}
+
+@media(max-width:800px){
+
+ .grid{
+  grid-template-columns:1fr;
+ }
+
+ .stats{
+  grid-template-columns:repeat(2,1fr);
+ }
+
+ .navLinks{
+  display:none;
+ }
+
+ .container{
+  padding-bottom:100px;
+ }
+
+ .bottom{
   display:flex;
-  align-items:center;
-  gap:15px;
-  padding:15px;
-  border-radius:16px;
-  background:#fff;
-  box-shadow:0 5px 20px #0001;
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  z-index:200;
+  background:rgba(8,8,18,.96);
+  border-top:1px solid #292941;
+  justify-content:space-around;
+  padding:9px 4px;
+ }
+
+ .bottom a{
+  font-size:11px;
+  color:#aaaac0;
+  text-align:center;
+ }
+
+ .bottom span{
+  display:block;
+  font-size:20px;
+ }
+
+ .founder{
+  flex-direction:column;
+  text-align:center;
+ }
+
+ table{
+  font-size:12px;
+ }
+
+ .stats .stat strong{
+  font-size:22px;
+ }
 }
 
-.teacher img{
-  width:75px;
-  height:75px;
-  border-radius:50%;
-  object-fit:cover;
+.notice{
+ padding:14px;
+ border-radius:13px;
+ background:#15152a;
+ border:1px solid #2b2b45;
+ margin:12px 0;
 }
 
-.teacher h3{
-  margin:0 0 5px;
+.success{
+ border-color:#0b9d69;
+ background:#09261d;
 }
 
-.teacher p{
-  margin:3px 0;
-  color:#666;
+.warning{
+ border-color:#9b7b19;
+ background:#29220c;
+}
+
+.error{
+ border-color:#9c2b45;
+ background:#2b1019;
+}
+
+.list{
+ display:grid;
+ gap:10px;
+}
+
+.lesson{
+ padding:14px;
+ border:1px solid #27273b;
+ border-radius:13px;
+ background:#0e0e1b;
+}
+
+small{
+ color:#8f8fa5;
 }
 </style>
-add 
-img src="images/teacher.png" alt="English Study Point Teacher">
+</head>
+
+<body>
+
+<header class="top">
+ <nav class="nav">
+
+  <a href="/" class="brand">
+   <span class="brandIcon">T</span>
+   ${esc(s.platform_name)}
+  </a>
+
+  <div class="navLinks">
+   <a href="/">Home</a>
+   <a href="/courses">Courses</a>
+   <a href="/offline">Offline</a>
+   <a href="/live">Live</a>
+   ${
+     req.session.studentId
+       ? `<a href="/student">My Learning</a>
+          <a href="/logout">Logout</a>`
+       : `<a href="/login">Student Login</a>`
+   }
+   <a href="/teacher/login">Teacher</a>
+  </div>
+
+ </nav>
+</header>
+
+<main class="container">
+${body}
+</main>
+
+<div class="bottom">
+ <a href="/"><span>⌂</span>Home</a>
+ <a href="/courses"><span>▣</span>Courses</a>
+ <a href="/live"><span>◉</span>Live</a>
+ ${
+   req.session.studentId
+   ? `<a href="/student"><span>👤</span>Profile</a>`
+   : `<a href="/login"><span>→</span>Login</a>`
+ }
+</div>
+
+</body>
+</html>
+`;
+}
+
+/* =========================================================
+   HOME
+   ========================================================= */
+
+app.get("/", (req,res)=>{
+
+ const s = settings();
+
+ const courses = db.prepare(`
+   SELECT * FROM courses
+   WHERE published=1
+   ORDER BY id DESC
+   LIMIT 6
+ `).all();
+
+ const posts = db.prepare(`
+   SELECT posts.*,teachers.name AS teacher_name
+   FROM posts
+   LEFT JOIN teachers ON teachers.id=posts.teacher_id
+   ORDER BY posts.id DESC
+   LIMIT 6
+ `).all();
+
+ res.send(layout("Home",`
+
+ <section class="hero">
+   <span class="badge">PREMIUM LEARNING PLATFORM</span>
+
+   <h1>
+    Learn.<br>
+    <span class="gradient">Practice. Master.</span>
+   </h1>
+
+   <p class="muted">
+    ${esc(s.founder_bio)}
+   </p>
+
+   <a class="btn" href="/courses">
+    Explore Courses →
+   </a>
+ </section>
+
+ <section class="section">
+  <h2 class="sectionTitle">Popular Courses</h2>
+
+  <div class="grid">
+
+  ${
+    courses.length
+      ? courses.map(c=>`
+        <div class="card">
+
+         ${
+          c.thumbnail
+          ? `<img class="courseImg"
+                  src="${esc(c.thumbnail)}"
+                  alt="">`
+          : `<div class="courseImg"></div>`
+         }
+
+         <span class="badge">${esc(c.mode)}</span>
+
+         <h3 style="margin-top:10px">
+          ${esc(c.title)}
+         </h3>
+
+         <p class="muted">
+          ${esc((c.description||"").slice(0,120))}
+         </p>
+
+         <div class="row" style="margin-top:14px">
+          <span class="price">
+           ₹${Number(c.price).toLocaleString("en-IN")}
+          </span>
+          <a class="btn" href="/course/${c.id}">
+           View
+          </a>
+         </div>
+
+        </div>
+      `).join("")
+      : `<div class="card">
+          <h3>Courses coming soon</h3>
+          <p class="muted">
+           Teacher dashboard se courses publish honge.
+          </p>
+         </div>`
+  }
+
+  </div>
+ </section>
+
+ <section class="section">
+  <h2 class="sectionTitle">Founder</h2>
+
+  <div class="card founder">
+
+   <img
+    src="${esc(s.founder_photo || "/founder.jpg")}"
+    onerror="this.src='/founder.jpg'"
+    alt="Founder">
+
+   <div>
+    <span class="badge">
+     ${esc(s.founder_role)}
+    </span>
+
+    <h2 style="margin-top:9px">
+     ${esc(s.founder_name)}
+    </h2>
+
+    <p class="muted" style="margin-top:9px">
+     ${esc(s.founder_bio)}
+    </p>
+   </div>
+
+  </div>
+ </section>
+
+ <section class="section">
+  <h2 class="sectionTitle">Latest Posts</h2>
+
+  <div class="grid">
+
+   ${
+    posts.map(p=>`
+     <div class="card">
+      <small>${esc(p.teacher_name || "TAMAL")}</small>
+      <h3 style="margin:8px 0">
+       ${esc(p.title)}
+      </h3>
+      <div class="post">
+       ${esc(p.content || "")}
+      </div>
+     </div>
+    `).join("")
+   }
+
+  </div>
+ </section>
+
+ `,req));
+});
+
+/* =========================================================
+   COURSES
+   ========================================================= */
+
+app.get("/courses",(req,res)=>{
+
+ const q = req.query.q || "";
+
+ const courses = db.prepare(`
+  SELECT * FROM courses
+  WHERE published=1
+  AND (
+    title LIKE ?
+    OR category LIKE ?
+    OR description LIKE ?
+  )
+  ORDER BY id DESC
+ `).all(
+  `%${q}%`,
+  `%${q}%`,
+  `%${q}%`
+ );
+
+ res.send(layout("Courses",`
+
+ <section class="hero">
+  <h1>Courses</h1>
+  <p class="muted">
+   Online aur offline learning.
+  </p>
+
+  <form style="margin-top:18px">
+   <input
+    name="q"
+    value="${esc(q)}"
+    placeholder="Search courses..."
+   >
+  </form>
+ </section>
+
+ <div class="grid">
+
+ ${
+ courses.map(c=>`
+  <div class="card">
+
+   ${
+    c.thumbnail
+    ? `<img class="courseImg"
+            src="${esc(c.thumbnail)}">`
+    : `<div class="courseImg"></div>`
+   }
+
+   <span class="badge">
+    ${esc(c.category || "Learning")}
+   </span>
+
+   <h2 style="margin:10px 0">
+    ${esc(c.title)}
+   </h2>
+
+   <p class="muted">
+    ${esc(c.description || "")}
+   </p>
+
+   <p style="margin-top:12px">
+    <b>Mode:</b> ${esc(c.mode)}
+   </p>
+
+   <p>
+    <b>Duration:</b> ${esc(c.duration || "-")}
+   </p>
+
+   <div class="row">
+    <span class="price">
+     ₹${Number(c.price).toLocaleString("en-IN")}
+    </span>
+
+    <a class="btn" href="/course/${c.id}">
+     Details
+    </a>
+   </div>
+
+  </div>
+ `).join("")
+ }
+
+ </div>
+
+ `,req));
+});
+
+/* =========================================================
+   COURSE DETAIL
+   ========================================================= */
+
+app.get("/course/:id",(req,res)=>{
+
+ const c = db.prepare(`
+  SELECT courses.*,teachers.name AS teacher_name
+  FROM courses
+  LEFT JOIN teachers ON teachers.id=courses.teacher_id
+  WHERE courses.id=?
+ `).get(req.params.id);
+
+ if(!c){
+  return res.status(404).send(
+   layout("Not Found",`
+    <div class="card">
+     Course not found.
+    </div>
+   `,req)
+  );
+ }
+
+ const lessons = db.prepare(`
+  SELECT * FROM lessons
+  WHERE course_id=?
+  ORDER BY position,id
+ `).all(c.id);
+
+ const enrolled = req.session.studentId
+  ? db.prepare(`
+      SELECT * FROM enrollments
+      WHERE student_id=? AND course_id=?
+    `).get(req.session.studentId,c.id)
+  : null;
+
+ res.send(layout(c.title,`
+
+ <div class="card">
+
+  ${
+   c.thumbnail
+   ? `<img class="courseImg" src="${esc(c.thumbnail)}">`
+   : ""
+  }
+
+  <span class="badge">
+   ${esc(c.mode)}
+  </span>
+
+  <h1 style="margin:12px 0">
+   ${esc(c.title)}
+  </h1>
+
+  <p class="muted">
+   ${esc(c.description || "")}
+  </p>
+
+  <div class="stats">
+
+   <div class="stat">
+    Mode
+    <strong>${esc(c.mode)}</strong>
+   </div>
+
+   <div class="stat">
+    Duration
+    <strong>${esc(c.duration || "-")}</strong>
+   </div>
+
+   <div class="stat">
+    Price
+    <strong>
+     ₹${Number(c.price).toLocaleString("en-IN")}
+    </strong>
+   </div>
+
+   <div class="stat">
+    Teacher
+    <strong>${esc(c.teacher_name || "-")}</strong>
+   </div>
+
+  </div>
+
+  <h2>What you will learn</h2>
+
+  <div class="notice" style="margin-top:12px">
+   ${esc(c.syllabus || "Structured lessons, practice and tests.")}
+  </div>
+
+  ${
+   enrolled
+   ? `<div class="notice success">
+       You are enrolled in this course.
+       <br>
+       Mode: ${esc(enrolled.mode)}
+       <br>
+       Status: ${esc(enrolled.status)}
+      </div>`
+   : c.price > 0
+     ? `
+       <div class="notice">
+        <b>Choose your mode</b>
+       </div>
+
+       <a class="btn"
+          href="/buy/${c.id}?mode=ONLINE">
+          Buy Online / UPI
+       </a>
+
+       <a class="btn secondary"
+          href="/buy/${c.id}?mode=OFFLINE">
+          Offline Enrolment
+       </a>
+       `
+     : `
+       ${
+        req.se
