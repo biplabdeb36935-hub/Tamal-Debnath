@@ -4,55 +4,34 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>English Study Point | Premium English Learning</title>
+<title>English Study Point</title>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap');
-
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
 }
 
-html{
-    scroll-behavior:smooth;
-}
-
 body{
-    background:#080808;
-    color:#f5f0e6;
-    font-family:'DM Sans',sans-serif;
+    background:#07070a;
+    color:#fff;
+    font-family:Arial, sans-serif;
+    padding-bottom:80px;
 }
 
-a{
-    color:inherit;
-    text-decoration:none;
-}
-
-.container{
-    width:min(1180px,92%);
-    margin:auto;
-}
-
-/* NAVBAR */
-
-.navbar{
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    z-index:1000;
-    background:rgba(8,8,8,.78);
-    backdrop-filter:blur(18px);
-    border-bottom:1px solid rgba(255,255,255,.08);
-}
-
-.nav{
-    height:78px;
+/* HEADER */
+header{
+    height:70px;
     display:flex;
     align-items:center;
     justify-content:space-between;
+    padding:10px 18px;
+    background:#09090d;
+    border-bottom:1px solid #25252d;
+    position:sticky;
+    top:0;
+    z-index:100;
 }
 
 .logo{
@@ -61,494 +40,629 @@ a{
     gap:10px;
 }
 
-.logo-mark{
-    width:38px;
-    height:38px;
-    border:1px solid #c8a96b;
-    border-radius:50%;
-    display:grid;
-    place-items:center;
-    color:#c8a96b;
-    font-family:'Playfair Display',serif;
-    font-size:19px;
-}
-
-.logo-text{
-    font-weight:700;
-    letter-spacing:1.5px;
-    font-size:14px;
-}
-
-.nav-links{
+.logo-icon{
+    width:42px;
+    height:42px;
+    border-radius:13px;
     display:flex;
-    gap:30px;
-    font-size:14px;
-    color:#bdb8ad;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(135deg,#805cff,#4c2bd1);
+    font-size:22px;
+    font-weight:bold;
 }
 
-.nav-links a:hover{
-    color:#c8a96b;
+.logo h3{
+    font-size:11px;
 }
 
-.nav-btn{
-    padding:11px 19px;
-    border:1px solid #c8a96b;
-    border-radius:30px;
-    color:#c8a96b;
-    font-size:13px;
+.logo p{
+    font-size:9px;
+    color:#999;
+    margin-top:3px;
+}
+
+.menu{
+    width:42px;
+    height:42px;
+    border:1px solid #292933;
+    border-radius:12px;
+    background:#111117;
+    color:white;
+    font-size:20px;
+}
+
+/* MENU */
+.side-menu{
+    display:none;
+    position:fixed;
+    right:15px;
+    top:75px;
+    width:220px;
+    background:#15151c;
+    border:1px solid #292933;
+    border-radius:15px;
+    padding:10px;
+    z-index:200;
+}
+
+.side-menu.show{
+    display:block;
+}
+
+.side-menu button{
+    width:100%;
+    padding:14px;
+    text-align:left;
+    border:0;
+    background:none;
+    color:white;
+    border-radius:10px;
+}
+
+.side-menu button:hover{
+    background:#24242d;
+}
+
+/* PAGES */
+.page{
+    display:none;
+    max-width:1100px;
+    margin:auto;
+}
+
+.page.active{
+    display:block;
 }
 
 /* HERO */
-
 .hero{
-    min-height:100vh;
-    display:flex;
-    align-items:center;
-    padding:130px 0 80px;
+    padding:65px 20px 40px;
     background:
-      radial-gradient(circle at 75% 35%,rgba(200,169,107,.14),transparent 28%),
-      radial-gradient(circle at 20% 70%,rgba(200,169,107,.06),transparent 25%);
+    radial-gradient(circle at 80% 15%,rgba(121,87,255,.25),transparent 35%);
 }
 
-.hero-grid{
-    display:grid;
-    grid-template-columns:1.2fr .8fr;
-    gap:70px;
-    align-items:center;
-}
-
-.eyebrow{
-    color:#c8a96b;
-    letter-spacing:4px;
-    font-size:12px;
-    text-transform:uppercase;
-    margin-bottom:22px;
+.tag{
+    color:#a98cff;
+    font-size:11px;
+    font-weight:bold;
+    letter-spacing:1.5px;
 }
 
 .hero h1{
-    font-family:'Playfair Display',serif;
-    font-size:clamp(48px,7vw,88px);
-    line-height:.98;
-    font-weight:600;
+    font-size:clamp(38px,9vw,72px);
+    line-height:1.03;
+    margin:15px 0;
 }
 
 .hero h1 span{
-    color:#c8a96b;
+    color:#a98cff;
 }
 
 .hero p{
-    margin-top:28px;
-    color:#aaa59b;
-    max-width:560px;
-    line-height:1.8;
+    color:#aaa;
+    max-width:650px;
     font-size:16px;
 }
 
-.hero-buttons{
+.buttons{
     display:flex;
-    gap:14px;
-    margin-top:34px;
+    gap:10px;
     flex-wrap:wrap;
+    margin-top:25px;
 }
 
 .btn{
-    padding:15px 25px;
-    border-radius:30px;
-    border:1px solid #c8a96b;
-    font-size:14px;
-    transition:.3s;
+    padding:13px 18px;
+    border-radius:12px;
+    border:0;
+    font-weight:bold;
 }
 
-.btn-primary{
-    background:#c8a96b;
-    color:#080808;
+.primary{
+    background:linear-gradient(135deg,#805cff,#5936df);
+    color:white;
 }
 
-.btn:hover{
-    transform:translateY(-3px);
-}
-
-.btn-outline{
-    color:#c8a96b;
-}
-
-/* HERO CARD */
-
-.hero-card{
-    min-height:450px;
-    border:1px solid rgba(200,169,107,.35);
-    border-radius:28px;
-    padding:30px;
-    display:flex;
-    flex-direction:column;
-    justify-content:space-between;
-    background:linear-gradient(145deg,#15140f,#0b0b0b);
-    box-shadow:0 30px 80px rgba(0,0,0,.5);
-}
-
-.card-number{
-    color:#c8a96b;
-    font-size:12px;
-    letter-spacing:3px;
-}
-
-.hero-card h2{
-    font-family:'Playfair Display',serif;
-    font-size:40px;
-}
-
-.hero-card p{
-    font-size:14px;
-    margin:0;
-}
-
-/* SECTIONS */
-
-section{
-    padding:110px 0;
-}
-
-.section-head{
-    display:flex;
-    justify-content:space-between;
-    align-items:end;
-    margin-bottom:45px;
-    gap:30px;
-}
-
-.section-head h2{
-    font-family:'Playfair Display',serif;
-    font-size:48px;
-}
-
-.section-head p{
-    color:#969188;
-    max-width:400px;
-    line-height:1.7;
-}
-
-/* COURSES */
-
-.courses{
-    background:#0c0c0c;
-}
-
-.course-grid{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:20px;
-}
-
-.course{
-    padding:30px;
-    min-height:390px;
-    border:1px solid #25231f;
-    border-radius:22px;
-    background:linear-gradient(145deg,#12110f,#0a0a0a);
-    transition:.35s;
-}
-
-.course:hover{
-    transform:translateY(-8px);
-    border-color:#c8a96b;
-}
-
-.course.featured{
-    border-color:#c8a96b;
-}
-
-.course-tag{
-    color:#c8a96b;
-    font-size:11px;
-    letter-spacing:2px;
-    text-transform:uppercase;
-}
-
-.course h3{
-    font-family:'Playfair Display',serif;
-    font-size:30px;
-    margin:20px 0 10px;
-}
-
-.price{
-    font-size:28px;
-    font-weight:700;
-}
-
-.duration{
-    color:#77736c;
-    font-size:13px;
-    margin-top:7px;
-}
-
-.course ul{
-    list-style:none;
-    margin:25px 0;
-}
-
-.course li{
-    color:#aaa59b;
-    font-size:14px;
-    margin:11px 0;
-}
-
-.course li::before{
-    content:"✓";
-    color:#c8a96b;
-    margin-right:9px;
+.secondary{
+    background:#17171e;
+    border:1px solid #2a2a34;
+    color:white;
 }
 
 /* STATS */
-
 .stats{
     display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:15px;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    margin-top:30px;
 }
 
 .stat{
-    border:1px solid #24221e;
-    border-radius:20px;
-    padding:30px;
-    text-align:center;
+    padding:15px;
+    background:#101016;
+    border:1px solid #272730;
+    border-radius:15px;
 }
 
-.stat strong{
+.stat b{
+    font-size:18px;
+}
+
+.stat small{
     display:block;
-    font-family:'Playfair Display',serif;
-    color:#c8a96b;
-    font-size:42px;
+    color:#999;
+    font-size:10px;
+    margin-top:4px;
 }
 
-.stat span{
-    color:#88847c;
-    font-size:13px;
+/* SECTION */
+.section{
+    padding:35px 20px;
 }
 
-/* ABOUT */
+.section-title{
+    color:#a98cff;
+    font-size:11px;
+    font-weight:bold;
+    letter-spacing:1.5px;
+}
 
-.about-grid{
+.section h2{
+    margin-top:5px;
+    margin-bottom:20px;
+}
+
+/* COURSES */
+.course-grid{
     display:grid;
-    grid-template-columns:.8fr 1.2fr;
-    gap:70px;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+}
+
+.course{
+    min-height:260px;
+    padding:20px;
+    border:1px solid #292933;
+    border-radius:18px;
+    background:linear-gradient(145deg,#121218,#0d0d11);
+    display:flex;
+    flex-direction:column;
+}
+
+.badge{
+    width:max-content;
+    padding:5px 8px;
+    border-radius:7px;
+    background:#211a39;
+    color:#ad96ff;
+    font-size:9px;
+    font-weight:bold;
+}
+
+.course h3{
+    margin:20px 0 8px;
+    font-size:20px;
+}
+
+.course p{
+    color:#999;
+    font-size:12px;
+}
+
+.course-info{
+    margin-top:12px;
+    color:#bbb;
+    font-size:10px;
+}
+
+.course-bottom{
+    margin-top:auto;
+    padding-top:20px;
+    display:flex;
+    justify-content:space-between;
     align-items:center;
 }
 
-.teacher-box{
-    min-height:470px;
-    border-radius:28px;
-    border:1px solid #2c2922;
-    background:
-      linear-gradient(145deg,#1a1813,#0b0b0b);
-    display:flex;
-    align-items:end;
-    padding:30px;
+.price{
+    font-size:21px;
+    font-weight:bold;
 }
 
-.teacher-box div{
-    background:rgba(0,0,0,.6);
-    padding:18px 20px;
-    border-radius:15px;
-    width:100%;
+.view{
+    padding:9px 12px;
+    border-radius:9px;
+    border:1px solid #44356f;
+    background:#181329;
+    color:white;
 }
 
-.teacher-box small{
-    color:#c8a96b;
-}
-
-.about-text h2{
-    font-family:'Playfair Display',serif;
-    font-size:50px;
-}
-
-.about-text p{
-    color:#9c978e;
-    line-height:1.9;
-    margin-top:22px;
-}
-
-/* BRANCHES */
-
-.branches{
-    background:#0c0c0c;
-}
-
-.branch-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:20px;
-}
-
-.branch{
-    border:1px solid #27241f;
-    padding:35px;
+/* FEATURES */
+.features{
+    margin:20px;
+    padding:25px 20px;
+    background:#101016;
+    border:1px solid #292933;
     border-radius:22px;
 }
 
-.branch h3{
-    font-family:'Playfair Display',serif;
-    font-size:30px;
-    margin-bottom:12px;
+.feature-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:12px;
 }
 
-.branch p{
-    color:#99958c;
-    line-height:1.7;
+.feature{
+    background:#0c0c11;
+    border:1px solid #292933;
+    padding:17px;
+    border-radius:15px;
 }
 
-/* CTA */
-
-.cta{
-    text-align:center;
-    padding:130px 0;
+.feature-icon{
+    font-size:24px;
 }
 
-.cta h2{
-    font-family:'Playfair Display',serif;
-    font-size:clamp(42px,6vw,72px);
+.feature h3{
+    font-size:14px;
+    margin:10px 0 5px;
 }
 
-.cta p{
-    color:#918d84;
-    margin:20px auto 30px;
-    max-width:500px;
+.feature p{
+    font-size:11px;
+    color:#999;
 }
 
-/* FOOTER */
-
-footer{
-    border-top:1px solid #20201e;
-    padding:35px 0;
+/* REVIEWS */
+.reviews{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:15px;
 }
 
-.footer{
-    display:flex;
-    justify-content:space-between;
-    gap:20px;
-    color:#77736c;
+.review{
+    background:#101016;
+    border:1px solid #292933;
+    padding:20px;
+    border-radius:18px;
+}
+
+.stars{
+    color:#ffd83d;
+    letter-spacing:2px;
+}
+
+.review p{
+    margin:12px 0;
+    color:#ccc;
     font-size:13px;
 }
 
-.gold{
-    color:#c8a96b;
+.review small{
+    color:#888;
+}
+
+/* PAGE TITLE */
+.page-title{
+    padding:55px 20px 25px;
+}
+
+.page-title h1{
+    font-size:45px;
+    margin:10px 0;
+}
+
+.page-title p{
+    color:#999;
+}
+
+/* FILTER */
+.filters{
+    display:flex;
+    gap:8px;
+    overflow:auto;
+    padding:0 20px 20px;
+}
+
+.filter{
+    white-space:nowrap;
+    padding:10px 15px;
+    border-radius:11px;
+    border:1px solid #292933;
+    background:#111117;
+    color:#aaa;
+}
+
+.filter.active{
+    background:#2a204c;
+    color:white;
+    border-color:#654ca8;
+}
+
+/* RESULTS */
+.results{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+    padding:20px;
+}
+
+.result{
+    padding:22px;
+    background:#101016;
+    border:1px solid #292933;
+    border-radius:18px;
+}
+
+.result b{
+    color:#a98cff;
+    font-size:30px;
+}
+
+.result span{
+    display:block;
+    font-weight:bold;
+}
+
+.result small{
+    color:#999;
+}
+
+/* TEACHER */
+.teacher{
+    margin:0 20px;
+    padding:25px;
+    display:flex;
+    gap:25px;
+    align-items:center;
+    background:#111117;
+    border:1px solid #292933;
+    border-radius:20px;
+}
+
+.teacher img{
+    width:140px;
+    height:140px;
+    object-fit:cover;
+    border-radius:28px;
+    border:2px solid #805cff;
+}
+
+.teacher h2{
+    margin-bottom:5px;
+}
+
+.teacher p{
+    color:#999;
+}
+
+/* INFO */
+.info{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:15px;
+    padding:20px;
+}
+
+.info-box{
+    padding:22px;
+    background:#101016;
+    border:1px solid #292933;
+    border-radius:18px;
+}
+
+.info-box p{
+    color:#999;
+    margin-top:7px;
+}
+
+/* CONTACT */
+.form{
+    margin:0 20px;
+    padding:22px;
+    background:#101016;
+    border:1px solid #292933;
+    border-radius:20px;
+}
+
+.form label{
+    display:block;
+    font-size:12px;
+    font-weight:bold;
+    margin-bottom:15px;
+}
+
+.form input,
+.form select{
+    width:100%;
+    margin-top:7px;
+    padding:13px;
+    background:#08080c;
+    color:white;
+    border:1px solid #292933;
+    border-radius:10px;
+}
+
+.form button{
+    width:100%;
+}
+
+/* BRANCH */
+.branch{
+    margin:20px;
+    padding:50px 20px;
+    text-align:center;
+    background:#101016;
+    border:1px solid #292933;
+    border-radius:20px;
+}
+
+.branch-icon{
+    font-size:40px;
+}
+
+/* BOTTOM NAV */
+.bottom{
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    height:72px;
+    background:rgba(8,8,11,.97);
+    border-top:1px solid #292933;
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    z-index:100;
+}
+
+.bottom button{
+    border:0;
+    background:none;
+    color:#777;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    gap:4px;
+}
+
+.bottom button.active{
+    color:white;
+}
+
+.bottom span{
+    font-size:20px;
+}
+
+.bottom small{
+    font-size:9px;
+}
+
+/* WHATSAPP */
+.whatsapp{
+    position:fixed;
+    right:18px;
+    bottom:88px;
+    width:52px;
+    height:52px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#32e875;
+    color:#06240f;
+    text-decoration:none;
+    font-size:23px;
+    z-index:90;
+}
+
+/* MODAL */
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.8);
+    display:none;
+    align-items:flex-end;
+    z-index:500;
+}
+
+.modal.show{
+    display:flex;
+}
+
+.modal-box{
+    width:100%;
+    max-height:85vh;
+    overflow:auto;
+    background:#14141b;
+    border:1px solid #292933;
+    border-radius:25px 25px 0 0;
+    padding:25px;
+}
+
+.close{
+    float:right;
+    background:#24242d;
+    color:white;
+    border:0;
+    border-radius:50%;
+    width:35px;
+    height:35px;
+    font-size:20px;
+}
+
+.modal-box h2{
+    margin:15px 0;
+}
+
+.modal-box p{
+    color:#aaa;
+}
+
+.modal-box li{
+    padding:8px 0;
+    border-bottom:1px solid #292933;
+    list-style:none;
 }
 
 /* MOBILE */
-
 @media(max-width:800px){
 
-    .nav{
-        height:68px;
-    }
-
-    .nav-links{
-        display:none;
-    }
-
-    .nav-btn{
-        padding:9px 14px;
-        font-size:11px;
-    }
-
-    .hero{
-        padding-top:115px;
-    }
-
-    .hero-grid,
-    .about-grid{
-        grid-template-columns:1fr;
-        gap:35px;
-    }
-
-    .hero-card{
-        min-height:330px;
-    }
-
-    section{
-        padding:75px 0;
-    }
-
-    .section-head{
-        display:block;
-    }
-
-    .section-head h2{
-        font-size:40px;
-        margin-bottom:15px;
-    }
-
     .course-grid{
-        grid-template-columns:1fr 1fr;
+        grid-template-columns:repeat(2,1fr);
     }
 
-    .course{
-        padding:22px;
-        min-height:360px;
+    .feature-grid{
+        grid-template-columns:repeat(2,1fr);
     }
 
-    .course h3{
-        font-size:25px;
-    }
-
-    .stats{
-        grid-template-columns:1fr 1fr;
-    }
-
-    .branch-grid{
-        grid-template-columns:1fr 1fr;
-    }
-
-    .about-text h2{
-        font-size:40px;
+    .results{
+        grid-template-columns:repeat(2,1fr);
     }
 }
 
-@media(max-width:520px){
-
-    .logo-text{
-        font-size:11px;
-    }
-
-    .hero h1{
-        font-size:52px;
-    }
-
-    .hero-card{
-        min-height:300px;
-    }
+@media(max-width:550px){
 
     .course-grid{
-        grid-template-columns:1fr 1fr;
-        gap:10px;
-    }
-
-    .course{
-        padding:18px;
-        min-height:340px;
-    }
-
-    .course h3{
-        font-size:22px;
-    }
-
-    .price{
-        font-size:23px;
-    }
-
-    .course li{
-        font-size:12px;
-    }
-
-    .stats{
-        grid-template-columns:1fr 1fr;
-    }
-
-    .branch-grid{
         grid-template-columns:1fr;
     }
 
-    .footer{
+    .hero{
+        padding-top:45px;
+    }
+
+    .hero h1{
+        font-size:42px;
+    }
+
+    .stats{
+        grid-template-columns:1fr;
+    }
+
+    .feature-grid{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .reviews{
+        grid-template-columns:1fr;
+    }
+
+    .teacher{
         flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .teacher img{
+        width:115px;
+        height:115px;
+    }
+
+    .info{
+        grid-template-columns:1fr;
+    }
+
+    .results{
+        grid-template-columns:1fr 1fr;
     }
 }
 </style>
@@ -556,368 +670,976 @@ footer{
 
 <body>
 
-<!-- NAVIGATION -->
+<!-- HEADER -->
+<header>
 
-<header class="navbar">
-<div class="container nav">
+<div class="logo">
+    <div class="logo-icon">E</div>
 
-<a href="#" class="logo">
-<div class="logo-mark">E</div>
-<div class="logo-text">ENGLISH STUDY POINT</div>
-</a>
-
-<nav class="nav-links">
-<a href="#courses">Courses</a>
-<a href="#about">About</a>
-<a href="#results">Results</a>
-<a href="#branches">Branches</a>
-</nav>
-
-<a href="#contact" class="nav-btn">ENROL NOW</a>
-
+    <div>
+        <h3>ENGLISH STUDY POINT</h3>
+        <p>Learn. Practise. Master.</p>
+    </div>
 </div>
+
+<button class="menu" onclick="toggleMenu()">☰</button>
+
 </header>
 
+<!-- SIDE MENU -->
+<div class="side-menu" id="sideMenu">
 
-<!-- HERO -->
+<button onclick="openPage('home')">⌂ Home</button>
+<button onclick="openPage('courses')">▣ Courses</button>
+<button onclick="openPage('results')">🏆 Results</button>
+<button onclick="openPage('about')">ⓘ About</button>
+<button onclick="openPage('contact')">☎ Contact</button>
 
-<main>
+</div>
 
-<section class="hero">
-<div class="container hero-grid">
 
-<div>
-<div class="eyebrow">Premium English Education</div>
+<!-- HOME -->
+<section class="page active" id="home">
+
+<div class="hero">
+
+<div class="tag">
+🎓 ENGLISH GRAMMAR LEARNING PLATFORM
+</div>
 
 <h1>
-Master English.<br>
+Master English Grammar.
+<br>
 <span>Build Confidence.</span>
 </h1>
 
 <p>
-Structured English grammar courses designed for students
-of Classes 8–12, with focused learning, practice and expert guidance.
+Simple explanations, regular practice and examination-focused
+learning for Classes 9–12.
 </p>
 
-<div class="hero-buttons">
-<a href="#courses" class="btn btn-primary">Explore Courses</a>
-<a href="#about" class="btn btn-outline">Meet Your Teacher</a>
-</div>
-</div>
+<div class="buttons">
 
-<div class="hero-card">
+<button class="btn primary"
+onclick="openPage('courses')">
+Explore Courses
+</button>
 
-<div class="card-number">ENGLISH STUDY POINT / 01</div>
+<button class="btn secondary"
+onclick="openPage('about')">
+Meet Your Teacher
+</button>
 
-<div>
-<h2>Learn.<br>Practise.<br>Master.</h2>
-
-<p>
-Online + Offline learning designed
-to make English grammar simple and clear.
-</p>
-</div>
-
-<a href="#courses" class="gold">VIEW ALL COURSES →</a>
-
-</div>
-
-</div>
-</section>
-
-
-<!-- COURSES -->
-
-<section class="courses" id="courses">
-<div class="container">
-
-<div class="section-head">
-<div>
-<div class="eyebrow">Our Courses</div>
-<h2>Choose Your Path.</h2>
-</div>
-
-<p>
-From individual grammar topics to complete grammar programmes,
-choose the level that fits your learning goals.
-</p>
-</div>
-
-<div class="course-grid">
-
-<article class="course">
-<div class="course-tag">Foundation</div>
-<h3>Basic Grammar</h3>
-<div class="price">₹2,000</div>
-<div class="duration">10 Days · Online + Offline</div>
-
-<ul>
-<li>Tenses</li>
-<li>Articles</li>
-<li>Modals</li>
-<li>Prepositions</li>
-<li>Concord</li>
-</ul>
-
-<a href="#contact" class="gold">ENROL NOW →</a>
-</article>
-
-
-<article class="course featured">
-<div class="course-tag">Most Popular</div>
-<h3>Intermediate</h3>
-<div class="price">₹3,000</div>
-<div class="duration">15 Days · Online + Offline</div>
-
-<ul>
-<li>Complete Tenses</li>
-<li>Voice</li>
-<li>Narration</li>
-<li>Determiners</li>
-<li>Transformation</li>
-</ul>
-
-<a href="#contact" class="gold">ENROL NOW →</a>
-</article>
-
-
-<article class="course">
-<div class="course-tag">Advanced</div>
-<h3>Grammar Mastery</h3>
-<div class="price">₹4,000</div>
-<div class="duration">20 Days · Online + Offline</div>
-
-<ul>
-<li>Advanced Grammar</li>
-<li>Clauses</li>
-<li>Conditionals</li>
-<li>Error Correction</li>
-<li>Exam Practice</li>
-</ul>
-
-<a href="#contact" class="gold">ENROL NOW →</a>
-</article>
-
-
-<article class="course">
-<div class="course-tag">Masterclass</div>
-<h3>Tenses</h3>
-<div class="price">₹799</div>
-<div class="duration">3 Days</div>
-
-<ul>
-<li>All Tenses</li>
-<li>Usage</li>
-<li>Common Errors</li>
-<li>Practice</li>
-</ul>
-
-<a href="#contact" class="gold">ENROL NOW →</a>
-</article>
-
-
-<article class="course">
-<div class="course-tag">Masterclass</div>
-<h3>Narration</h3>
-<div class="price">₹999</div>
-<div class="duration">4 Days</div>
-
-<ul>
-<li>Statements</li>
-<li>Questions</li>
-<li>Commands</li>
-<li>Practice</li>
-</ul>
-
-<a href="#contact" class="gold">ENROL NOW →</a>
-</article>
-
-
-<article class="course">
-<div class="course-tag">Masterclass</div>
-<h3>Voice</h3>
-<div class="price">₹799</div>
-<div class="duration">3 Days</div>
-
-<ul>
-<li>Active Voice</li>
-<li>Passive Voice</li>
-<li>Modal Verbs</li>
-<li>Exam Practice</li>
-</ul>
-
-<a href="#contact" class="gold">ENROL NOW →</a>
-</article>
-
-</div>
-</div>
-</section>
-
-
-<!-- RESULTS -->
-
-<section id="results">
-<div class="container">
-
-<div class="section-head">
-<div>
-<div class="eyebrow">Student Results</div>
-<h2>Performance Matters.</h2>
-</div>
 </div>
 
 <div class="stats">
 
 <div class="stat">
-<strong>95+</strong>
-<span>English Score</span>
+<b>95/100</b>
+<small>English — Class 10 Board</small>
 </div>
 
 <div class="stat">
-<strong>99+</strong>
-<span>Highest Score</span>
+<b>99/100</b>
+<small>Social Science — Class 10 Board</small>
 </div>
 
 <div class="stat">
-<strong>15+</strong>
-<span>80+ Scorers</span>
-</div>
-
-<div class="stat">
-<strong>11+</strong>
-<span>90+ Scorers</span>
+<b>15+</b>
+<small>Students scoring 80+</small>
 </div>
 
 </div>
 
 </div>
+
+
+<div class="section">
+
+<div class="section-title">
+POPULAR COURSES
+</div>
+
+<h2>
+Learn individual grammar topics
+</h2>
+
+<div class="course-grid" id="homeCourses"></div>
+
+</div>
+
+
+<div class="features">
+
+<div class="section-title">
+WHY STUDENTS CHOOSE US
+</div>
+
+<h2>Learn. Practise. Master.</h2>
+
+<div class="feature-grid">
+
+<div class="feature">
+<div class="feature-icon">📚</div>
+<h3>Study Material</h3>
+<p>Easy notes and structured lessons.</p>
+</div>
+
+<div class="feature">
+<div class="feature-icon">📝</div>
+<h3>Practice Sets</h3>
+<p>Questions for regular practice.</p>
+</div>
+
+<div class="feature">
+<div class="feature-icon">💬</div>
+<h3>Doubt Support</h3>
+<p>Get help with difficult topics.</p>
+</div>
+
+<div class="feature">
+<div class="feature-icon">🏆</div>
+<h3>Exam Focus</h3>
+<p>Board-oriented revision.</p>
+</div>
+
+</div>
+
+</div>
+
+
+<div class="section">
+
+<div class="section-title">
+STUDENT REVIEWS
+</div>
+
+<div class="reviews">
+
+<div class="review">
+
+<div class="stars">★★★★★</div>
+
+<p>
+“The explanation of Tenses became much easier after joining
+the course. The practice questions were very helpful.”
+</p>
+
+<small>— Class 10 Student</small>
+
+</div>
+
+<div class="review">
+
+<div class="stars">★★★★★</div>
+
+<p>
+“The narration classes helped me understand the rules clearly
+and solve questions on my own.”
+</p>
+
+<small>— Class 10 Student</small>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- COURSES -->
+<section class="page" id="courses">
+
+<div class="page-title">
+
+<div class="section-title">COURSES</div>
+
+<h1>Choose your course</h1>
+
+<p>
+Start with the level that matches your preparation.
+</p>
+
+</div>
+
+<div class="filters">
+
+<button class="filter active"
+onclick="filterCourse('all',this)">
+All
+</button>
+
+<button class="filter"
+onclick="filterCourse('basic',this)">
+Basic
+</button>
+
+<button class="filter"
+onclick="filterCourse('intermediate',this)">
+Intermediate
+</button>
+
+<button class="filter"
+onclick="filterCourse('masterclass',this)">
+Masterclass
+</button>
+
+</div>
+
+<div class="course-grid"
+id="allCourses"
+style="padding:20px">
+</div>
+
+</section>
+
+
+<!-- RESULTS -->
+<section class="page" id="results">
+
+<div class="page-title">
+
+<div class="section-title">RESULTS</div>
+
+<h1>Student Results</h1>
+
+<p>
+Selected achievements and examination performance.
+</p>
+
+</div>
+
+<div class="results">
+
+<div class="result">
+<b>95/100</b>
+<span>English</span>
+<small>Class 10 Board</small>
+</div>
+
+<div class="result">
+<b>99/100</b>
+<span>Social Science</span>
+<small>Class 10 Board</small>
+</div>
+
+<div class="result">
+<b>15+</b>
+<span>Students</span>
+<small>Scoring 80+</small>
+</div>
+
+<div class="result">
+<b>11+</b>
+<span>Students</span>
+<small>Scoring 90+</small>
+</div>
+
+</div>
+
 </section>
 
 
 <!-- ABOUT -->
+<section class="page" id="about">
 
-<section id="about">
-<div class="container about-grid">
+<div class="page-title">
 
-<div class="teacher-box">
+<div class="section-title">ABOUT</div>
+
+<h1>Meet Your Teacher</h1>
+
+<p>
+Founder & English Educator at English Study Point.
+</p>
+
+</div>
+
+<div class="teacher">
+
+<!-- YOUR TEACHER PHOTO -->
+<img src="teacher.jpg" alt="Teacher">
+
 <div>
-<small>FOUNDER & ENGLISH EDUCATOR</small>
-<h3>Tamal Debnath</h3>
-</div>
-</div>
 
-<div class="about-text">
-<div class="eyebrow">About English Study Point</div>
-
-<h2>English made simple.</h2>
+<h2>Tamal Debnath</h2>
 
 <p>
-English Study Point focuses on helping students understand
-English through clear explanations, structured grammar lessons,
-regular practice and examination-focused preparation.
+Founder & English Educator
 </p>
+
+<br>
 
 <p>
-Students can choose from individual grammar masterclasses,
-complete grammar programmes and board-focused learning.
+Helping students understand English grammar through simple
+explanations, regular practice and examination-focused learning.
 </p>
 
-<a href="#contact" class="btn btn-outline"
-style="display:inline-block;margin-top:25px;">
-START LEARNING
-</a>
 </div>
 
 </div>
+
+
+<div class="info">
+
+<div class="info-box">
+<h3>📚 Board Preparation</h3>
+<p>Focused preparation for Classes 9–12.</p>
+</div>
+
+<div class="info-box">
+<h3>📖 Foundation English</h3>
+<p>Build your English grammar from the basics.</p>
+</div>
+
+<div class="info-box">
+<h3>💻 Online + Offline</h3>
+<p>Choose online or physical classes.</p>
+</div>
+
+<div class="info-box">
+<h3>📍 Kulai Branch</h3>
+<p>Enquire about current class schedules.</p>
+</div>
+
+</div>
+
 </section>
 
 
-<!-- BRANCHES -->
+<!-- CONTACT -->
+<section class="page" id="contact">
 
-<section class="branches" id="branches">
-<div class="container">
+<div class="page-title">
 
-<div class="section-head">
-<div>
-<div class="eyebrow">Our Centres</div>
-<h2>Find Us.</h2>
-</div>
+<div class="section-title">
+CONTACT / ENROL
 </div>
 
-<div class="branch-grid">
+<h1>Start Learning</h1>
 
-<div class="branch">
-<div class="course-tag">Branch 01</div>
-<h3>Kulai</h3>
 <p>
-Thakur Palli<br>
-Near Kulai Kalibari
+Choose a course and send your enrolment request.
 </p>
-</div>
-
-<div class="branch">
-<div class="course-tag">Branch 02</div>
-<h3>Ambassa</h3>
-<p>
-Ambassa Bazar<br>
-Near Panchash Chowmuhani
-</p>
-</div>
 
 </div>
+
+
+<form class="form" onsubmit="submitForm(event)">
+
+<label>
+Student Name
+<input id="name"
+required
+placeholder="Your name">
+</label>
+
+<label>
+Class
+
+<select id="class" required>
+
+<option value="">
+Choose class
+</option>
+
+<option>Class 9</option>
+<option>Class 10</option>
+<option>Class 11</option>
+<option>Class 12</option>
+
+</select>
+
+</label>
+
+
+<label>
+School
+
+<input
+id="school"
+placeholder="School name">
+
+</label>
+
+
+<label>
+Phone / WhatsApp
+
+<input
+id="phone"
+required
+placeholder="Phone / WhatsApp">
+
+</label>
+
+
+<label>
+Preferred Class Time
+
+<select id="time">
+
+<option>Morning</option>
+<option>Afternoon</option>
+<option>Evening</option>
+
+</select>
+
+</label>
+
+
+<label>
+Mode
+
+<select id="mode">
+
+<option>ONLINE</option>
+<option>OFFLINE</option>
+
+</select>
+
+</label>
+
+
+<button class="btn primary" type="submit">
+Send Enrolment Request
+</button>
+
+</form>
+
+<div
+id="message"
+style="margin:20px">
 </div>
+
 </section>
 
 
-<!-- CTA -->
+<!-- BRANCH -->
+<section class="page" id="branch">
 
-<section class="cta" id="contact">
-<div class="container">
+<div class="page-title">
 
-<div class="eyebrow">Start Today</div>
+<div class="section-title">
+BRANCHES
+</div>
 
-<h2>Your English.<br>Elevated.</h2>
+<h1>Our Centres</h1>
+
+</div>
+
+<div class="branch">
+
+<div class="branch-icon">
+📍
+</div>
+
+<h2>Kulai Branch</h2>
 
 <p>
-Choose your course and take the next step
-towards stronger English and greater confidence.
+Contact the centre for current offline class timing
+and availability.
 </p>
 
-<div class="hero-buttons" style="justify-content:center;">
+<br>
 
+<button
+class="btn primary"
+onclick="openPage('contact')">
+Enquire Now
+</button>
+
+</div>
+
+</section>
+
+
+<!-- BOTTOM NAV -->
+<nav class="bottom">
+
+<button
+class="active"
+data-page="home"
+onclick="openPage('home')">
+
+<span>⌂</span>
+<small>Home</small>
+
+</button>
+
+
+<button
+data-page="courses"
+onclick="openPage('courses')">
+
+<span>▣</span>
+<small>Courses</small>
+
+</button>
+
+
+<button
+data-page="results"
+onclick="openPage('results')">
+
+<span>🏆</span>
+<small>Results</small>
+
+</button>
+
+
+<button
+data-page="about"
+onclick="openPage('about')">
+
+<span>ⓘ</span>
+<small>About</small>
+
+</button>
+
+
+<button
+data-page="contact"
+onclick="openPage('contact')">
+
+<span>☎</span>
+<small>Contact</small>
+
+</button>
+
+</nav>
+
+
+<!-- WHATSAPP -->
 <a
-href="https://wa.me/91XXXXXXXXXX?text=Hello%20English%20Study%20Point%2C%20I%20want%20to%20enrol%20in%20a%20course."
-class="btn btn-primary">
-WhatsApp Enquiry
+class="whatsapp"
+href="https://wa.me/919999999999"
+target="_blank">
+
+💬
+
 </a>
 
-<a href="mailto:your@email.com" class="btn btn-outline">
-Email Us
-</a>
+
+<!-- COURSE MODAL -->
+<div
+class="modal"
+id="modal">
+
+<div class="modal-box">
+
+<button
+class="close"
+onclick="closeModal()">
+×
+</button>
+
+<div id="modalContent"></div>
 
 </div>
 
 </div>
-</section>
-
-</main>
 
 
-<!-- FOOTER -->
+<script>
 
-<footer>
-<div class="container footer">
+const courses=[
 
-<div>
-© 2026 <span class="gold">English Study Point</span>
+{
+category:"basic",
+title:"Basic Grammar Course",
+duration:"10 Days",
+price:2000,
+description:
+"Build a strong English grammar foundation from the basics.",
+topics:[
+"Tenses",
+"Subject-Verb Concord",
+"Articles",
+"Basic Practice",
+"Worksheets",
+"Doubt Support"
+]
+},
+
+{
+category:"intermediate",
+title:"Intermediate Grammar Course",
+duration:"15 Days",
+price:3000,
+description:
+"Move beyond the basics with structured grammar practice.",
+topics:[
+"Tenses",
+"Articles & Determiners",
+"Subject-Verb Concord",
+"Prepositions",
+"Clauses",
+"Transformation",
+"Practice Sets"
+]
+},
+
+{
+category:"masterclass",
+title:"Tense Masterclass",
+duration:"3 Days",
+price:799,
+description:
+"Understand present, past, future, perfect and continuous forms.",
+topics:[
+"Present Tense",
+"Past Tense",
+"Future Tense",
+"Perfect Tenses",
+"Continuous Tenses",
+"Practice Questions",
+"Notes/PDF",
+"Final Test"
+]
+},
+
+{
+category:"masterclass",
+title:"Articles & Determiners",
+duration:"2 Days",
+price:499,
+description:
+"Master A, An, The and determiners.",
+topics:[
+"A / An / The",
+"Determiners",
+"Common Errors",
+"Exam Questions",
+"Practice Set"
+]
+},
+
+{
+category:"masterclass",
+title:"Subject-Verb Concord",
+duration:"2 Days",
+price:499,
+description:
+"Learn subject-verb agreement rules.",
+topics:[
+"Basic Rules",
+"Singular / Plural",
+"Either / Neither",
+"Collective Nouns",
+"Error Correction",
+"Advanced Practice"
+]
+},
+
+{
+category:"masterclass",
+title:"Voice Masterclass",
+duration:"3 Days",
+price:799,
+description:
+"Learn active and passive voice.",
+topics:[
+"Active & Passive Voice",
+"Transformation",
+"Question Tags",
+"Determiners",
+"Homework",
+"Final Assessment"
+]
+},
+
+{
+category:"masterclass",
+title:"Narration Masterclass",
+duration:"4 Days",
+price:799,
+description:
+"Understand narration rules clearly.",
+topics:[
+"Statements",
+"Questions",
+"Commands",
+"Requests",
+"Exclamations",
+"Changes of Tense",
+"Changes of Pronouns",
+"Practice Sets"
+]
+},
+
+{
+category:"masterclass",
+title:"Modals & Prepositions",
+duration:"3 Days",
+price:699,
+description:
+"Learn modal usage and preposition patterns.",
+topics:[
+"Modals",
+"Usage Rules",
+"Prepositions",
+"Common Errors",
+"Exam Questions",
+"Practice"
+]
+}
+
+];
+
+
+function card(course){
+
+return `
+
+<article class="course">
+
+<span class="badge">
+${course.category.toUpperCase()}
+</span>
+
+<h3>
+${course.title}
+</h3>
+
+<p>
+${course.description}
+</p>
+
+<div class="course-info">
+⏱ ${course.duration}
+<br>
+💻 Online + Offline
 </div>
 
-<div>
-Classes 8–12 · CBSE · TBSE
+<div class="course-bottom">
+
+<div class="price">
+₹${course.price}
 </div>
 
+<button
+class="view"
+onclick="showCourse('${course.title}')">
+
+View Course
+
+</button>
+
 </div>
-</footer>
+
+</article>
+
+`;
+
+}
+
+
+function renderCourses(){
+
+document.getElementById("homeCourses").innerHTML =
+courses.slice(0,3).map(card).join("");
+
+document.getElementById("allCourses").innerHTML =
+courses.map(card).join("");
+
+}
+
+
+function filterCourse(type,button){
+
+document
+.querySelectorAll(".filter")
+.forEach(x=>x.classList.remove("active"));
+
+button.classList.add("active");
+
+let list =
+type==="all"
+?courses
+:courses.filter(x=>x.category===type);
+
+document.getElementById("allCourses").innerHTML =
+list.map(card).join("");
+
+}
+
+
+function showCourse(title){
+
+let course =
+courses.find(x=>x.title===title);
+
+document.getElementById("modalContent").innerHTML=`
+
+<div class="section-title">
+${course.category.toUpperCase()}
+</div>
+
+<h2>
+${course.title}
+</h2>
+
+<p>
+${course.description}
+</p>
+
+<br>
+
+<p>
+⏱ ${course.duration}
+<br>
+💻 Online + Offline
+</p>
+
+<h2 style="color:#a98cff">
+₹${course.price}
+</h2>
+
+<h3>
+Topics Included
+</h3>
+
+<ul>
+
+${course.topics
+.map(x=>`<li>✓ ${x}</li>`)
+.join("")}
+
+</ul>
+
+<br>
+
+<button
+class="btn primary"
+onclick="closeModal();openPage('contact')">
+
+ENROL NOW
+
+</button>
+
+`;
+
+document
+.getElementById("modal")
+.classList.add("show");
+
+}
+
+
+function closeModal(){
+
+document
+.getElementById("modal")
+.classList.remove("show");
+
+}
+
+
+function openPage(page){
+
+document
+.querySelectorAll(".page")
+.forEach(x=>x.classList.remove("active"));
+
+document
+.getElementById(page)
+.classList.add("active");
+
+document
+.querySelectorAll(".bottom button")
+.forEach(x=>x.classList.remove("active"));
+
+let nav =
+document.querySelector(
+`.bottom button[data-page="${page}"]`
+);
+
+if(nav){
+nav.classList.add("active");
+}
+
+document
+.getElementById("sideMenu")
+.classList.remove("show");
+
+window.scrollTo(0,0);
+
+}
+
+
+function toggleMenu(){
+
+document
+.getElementById("sideMenu")
+.classList.toggle("show");
+
+}
+
+
+function submitForm(event){
+
+event.preventDefault();
+
+let name =
+document.getElementById("name").value;
+
+let cls =
+document.getElementById("class").value;
+
+let phone =
+document.getElementById("phone").value;
+
+let mode =
+document.getElementById("mode").value;
+
+document.getElementById("message").innerHTML=`
+
+<div style="
+background:#0c1c12;
+border:1px solid #235b38;
+padding:15px;
+border-radius:12px;
+color:#aaf0bd">
+
+<b>Welcome to English Study Point!</b>
+
+<br><br>
+
+Enrolment request received.
+
+<br>
+
+Student:
+<b>${name}</b>
+
+<br>
+
+Class:
+<b>${cls}</b>
+
+<br>
+
+Mode:
+<b>${mode}</b>
+
+<br>
+
+We will contact you at:
+<b>${phone}</b>
+
+</div>
+
+`;
+
+}
+
+
+renderCourses();
+
+</script>
 
 </body>
 </html>
