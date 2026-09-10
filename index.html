@@ -1,1780 +1,1115 @@
-.card{
- background:linear-gradient(
-  145deg,
-  rgba(28,24,52,.88),
-  rgba(12,12,25,.95)
- );
- border:1px solid rgba(255,255,255,.08);
- border-radius:20px;
- padding:18px;
- box-shadow:0 20px 70px rgba(0,0,0,.25);
-}
-
-.card:hover{
- border-color:rgba(130,95,255,.45);
- transform:translateY(-2px);
- transition:.2s;
-}
-
-.courseImg{
- width:100%;
- aspect-ratio:16/9;
- object-fit:cover;
- border-radius:15px;
- background:#17172a;
- margin-bottom:13px;
-}
-
-.btn{
- display:inline-flex;
- align-items:center;
- justify-content:center;
- gap:7px;
- padding:12px 17px;
- border:0;
- border-radius:12px;
- color:#fff;
- background:linear-gradient(135deg,#713cff,#168fff);
- font-weight:800;
- margin-top:10px;
-}
-
-.btn.secondary{
- background:#1b1b31;
- border:1px solid rgba(255,255,255,.1);
-}
-
-.btn.danger{
- background:#8f243c;
-}
-
-.btn.green{
- background:linear-gradient(135deg,#00a86b,#16c784);
-}
-
-input,textarea,select{
- width:100%;
- padding:13px;
- border-radius:12px;
- border:1px solid #292941;
- background:#0e0e1a;
- color:#fff;
- outline:none;
- margin-top:7px;
-}
-
-textarea{
- min-height:120px;
- resize:vertical;
-}
-
-label{
- display:block;
- color:#aaaac0;
- margin-top:13px;
- font-size:14px;
-}
-
-.form{
- max-width:600px;
- margin:30px auto;
-}
-
-.form h2{
- margin-bottom:15px;
-}
-
-.stats{
- display:grid;
- grid-template-columns:repeat(4,1fr);
- gap:13px;
- margin:20px 0;
-}
-
-.stat{
- background:#111120;
- border:1px solid #292941;
- border-radius:17px;
- padding:17px;
-}
-
-.stat strong{
- display:block;
- font-size:27px;
- margin-top:6px;
-}
-
-.section{
- margin-top:32px;
-}
-
-.sectionTitle{
- font-size:24px;
- margin-bottom:15px;
-}
-
-.row{
- display:flex;
- justify-content:space-between;
- align-items:center;
- gap:12px;
- flex-wrap:wrap;
-}
-
-.badge{
- display:inline-block;
- padding:5px 9px;
- border-radius:999px;
- background:#201c40;
- color:#a993ff;
- font-size:12px;
- font-weight:800;
-}
-
-.price{
- font-size:24px;
- font-weight:900;
-}
-
-table{
- width:100%;
- border-collapse:collapse;
-}
-
-th,td{
- text-align:left;
- padding:12px 8px;
- border-bottom:1px solid #242438;
- font-size:14px;
-}
-
-th{
- color:#aaaac0;
-}
-
-.qr{
- width:280px;
- max-width:100%;
- background:#fff;
- padding:12px;
- border-radius:16px;
-}
-
-.founder{
- display:flex;
- gap:20px;
- align-items:center;
-}
-
-.founder img{
- width:130px;
- height:130px;
- border-radius:50%;
- object-fit:cover;
- border:3px solid #7654ff;
- box-shadow:0 0 40px rgba(118,84,255,.45);
-}
-
-.post{
- white-space:pre-wrap;
- line-height:1.7;
-}
-
-.bottom{
- display:none;
-}
-
-@media(max-width:800px){
-
- .grid{
-  grid-template-columns:1fr;
- }
-
- .stats{
-  grid-template-columns:repeat(2,1fr);
- }
-
- .navLinks{
-  display:none;
- }
-
- .container{
-  padding-bottom:100px;
- }
-
- .bottom{
-  display:flex;
-  position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
-  z-index:200;
-  background:rgba(8,8,18,.96);
-  border-top:1px solid #292941;
-  justify-content:space-around;
-  padding:9px 4px;
- }
-
- .bottom a{
-  font-size:11px;
-  color:#aaaac0;
-  text-align:center;
- }
-
- .bottom span{
-  display:block;
-  font-size:20px;
- }
-
- .founder{
-  flex-direction:column;
-  text-align:center;
- }
-
- table{
-  font-size:12px;
- }
-
- .stats .stat strong{
-  font-size:22px;
- }
-}
-
-.notice{
- padding:14px;
- border-radius:13px;
- background:#15152a;
- border:1px solid #2b2b45;
- margin:12px 0;
-}
-
-.success{
- border-color:#0b9d69;
- background:#09261d;
-}
-
-.warning{
- border-color:#9b7b19;
- background:#29220c;
-}
-
-.error{
- border-color:#9c2b45;
- background:#2b1019;
-}
-
-.list{
- display:grid;
- gap:10px;
-}
-
-.lesson{
- padding:14px;
- border:1px solid #27273b;
- border-radius:13px;
- background:#0e0e1b;
-}
-
-small{
- color:#8f8fa5;
-}
-</style>
-</head>
-
-<body>
-
-<header class="top">
- <nav class="nav">
-
-  <a href="/" class="brand">
-   <span class="brandIcon">T</span>
-   ${esc(s.platform_name)}
-  </a>
-
-  <div class="navLinks">
-   <a href="/">Home</a>
-   <a href="/courses">Courses</a>
-   <a href="/offline">Offline</a>
-   <a href="/live">Live</a>
-   ${
-     req.session.studentId
-       ? `<a href="/student">My Learning</a>
-          <a href="/logout">Logout</a>`
-       : `<a href="/login">Student Login</a>`
-   }
-   <a href="/teacher/login">Teacher</a>
-  </div>
-
- </nav>
-</header>
-
-<main class="container">
-${body}
-</main>
-
-<div class="bottom">
- <a href="/"><span>⌂</span>Home</a>
- <a href="/courses"><span>▣</span>Courses</a>
- <a href="/live"><span>◉</span>Live</a>
- ${
-   req.session.studentId
-   ? `<a href="/student"><span>👤</span>Profile</a>`
-   : `<a href="/login"><span>→</span>Login</a>`
- }
-</div>
-
-</body>
-</html>
-`;
-}
-
-/* =========================================================
-   HOME
-   ========================================================= */
-
-app.get("/", (req,res)=>{
-
- const s = settings();
-
- const courses = db.prepare(`
-   SELECT * FROM courses
-   WHERE published=1
-   ORDER BY id DESC
-   LIMIT 6
- `).all();
-
- const posts = db.prepare(`
-   SELECT posts.*,teachers.name AS teacher_name
-   FROM posts
-   LEFT JOIN teachers ON teachers.id=posts.teacher_id
-   ORDER BY posts.id DESC
-   LIMIT 6
- `).all();
-
- res.send(layout("Home",`
-
- <section class="hero">
-   <span class="badge">PREMIUM LEARNING PLATFORM</span>
-
-   <h1>
-    Learn.<br>
-    <span class="gradient">Practice. Master.</span>
-   </h1>
-
-   <p class="muted">
-    ${esc(s.founder_bio)}
-   </p>
-
-   <a class="btn" href="/courses">
-    Explore Courses →
-   </a>
- </section>
-
- <section class="section">
-  <h2 class="sectionTitle">Popular Courses</h2>
-
-  <div class="grid">
-
-  ${
-    courses.length
-      ? courses.map(c=>`
-        <div class="card">
-
-         ${
-          c.thumbnail
-          ? `<img class="courseImg"
-                  src="${esc(c.thumbnail)}"
-                  alt="">`
-          : `<div class="courseImg"></div>`
-         }
-
-         <span class="badge">${esc(c.mode)}</span>
-
-         <h3 style="margin-top:10px">
-          ${esc(c.title)}
-         </h3>
-
-         <p class="muted">
-          ${esc((c.description||"").slice(0,120))}
-         </p>
-
-         <div class="row" style="margin-top:14px">
-          <span class="price">
-           ₹${Number(c.price).toLocaleString("en-IN")}
-          </span>
-          <a class="btn" href="/course/${c.id}">
-           View
-          </a>
-         </div>
-
-        </div>
-      `).join("")
-      : `<div class="card">
-          <h3>Courses coming soon</h3>
-          <p class="muted">
-           Teacher dashboard se courses publish honge.
-          </p>
-         </div>`
-  }
-
-  </div>
- </section>
-
- <section class="section">
-  <h2 class="sectionTitle">Founder</h2>
-
-  <div class="card founder">
-
-   <img
-    src="${esc(s.founder_photo || "/founder.jpg")}"
-    onerror="this.src='/founder.jpg'"
-    alt="Founder">
-
-   <div>
-    <span class="badge">
-     ${esc(s.founder_role)}
-    </span>
-
-    <h2 style="margin-top:9px">
-     ${esc(s.founder_name)}
-    </h2>
-
-    <p class="muted" style="margin-top:9px">
-     ${esc(s.founder_bio)}
-    </p>
-   </div>
-
-  </div>
- </section>
-
- <section class="section">
-  <h2 class="sectionTitle">Latest Posts</h2>
-
-  <div class="grid">
-
-   ${
-    posts.map(p=>`
-     <div class="card">
-      <small>${esc(p.teacher_name || "TAMAL")}</small>
-      <h3 style="margin:8px 0">
-       ${esc(p.title)}
-      </h3>
-      <div class="post">
-       ${esc(p.content || "")}
-      </div>
-     </div>
-    `).join("")
-   }
-
-  </div>
- </section>
-
- `,req));
-});
-
-/* =========================================================
-   COURSES
-   ========================================================= */
-
-app.get("/courses",(req,res)=>{
-
- const q = req.query.q || "";
-
- const courses = db.prepare(`
-  SELECT * FROM courses
-  WHERE published=1
-  AND (
-    title LIKE ?
-    OR category LIKE ?
-    OR description LIKE ?
-  )
-  ORDER BY id DESC
- `).all(
-  `%${q}%`,
-  `%${q}%`,
-  `%${q}%`
- );
-
- res.send(layout("Courses",`
-
- <section class="hero">
-  <h1>Courses</h1>
-  <p class="muted">
-   Online aur offline learning.
-  </p>
-
-  <form style="margin-top:18px">
-   <input
-    name="q"
-    value="${esc(q)}"
-    placeholder="Search courses..."
-   >
-  </form>
- </section>
-
- <div class="grid">
-
- ${
- courses.map(c=>`
-  <div class="card">
-
-   ${
-    c.thumbnail
-    ? `<img class="courseImg"
-            src="${esc(c.thumbnail)}">`
-    : `<div class="courseImg"></div>`
-   }
-
-   <span class="badge">
-    ${esc(c.category || "Learning")}
-   </span>
-
-   <h2 style="margin:10px 0">
-    ${esc(c.title)}
-   </h2>
-
-   <p class="muted">
-    ${esc(c.description || "")}
-   </p>
-
-   <p style="margin-top:12px">
-    <b>Mode:</b> ${esc(c.mode)}
-   </p>
-
-   <p>
-    <b>Duration:</b> ${esc(c.duration || "-")}
-   </p>
-
-   <div class="row">
-    <span class="price">
-     ₹${Number(c.price).toLocaleString("en-IN")}
-    </span>
-
-    <a class="btn" href="/course/${c.id}">
-     Details
-    </a>
-   </div>
-
-  </div>
- `).join("")
- }
-
- </div>
-
- `,req));
-});
-
-/* =========================================================
-   COURSE DETAIL
-   ========================================================= */
-
-app.get("/course/:id",(req,res)=>{
-
- const c = db.prepare(`
-  SELECT courses.*,teachers.name AS teacher_name
-  FROM courses
-  LEFT JOIN teachers ON teachers.id=courses.teacher_id
-  WHERE courses.id=?
- `).get(req.params.id);
-
- if(!c){
-  return res.status(404).send(
-   layout("Not Found",`
-    <div class="card">
-     Course not found.
-    </div>
-   `,req)
-  );
- }
-
- const lessons = db.prepare(`
-  SELECT * FROM lessons
-  WHERE course_id=?
-  ORDER BY position,id
- `).all(c.id);
-
- const enrolled = req.session.studentId
-  ? db.prepare(`
-      SELECT * FROM enrollments
-      WHERE student_id=? AND course_id=?
-    `).get(req.session.studentId,c.id)
-  : null;
-
- res.send(layout(c.title,`
-
- <div class="card">
-
-  ${
-   c.thumbnail
-   ? `<img class="courseImg" src="${esc(c.thumbnail)}">`
-   : ""
-  }
-
-  <span class="badge">
-   ${esc(c.mode)}
-  </span>
-
-  <h1 style="margin:12px 0">
-   ${esc(c.title)}
-  </h1>
-
-  <p class="muted">
-   ${esc(c.description || "")}
-  </p>
-
-  <div class="stats">
-
-   <div class="stat">
-    Mode
-    <strong>${esc(c.mode)}</strong>
-   </div>
-
-   <div class="stat">
-    Duration
-    <strong>${esc(c.duration || "-")}</strong>
-   </div>
-
-   <div class="stat">
-    Price
-    <strong>
-     ₹${Number(c.price).toLocaleString("en-IN")}
-    </strong>
-   </div>
-
-   <div class="stat">
-    Teacher
-    <strong>${esc(c.teacher_name || "-")}</strong>
-   </div>
-
-  </div>
-
-  <h2>What you will learn</h2>
-
-  <div class="notice" style="margin-top:12px">
-   ${esc(c.syllabus || "Structured lessons, practice and tests.")}
-  </div>
-
-  ${
-   enrolled
-   ? `<div class="notice success">
-       You are enrolled in this course.
-       <br>
-       Mode: ${esc(enrolled.mode)}
-       <br>
-       Status: ${esc(enrolled.status)}
-      </div>`
-   : c.price > 0
-     ? `
-       <div class="notice">
-        <b>Choose your mode</b>
-       </div>
-
-       <a class="btn"
-          href="/buy/${c.id}?mode=ONLINE">
-          Buy Online / UPI
-       </a>
-
-       <a class="btn secondary"
-          href="/buy/${c.id}?mode=OFFLINE">
-          Offline Enrolment
-       </a>
-       `
-     : `
-       ${
-        req.seconst express = require("express");
-const session = require("express-session");
-const bcrypt = require("bcryptjs");
-const Database = require("better-sqlite3");
-const QRCode = require("qrcode");
-const path = require("path");
-const fs = require("fs");
-
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-/* =========================================================
-   TAMAL LEARNING PLATFORM
-   One-file connected learning platform
-   Student + Teacher + Courses + Payments + UPI + Live
-   ========================================================= */
-
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET || "CHANGE_THIS_SECRET_IN_REPLIT",
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      maxAge: 1000 * 60 * 60 * 24 * 7,
-      httpOnly: true,
-      sameSite: "lax"
-    }
-  })
-);
-
-/* =========================================================
-   DATABASE
-   ========================================================= */
-
-const db = new Database("tamal.db");
-
-db.pragma("journal_mode = WAL");
-
-db.exec(`
-CREATE TABLE IF NOT EXISTS settings (
-  id INTEGER PRIMARY KEY CHECK(id = 1),
-  platform_name TEXT DEFAULT 'TAMAL',
-  founder_name TEXT DEFAULT 'Founder',
-  founder_role TEXT DEFAULT 'Founder & Lead Educator',
-  founder_bio TEXT DEFAULT 'Learn. Practice. Master.',
-  founder_photo TEXT DEFAULT '/founder.jpg',
-  teacher_name TEXT DEFAULT 'TAMAL Teacher',
-  teacher_phone TEXT DEFAULT '',
-  teacher_email TEXT DEFAULT '',
-  upi_id TEXT DEFAULT '',
-  upi_name TEXT DEFAULT 'TAMAL',
-  whatsapp TEXT DEFAULT '',
-  google_map TEXT DEFAULT '',
-  instagram TEXT DEFAULT '',
-  youtube TEXT DEFAULT ''
-);
-
-CREATE TABLE IF NOT EXISTS teachers (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT NOT NULL,
-  email TEXT UNIQUE NOT NULL,
-  phone TEXT,
-  password TEXT NOT NULL,
-  active INTEGER DEFAULT 1,
-  created_at TEXT DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS students (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT NOT NULL,
-  email TEXT UNIQUE NOT NULL,
-  phone TEXT,
-  password TEXT NOT NULL,
-  class_name TEXT,
-  school TEXT,
-  created_at TEXT DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS courses (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  title TEXT NOT NULL,
-  description TEXT,
-  category TEXT,
-  mode TEXT DEFAULT 'ONLINE',
-  price REAL DEFAULT 0,
-  duration TEXT,
-  thumbnail TEXT,
-  syllabus TEXT,
-  teacher_id INTEGER,
-  published INTEGER DEFAULT 1,
-  created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY(teacher_id) REFERENCES teachers(id)
-);
-
-CREATE TABLE IF NOT EXISTS enrollments (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  student_id INTEGER NOT NULL,
-  course_id INTEGER NOT NULL,
-  mode TEXT DEFAULT 'ONLINE',
-  status TEXT DEFAULT 'ACTIVE',
-  start_date TEXT DEFAULT CURRENT_TIMESTAMP,
-  expiry_date TEXT,
-  created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE(student_id, course_id),
-  FOREIGN KEY(student_id) REFERENCES students(id),
-  FOREIGN KEY(course_id) REFERENCES courses(id)
-);
-
-CREATE TABLE IF NOT EXISTS payments (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  student_id INTEGER NOT NULL,
-  course_id INTEGER NOT NULL,
-  amount REAL NOT NULL,
-  mode TEXT DEFAULT 'UPI',
-  utr TEXT,
-  status TEXT DEFAULT 'PENDING',
-  note TEXT,
-  created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-  verified_at TEXT,
-  FOREIGN KEY(student_id) REFERENCES students(id),
-  FOREIGN KEY(course_id) REFERENCES courses(id)
-);
-
-CREATE TABLE IF NOT EXISTS batches (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  title TEXT NOT NULL,
-  course_id INTEGER,
-  start_date TEXT,
-  class_time TEXT,
-  days TEXT,
-  mode TEXT DEFAULT 'ONLINE',
-  meeting_link TEXT,
-  capacity INTEGER DEFAULT 50,
-  status TEXT DEFAULT 'UPCOMING',
-  created_at TEXT DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS live_classes (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  title TEXT NOT NULL,
-  course_id INTEGER,
-  start_at TEXT NOT NULL,
-  duration INTEGER DEFAULT 60,
-  meeting_link TEXT,
-  status TEXT DEFAULT 'SCHEDULED',
-  created_at TEXT DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS posts (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  teacher_id INTEGER,
-  title TEXT NOT NULL,
-  content TEXT,
-  image_url TEXT,
-  created_at TEXT DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS branches (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT NOT NULL,
-  address TEXT,
-  phone TEXT,
-  google_map TEXT,
-  timing TEXT,
-  active INTEGER DEFAULT 1
-);
-
-CREATE TABLE IF NOT EXISTS lessons (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  course_id INTEGER NOT NULL,
-  title TEXT NOT NULL,
-  description TEXT,
-  video_url TEXT,
-  position INTEGER DEFAULT 0,
-  published INTEGER DEFAULT 1
-);
-
-CREATE TABLE IF NOT EXISTS progress (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  student_id INTEGER NOT NULL,
-  lesson_id INTEGER NOT NULL,
-  completed INTEGER DEFAULT 0,
-  position REAL DEFAULT 0,
-  updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE(student_id, lesson_id)
-);
-
-CREATE TABLE IF NOT EXISTS messages (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  student_id INTEGER,
-  teacher_id INTEGER,
-  sender_role TEXT NOT NULL,
-  message TEXT NOT NULL,
-  created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-  read_status INTEGER DEFAULT 0
-);
-
-CREATE TABLE IF NOT EXISTS notifications (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  student_id INTEGER,
-  teacher_id INTEGER,
-  title TEXT NOT NULL,
-  body TEXT,
-  read_status INTEGER DEFAULT 0,
-  created_at TEXT DEFAULT CURRENT_TIMESTAMP
-);
-`);
-
-/* =========================================================
-   DEFAULT DATA
-   ========================================================= */
-
-const settingExists = db
-  .prepare("SELECT id FROM settings WHERE id = 1")
-  .get();
-
-if (!settingExists) {
-  db.prepare(`
-    INSERT INTO settings
-    (id, platform_name, founder_name, founder_role, founder_bio,
-     teacher_name, teacher_phone, teacher_email, upi_id, upi_name)
-    VALUES
-    (1, 'TAMAL', 'Founder', 'Founder & Lead Educator',
-     'Learn. Practice. Master.',
-     'TAMAL Teacher', '', '', '', 'TAMAL')
-  `).run();
-}
-
-/*
-   DEMO TEACHER IS CREATED ONLY IF NO TEACHER EXISTS.
-   CHANGE THIS PASSWORD AFTER FIRST LOGIN.
-*/
-const teacherCount = db
-  .prepare("SELECT COUNT(*) AS count FROM teachers")
-  .get().count;
-
-if (teacherCount === 0) {
-  const password = bcrypt.hashSync("Teacher@123", 12);
-
-  db.prepare(`
-    INSERT INTO teachers
-    (name,email,phone,password)
-    VALUES (?,?,?,?)
-  `).run(
-    "TAMAL Teacher",
-    "teacher@tamal.in",
-    "",
-    password
-  );
-}
-
-/* =========================================================
-   HELPERS
-   ========================================================= */
-
-function settings() {
-  return db.prepare("SELECT * FROM settings WHERE id = 1").get();
-}
-
-function esc(value = "") {
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
-
-function teacherRequired(req, res, next) {
-  if (!req.session.teacherId) {
-    return res.redirect("/teacher/login");
-  }
-  next();
-}
-
-function studentRequired(req, res, next) {
-  if (!req.session.studentId) {
-    return res.redirect("/login");
-  }
-  next();
-}
-
-function layout(title, body, req) {
-  const s = settings();
-
-  return `
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport"
- content="width=device-width, initial-scale=1.0,
- maximum-scale=1.0,user-scalable=no">
+content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 
-<title>${esc(title)} • ${esc(s.platform_name)}</title>
+<title>TAMAL — English Study Point</title>
 
 <style>
 *{
- box-sizing:border-box;
- margin:0;
- padding:0;
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+
+:root{
+  --bg:#070713;
+  --card:#111126;
+  --card2:#171735;
+  --purple:#7657ff;
+  --blue:#42a5ff;
+  --pink:#e55cff;
+  --text:#fff;
+  --muted:#aaa9c5;
+  --border:rgba(255,255,255,.10);
 }
 
 body{
- font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,
- Arial,sans-serif;
- background:#070710;
- color:#fff;
- min-height:100vh;
-}
-
-a{
- color:inherit;
- text-decoration:none;
-}
-
-button,input,textarea,select{
- font:inherit;
+  background:
+    radial-gradient(circle at 20% 0%,rgba(118,87,255,.22),transparent 30%),
+    radial-gradient(circle at 100% 10%,rgba(66,165,255,.15),transparent 28%),
+    var(--bg);
+  color:var(--text);
+  min-height:100vh;
 }
 
 button{
- cursor:pointer;
+  border:0;
+  cursor:pointer;
 }
+
+.app{
+  max-width:520px;
+  margin:auto;
+  min-height:100vh;
+  padding-bottom:82px;
+}
+
+/* TOP BAR */
 
 .top{
- position:sticky;
- top:0;
- z-index:100;
- backdrop-filter:blur(18px);
- background:rgba(7,7,16,.86);
- border-bottom:1px solid rgba(255,255,255,.08);
-}
-
-.nav{
- max-width:1200px;
- margin:auto;
- min-height:66px;
- display:flex;
- align-items:center;
- justify-content:space-between;
- padding:10px 18px;
+  position:sticky;
+  top:0;
+  z-index:20;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:15px 17px;
+  background:rgba(7,7,19,.82);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
 }
 
 .brand{
- display:flex;
- align-items:center;
- gap:10px;
- font-weight:900;
- font-size:22px;
+  display:flex;
+  align-items:center;
+  gap:10px;
 }
 
-.brandIcon{
- width:38px;
- height:38px;
- border-radius:13px;
- background:linear-gradient(135deg,#7c3cff,#16a7ff);
- display:grid;
- place-items:center;
- box-shadow:0 0 30px rgba(100,70,255,.45);
+.logo{
+  width:42px;
+  height:42px;
+  border-radius:14px;
+  display:grid;
+  place-items:center;
+  font-weight:900;
+  background:linear-gradient(135deg,var(--purple),var(--blue));
+  box-shadow:0 0 30px rgba(118,87,255,.45);
 }
 
-.navLinks{
- display:flex;
- gap:8px;
- align-items:center;
+.brand b{
+  font-size:18px;
 }
 
-.navLinks a{
- padding:9px 12px;
- border-radius:10px;
- color:#cfcfe4;
+.brand small{
+  display:block;
+  color:var(--muted);
+  font-size:10px;
 }
 
-.navLinks a:hover{
- background:#17172a;
- color:#fff;
+.top-actions{
+  display:flex;
+  gap:8px;
 }
 
-.container{
- max-width:1200px;
- margin:auto;
- padding:25px 16px 100px;
+.icon{
+  width:40px;
+  height:40px;
+  border-radius:13px;
+  background:#15152d;
+  border:1px solid var(--border);
+  color:white;
+  font-size:18px;
 }
+
+/* HERO */
 
 .hero{
- padding:35px 0 20px;
+  margin:18px 15px;
+  padding:24px;
+  border-radius:27px;
+  background:
+    linear-gradient(135deg,
+      rgba(118,87,255,.95),
+      rgba(66,165,255,.72));
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 18px 50px rgba(70,50,180,.3);
+}
+
+.hero:after{
+  content:"";
+  position:absolute;
+  width:170px;
+  height:170px;
+  right:-50px;
+  top:-60px;
+  border-radius:50%;
+  background:rgba(255,255,255,.15);
+}
+
+.hero small{
+  opacity:.85;
 }
 
 .hero h1{
- font-size:clamp(32px,6vw,64px);
- line-height:1;
- margin-bottom:15px;
+  font-size:30px;
+  line-height:1.05;
+  margin:8px 0;
 }
 
-.gradient{
- background:linear-gradient(90deg,#fff,#9b7cff,#35b8ff);
- -webkit-background-clip:text;
- color:transparent;
+.hero p{
+  color:#eee;
+  font-size:13px;
+  line-height:1.5;
 }
 
-.muted{
- color:#9d9db2;
+.hero-btn{
+  margin-top:18px;
+  padding:13px 20px;
+  border-radius:13px;
+  background:#fff;
+  color:#222;
+  font-weight:800;
 }
 
-.grid{
- display:grid;
- grid-template-columns:repeat(3,1fr);
- gap:16px;
-}
-
-.card{
- background:linear-gradient(
-  145deg,
-  rgba(28,24,52,.88),
-  rgba(12,12,25,.95)
- );
- border:1px solid rgba(255,255,255,.08);
- border-radius:20px;
- padding:18px;
- box-shadow:0 20px 70px rgba(0,0,0,.25);
-}
-
-.card:hover{
- border-color:rgba(130,95,255,.45);
- transform:translateY(-2px);
- transition:.2s;
-}
-
-.courseImg{
- width:100%;
- aspect-ratio:16/9;
- object-fit:cover;
- border-radius:15px;
- background:#17172a;
- margin-bottom:13px;
-}
-
-.btn{
- display:inline-flex;
- align-items:center;
- justify-content:center;
- gap:7px;
- padding:12px 17px;
- border:0;
- border-radius:12px;
- color:#fff;
- background:linear-gradient(135deg,#713cff,#168fff);
- font-weight:800;
- margin-top:10px;
-}
-
-.btn.secondary{
- background:#1b1b31;
- border:1px solid rgba(255,255,255,.1);
-}
-
-.btn.danger{
- background:#8f243c;
-}
-
-.btn.green{
- background:linear-gradient(135deg,#00a86b,#16c784);
-}
-
-input,textarea,select{
- width:100%;
- padding:13px;
- border-radius:12px;
- border:1px solid #292941;
- background:#0e0e1a;
- color:#fff;
- outline:none;
- margin-top:7px;
-}
-
-textarea{
- min-height:120px;
- resize:vertical;
-}
-
-label{
- display:block;
- color:#aaaac0;
- margin-top:13px;
- font-size:14px;
-}
-
-.form{
- max-width:600px;
- margin:30px auto;
-}
-
-.form h2{
- margin-bottom:15px;
-}
-
-.stats{
- display:grid;
- grid-template-columns:repeat(4,1fr);
- gap:13px;
- margin:20px 0;
-}
-
-.stat{
- background:#111120;
- border:1px solid #292941;
- border-radius:17px;
- padding:17px;
-}
-
-.stat strong{
- display:block;
- font-size:27px;
- margin-top:6px;
-}
+/* SECTION */
 
 .section{
- margin-top:32px;
+  padding:8px 15px;
 }
 
-.sectionTitle{
- font-size:24px;
- margin-bottom:15px;
+.section-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin:18px 0 12px;
 }
 
-.row{
- display:flex;
- justify-content:space-between;
- align-items:center;
- gap:12px;
- flex-wrap:wrap;
+.section-head h2{
+  font-size:20px;
 }
 
-.badge{
- display:inline-block;
- padding:5px 9px;
- border-radius:999px;
- background:#201c40;
- color:#a993ff;
- font-size:12px;
- font-weight:800;
+.section-head span{
+  color:#9d91ff;
+  font-size:12px;
+}
+
+/* FEATURE GRID */
+
+.feature-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.feature{
+  min-height:135px;
+  padding:17px;
+  border-radius:21px;
+  border:1px solid var(--border);
+  background:linear-gradient(145deg,#151531,#0d0d1c);
+  position:relative;
+  overflow:hidden;
+}
+
+.feature:nth-child(1){
+  background:linear-gradient(145deg,#2d2260,#121225);
+}
+
+.feature:nth-child(2){
+  background:linear-gradient(145deg,#102e55,#111125);
+}
+
+.feature:nth-child(3){
+  background:linear-gradient(145deg,#43205b,#111125);
+}
+
+.feature:nth-child(4){
+  background:linear-gradient(145deg,#183c42,#111125);
+}
+
+.feature .emoji{
+  font-size:28px;
+}
+
+.feature h3{
+  margin-top:13px;
+  font-size:16px;
+}
+
+.feature p{
+  color:var(--muted);
+  font-size:11px;
+  margin-top:5px;
+}
+
+/* COURSE */
+
+.course{
+  border:1px solid var(--border);
+  border-radius:22px;
+  overflow:hidden;
+  background:var(--card);
+  margin-bottom:13px;
+}
+
+.course-img{
+  height:150px;
+  background:
+    linear-gradient(135deg,#6e4dff,#8d57ff 45%,#27a8ff);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:25px;
+  font-weight:900;
+  text-align:center;
+  padding:20px;
+}
+
+.course-body{
+  padding:15px;
+}
+
+.tag{
+  display:inline-block;
+  padding:5px 9px;
+  border-radius:8px;
+  background:rgba(118,87,255,.15);
+  color:#b5a9ff;
+  font-size:10px;
+  font-weight:700;
+}
+
+.course h3{
+  margin:9px 0;
+}
+
+.course p{
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.5;
+}
+
+.course-bottom{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:14px;
 }
 
 .price{
- font-size:24px;
- font-weight:900;
+  font-size:20px;
+  font-weight:900;
 }
 
-table{
- width:100%;
- border-collapse:collapse;
+.buy{
+  padding:11px 18px;
+  border-radius:12px;
+  background:linear-gradient(135deg,var(--purple),var(--blue));
+  color:white;
+  font-weight:800;
 }
 
-th,td{
- text-align:left;
- padding:12px 8px;
- border-bottom:1px solid #242438;
- font-size:14px;
-}
-
-th{
- color:#aaaac0;
-}
-
-.qr{
- width:280px;
- max-width:100%;
- background:#fff;
- padding:12px;
- border-radius:16px;
-}
-
-.founder{
- display:flex;
- gap:20px;
- align-items:center;
-}
-
-.founder img{
- width:130px;
- height:130px;
- border-radius:50%;
- object-fit:cover;
- border:3px solid #7654ff;
- box-shadow:0 0 40px rgba(118,84,255,.45);
-}
+/* POSTS */
 
 .post{
- white-space:pre-wrap;
- line-height:1.7;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:21px;
+  padding:15px;
+  margin-bottom:13px;
 }
+
+.user{
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+
+.avatar{
+  width:43px;
+  height:43px;
+  border-radius:50%;
+  background:linear-gradient(135deg,var(--purple),var(--blue));
+  display:grid;
+  place-items:center;
+  font-weight:900;
+}
+
+.user small{
+  color:var(--muted);
+}
+
+.post-text{
+  margin:14px 0;
+  font-size:14px;
+  line-height:1.6;
+}
+
+.post-actions{
+  display:flex;
+  justify-content:space-around;
+  border-top:1px solid var(--border);
+  padding-top:11px;
+}
+
+.post-actions button{
+  background:none;
+  color:#aaa9c5;
+  font-size:13px;
+}
+
+/* BRANCH */
+
+.branch{
+  border:1px solid var(--border);
+  background:linear-gradient(145deg,#151531,#0d0d1c);
+  border-radius:21px;
+  padding:17px;
+  margin-bottom:12px;
+}
+
+.branch h3{
+  font-size:17px;
+}
+
+.branch p{
+  color:var(--muted);
+  margin-top:7px;
+  font-size:12px;
+}
+
+.branch button{
+  margin-top:13px;
+  width:100%;
+  padding:12px;
+  border-radius:11px;
+  background:#fff;
+  color:#111;
+  font-weight:800;
+}
+
+/* FOUNDER */
+
+.founder{
+  text-align:center;
+  padding:25px 15px;
+}
+
+.founder-photo{
+  width:115px;
+  height:115px;
+  object-fit:cover;
+  border-radius:50%;
+  border:4px solid #806aff;
+  box-shadow:
+    0 0 0 7px rgba(118,87,255,.10),
+    0 0 40px rgba(118,87,255,.45);
+}
+
+.founder h2{
+  margin-top:14px;
+}
+
+.founder p{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:5px;
+}
+
+.contact{
+  display:flex;
+  gap:9px;
+  justify-content:center;
+  margin-top:15px;
+  flex-wrap:wrap;
+}
+
+.contact a{
+  text-decoration:none;
+  color:white;
+  padding:10px 14px;
+  border-radius:11px;
+  background:#171735;
+  border:1px solid var(--border);
+  font-size:12px;
+}
+
+/* BOTTOM NAV */
 
 .bottom{
- display:none;
-}
-
-@media(max-width:800px){
-
- .grid{
-  grid-template-columns:1fr;
- }
-
- .stats{
-  grid-template-columns:repeat(2,1fr);
- }
-
- .navLinks{
-  display:none;
- }
-
- .container{
-  padding-bottom:100px;
- }
-
- .bottom{
-  display:flex;
   position:fixed;
   bottom:0;
-  left:0;
-  right:0;
-  z-index:200;
-  background:rgba(8,8,18,.96);
-  border-top:1px solid #292941;
+  left:50%;
+  transform:translateX(-50%);
+  width:100%;
+  max-width:520px;
+  height:70px;
+  z-index:30;
+  display:flex;
   justify-content:space-around;
-  padding:9px 4px;
- }
+  align-items:center;
+  background:rgba(9,9,20,.94);
+  backdrop-filter:blur(22px);
+  border-top:1px solid var(--border);
+}
 
- .bottom a{
-  font-size:11px;
-  color:#aaaac0;
-  text-align:center;
- }
-
- .bottom span{
-  display:block;
-  font-size:20px;
- }
-
- .founder{
+.nav{
+  color:#85849e;
+  background:none;
+  font-size:10px;
+  display:flex;
   flex-direction:column;
-  text-align:center;
- }
-
- table{
-  font-size:12px;
- }
-
- .stats .stat strong{
-  font-size:22px;
- }
+  align-items:center;
+  gap:5px;
 }
 
-.notice{
- padding:14px;
- border-radius:13px;
- background:#15152a;
- border:1px solid #2b2b45;
- margin:12px 0;
+.nav span{
+  font-size:20px;
 }
 
-.success{
- border-color:#0b9d69;
- background:#09261d;
+.nav.active{
+  color:#a797ff;
 }
 
-.warning{
- border-color:#9b7b19;
- background:#29220c;
+/* MODAL */
+
+.modal{
+  position:fixed;
+  inset:0;
+  z-index:100;
+  background:rgba(0,0,0,.78);
+  display:none;
+  align-items:flex-end;
+  justify-content:center;
 }
 
-.error{
- border-color:#9c2b45;
- background:#2b1019;
+.modal.show{
+  display:flex;
 }
 
-.list{
- display:grid;
- gap:10px;
+.sheet{
+  width:100%;
+  max-width:520px;
+  max-height:90vh;
+  overflow:auto;
+  padding:22px;
+  border-radius:27px 27px 0 0;
+  background:#101025;
+  border:1px solid var(--border);
 }
 
-.lesson{
- padding:14px;
- border:1px solid #27273b;
- border-radius:13px;
- background:#0e0e1b;
+.sheet h2{
+  margin-bottom:17px;
 }
 
-small{
- color:#8f8fa5;
+.input{
+  width:100%;
+  padding:14px;
+  margin:7px 0;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background:#080816;
+  color:white;
+  outline:none;
+}
+
+.primary{
+  width:100%;
+  margin-top:10px;
+  padding:14px;
+  border-radius:13px;
+  background:linear-gradient(135deg,var(--purple),var(--blue));
+  color:white;
+  font-weight:900;
+}
+
+.close{
+  float:right;
+  background:#20203a;
+  color:white;
+  padding:8px 11px;
+  border-radius:9px;
+}
+
+.hidden{
+  display:none!important;
 }
 </style>
 </head>
 
 <body>
 
+<div class="app">
+
 <header class="top">
- <nav class="nav">
 
-  <a href="/" class="brand">
-   <span class="brandIcon">T</span>
-   ${esc(s.platform_name)}
-  </a>
-
-  <div class="navLinks">
-   <a href="/">Home</a>
-   <a href="/courses">Courses</a>
-   <a href="/offline">Offline</a>
-   <a href="/live">Live</a>
-   ${
-     req.session.studentId
-       ? `<a href="/student">My Learning</a>
-          <a href="/logout">Logout</a>`
-       : `<a href="/login">Student Login</a>`
-   }
-   <a href="/teacher/login">Teacher</a>
+  <div class="brand">
+    <div class="logo">T</div>
+    <div>
+      <b>TAMAL</b>
+      <small>English Study Point</small>
+    </div>
   </div>
 
- </nav>
+  <div class="top-actions">
+    <button class="icon" onclick="openModal('notifications')">🔔</button>
+    <button class="icon" onclick="openModal('login')">👤</button>
+  </div>
+
 </header>
 
-<main class="container">
-${body}
+<main id="home">
+
+<section class="hero">
+  <small>🚀 ENGLISH STUDY POINT</small>
+  <h1>Learn.<br>Practice.<br>Master.</h1>
+  <p>
+    English Grammar • Board Preparation • Online Classes •
+    Live Doubt Solving
+  </p>
+  <button class="hero-btn" onclick="openModal('register')">
+    Join TAMAL →
+  </button>
+</section>
+
+<section class="section">
+
+<div class="section-head">
+  <h2>Boost Your Learning</h2>
+</div>
+
+<div class="feature-grid">
+
+<div class="feature" onclick="alert('Ask Doubt module — Supabase upload will be connected next.')">
+  <div class="emoji">💡</div>
+  <h3>Ask Doubt</h3>
+  <p>Upload question and get help.</p>
+</div>
+
+<div class="feature">
+  <div class="emoji">🎯</div>
+  <h3>Ask Concept</h3>
+  <p>Short conceptual learning.</p>
+</div>
+
+<div class="feature">
+  <div class="emoji">📅</div>
+  <h3>Planner</h3>
+  <p>Organise your preparation.</p>
+</div>
+
+<div class="feature">
+  <div class="emoji">🔴</div>
+  <h3>Saathi Live</h3>
+  <p>Live doubt solving platform.</p>
+</div>
+
+</div>
+</section>
+
+<section class="section">
+
+<div class="section-head">
+  <h2>🔥 Popular Courses</h2>
+  <span onclick="showPage('courses')">View All</span>
+</div>
+
+<div class="course">
+
+<div class="course-img">
+  BASIC<br>GRAMMAR<br>MASTERCLASS
+</div>
+
+<div class="course-body">
+  <span class="tag">ENGLISH GRAMMAR</span>
+
+  <h3>Basic Grammar Course</h3>
+
+  <p>
+    Tenses • Articles • Modals • Prepositions •
+    Voice • Narration • Subject Verb Concord
+  </p>
+
+  <div class="course-bottom">
+    <div class="price">₹2,000</div>
+    <button class="buy" onclick="openModal('register')">
+      Enrol Now
+    </button>
+  </div>
+</div>
+
+</div>
+
+<div class="course">
+
+<div class="course-img">
+  🎓 INTERMEDIATE<br>GRAMMAR
+</div>
+
+<div class="course-body">
+  <span class="tag">ONLINE + OFFLINE</span>
+
+  <h3>Intermediate Grammar Course</h3>
+
+  <p>
+    Advanced Tenses • Narration • Voice •
+    Transformation • Advanced Practice
+  </p>
+
+  <div class="course-bottom">
+    <div class="price">₹3,000</div>
+    <button class="buy" onclick="openModal('register')">
+      Enrol Now
+    </button>
+  </div>
+</div>
+
+</div>
+
+</section>
+
+<section class="section">
+
+<div class="section-head">
+  <h2>📱 Community</h2>
+  <span>Social Feed</span>
+</div>
+
+<div class="post">
+
+<div class="user">
+  <div class="avatar">T</div>
+  <div>
+    <b>Tamal Debnath</b>
+    <small>Founder • English Study Point</small>
+  </div>
+</div>
+
+<div class="post-text">
+  📚 Learn English Grammar with simple explanations,
+  regular practice and examination-focused learning.
+
+  <br><br>
+  🎯 Learn. Practice. Master.
+</div>
+
+<div class="post-actions">
+  <button onclick="likePost(this)">❤️ Like <b>0</b></button>
+  <button onclick="commentPost()">💬 Comment</button>
+  <button onclick="sharePost()">↗ Share</button>
+  <button>🔖 Save</button>
+</div>
+
+</div>
+
+<div class="post">
+
+<div class="user">
+  <div class="avatar">ES</div>
+  <div>
+    <b>English Study Point</b>
+    <small>Announcement</small>
+  </div>
+</div>
+
+<div class="post-text">
+  🔴 LIVE CLASS
+
+  <br><br>
+
+  Narration Masterclass is coming soon.
+
+  <br><br>
+
+  Students can join the live class from their
+  enrolled course.
+</div>
+
+<div class="post-actions">
+  <button onclick="openModal('live')">🔴 Join Live</button>
+  <button onclick="commentPost()">💬 Comment</button>
+  <button onclick="sharePost()">↗ Share</button>
+</div>
+
+</div>
+
+</section>
+
+<section class="section">
+
+<div class="section-head">
+  <h2>🏫 Our Branches</h2>
+</div>
+
+<div class="branch">
+  <h3>📍 Kulai Branch</h3>
+  <p>
+    Thakur Palli<br>
+    Near Kulai Kalibari
+  </p>
+  <button onclick="contactUs()">Contact Branch</button>
+</div>
+
+<div class="branch">
+  <h3>📍 Ambassa Branch</h3>
+  <p>
+    Ambassa Bazar<br>
+    Near Panchashree / 1st Floor Chatrabondhu Library
+  </p>
+  <button onclick="contactUs()">Contact Branch</button>
+</div>
+
+</section>
+
+<section class="founder">
+
+<img
+  class="founder-photo"
+  src="/founder.jpg"
+  alt="Founder">
+
+<h2>Tamal Debnath</h2>
+
+<p>
+Founder & Lead English Educator<br>
+English Study Point
+</p>
+
+<p>
+Helping students understand English grammar
+through simple explanations and regular practice.
+</p>
+
+<div class="contact">
+
+<a href="tel:8731907809">📞 Call</a>
+
+<a href="https://www.instagram.com/english_study_pointt"
+target="_blank">📸 Instagram</a>
+
+<a href="https://www.facebook.com/share/1BBftHeciy/"
+target="_blank">📘 Facebook</a>
+
+<a href="https://whatsapp.com/channel/0029VagKYCH2ER6jalQgQX2A"
+target="_blank">💬 WhatsApp</a>
+
+</div>
+
+</section>
+
 </main>
 
-<div class="bottom">
- <a href="/"><span>⌂</span>Home</a>
- <a href="/courses"><span>▣</span>Courses</a>
- <a href="/live"><span>◉</span>Live</a>
- ${
-   req.session.studentId
-   ? `<a href="/student"><span>👤</span>Profile</a>`
-   : `<a href="/login"><span>→</span>Login</a>`
- }
+<!-- BOTTOM NAV -->
+
+<nav class="bottom">
+
+<button class="nav active" onclick="showPage('home')">
+<span>⌂</span>
+Home
+</button>
+
+<button class="nav" onclick="showPage('courses')">
+<span>📚</span>
+Courses
+</button>
+
+<button class="nav" onclick="openModal('live')">
+<span>🔴</span>
+Live
+</button>
+
+<button class="nav" onclick="showPage('community')">
+<span>👥</span>
+Community
+</button>
+
+<button class="nav" onclick="openModal('login')">
+<span>👤</span>
+Profile
+</button>
+
+</nav>
+
 </div>
+
+
+<!-- REGISTER -->
+
+<div class="modal" id="register">
+
+<div class="sheet">
+
+<button class="close" onclick="closeModal('register')">✕</button>
+
+<h2>🚀 Join TAMAL</h2>
+
+<p style="color:#aaa9c5;font-size:12px">
+Create your account to start learning.
+</p>
+
+<input class="input"
+id="regName"
+placeholder="Full Name">
+
+<input class="input"
+id="regEmail"
+type="email"
+placeholder="Email">
+
+<input class="input"
+id="regPhone"
+placeholder="Phone Number">
+
+<input class="input"
+id="regPassword"
+type="password"
+placeholder="Password">
+
+<select class="input" id="regRole">
+<option value="student">👨‍🎓 Student</option>
+<option value="teacher">👨‍🏫 Teacher</option>
+</select>
+
+<button class="primary" onclick="register()">
+Create Account
+</button>
+
+<p style="text-align:center;margin-top:14px;color:#aaa9c5;font-size:12px">
+Already registered?
+<span style="color:#a797ff"
+onclick="switchModal('register','login')">
+Login
+</span>
+</p>
+
+</div>
+</div>
+
+
+<!-- LOGIN -->
+
+<div class="modal" id="login">
+
+<div class="sheet">
+
+<button class="close" onclick="closeModal('login')">✕</button>
+
+<h2>👋 Welcome Back</h2>
+
+<input class="input"
+id="loginEmail"
+type="email"
+placeholder="Email">
+
+<input class="input"
+id="loginPassword"
+type="password"
+placeholder="Password">
+
+<button class="primary" onclick="login()">
+Login
+</button>
+
+<p style="text-align:center;margin-top:15px;color:#aaa9c5;font-size:12px">
+New here?
+<span style="color:#a797ff"
+onclick="switchModal('login','register')">
+Create Account
+</span>
+</p>
+
+</div>
+</div>
+
+
+<!-- NOTIFICATIONS -->
+
+<div class="modal" id="notifications">
+
+<div class="sheet">
+
+<button class="close" onclick="closeModal('notifications')">✕</button>
+
+<h2>🔔 Notifications</h2>
+
+<div class="post">
+  🎓 Welcome to TAMAL
+  <br><small>Complete your profile to continue.</small>
+</div>
+
+<div class="post">
+  📚 New course content will appear here.
+</div>
+
+<div class="post">
+  🔴 Upcoming live classes will appear here.
+</div>
+
+</div>
+</div>
+
+
+<!-- LIVE -->
+
+<div class="modal" id="live">
+
+<div class="sheet">
+
+<button class="close" onclick="closeModal('live')">✕</button>
+
+<h2>🔴 Live Classes</h2>
+
+<div class="post">
+
+<h3>Grammar Live Session</h3>
+
+<p style="color:#aaa9c5;margin-top:8px">
+Narration Masterclass
+</p>
+
+<p style="margin-top:8px">
+Status: <b style="color:#ff5b6e">LIVE / UPCOMING</b>
+</p>
+
+<button class="primary"
+onclick="alert('Real Jitsi/WebRTC room will be connected in the Live backend phase.')">
+Join Live Class
+</button>
+
+</div>
+
+</div>
+</div>
+
+
+<script>
+
+function openModal(id){
+  document.getElementById(id).classList.add("show");
+}
+
+function closeModal(id){
+  document.getElementById(id).classList.remove("show");
+}
+
+function switchModal(a,b){
+  closeModal(a);
+  openModal(b);
+}
+
+function register(){
+
+  const name=document.getElementById("regName").value.trim();
+  const email=document.getElementById("regEmail").value.trim();
+  const phone=document.getElementById("regPhone").value.trim();
+  const password=document.getElementById("regPassword").value;
+  const role=document.getElementById("regRole").value;
+
+  if(!name || !email || !phone || !password){
+    alert("Please fill all fields.");
+    return;
+  }
+
+  /*
+    TEMPORARY LOCAL PROFILE STORAGE.
+
+    NEXT BACKEND PHASE:
+    This function will call Supabase Auth
+    and create the real profile in PostgreSQL.
+
+    No password should be stored manually
+    in production.
+  */
+
+  localStorage.setItem(
+    "tamal_pending_profile",
+    JSON.stringify({
+      name,
+      email,
+      phone,
+      role
+    })
+  );
+
+  alert(
+    "Registration form ready.\n\n" +
+    "Next backend phase will connect this to real Supabase Authentication."
+  );
+
+  closeModal("register");
+}
+
+function login(){
+
+  const email=document.getElementById("loginEmail").value.trim();
+  const password=document.getElementById("loginPassword").value;
+
+  if(!email || !password){
+    alert("Enter email and password.");
+    return;
+  }
+
+  alert(
+    "Login UI ready.\n\n" +
+    "Real Supabase authentication will be connected in the backend phase."
+  );
+}
+
+function likePost(btn){
+
+  let count=Number(btn.querySelector("b").innerText);
+
+  if(btn.dataset.liked==="true"){
+    count--;
+    btn.dataset.liked="false";
+  }else{
+    count++;
+    btn.dataset.liked="true";
+  }
+
+  btn.querySelector("b").innerText=count;
+}
+
+function commentPost(){
+
+  const comment=prompt("Write your comment:");
+
+  if(comment && comment.trim()){
+    alert("Comment UI ready. Real-time comments will be stored in Supabase.");
+  }
+}
+
+function sharePost(){
+
+  if(navigator.share){
+
+    navigator.share({
+      title:"TAMAL — English Study Point",
+      text:"Learn. Practice. Master."
+    });
+
+  }else{
+
+    navigator.clipboard?.writeText(location.href);
+
+    alert("Post link copied.");
+  }
+}
+
+function contactUs(){
+
+  window.location.href="tel:8731907809";
+}
+
+function showPage(page){
+
+  if(page==="home"){
+    window.scrollTo({
+      top:0,
+      behavior:"smooth"
+    });
+  }
+
+  if(page==="courses"){
+    document.querySelector(".course")?.scrollIntoView({
+      behavior:"smooth"
+    });
+  }
+
+  if(page==="community"){
+    document.querySelector(".post")?.scrollIntoView({
+      behavior:"smooth"
+    });
+  }
+
+}
+
+</script>
 
 </body>
 </html>
-`;
-}
-
-/* =========================================================
-   HOME
-   ========================================================= */
-
-app.get("/", (req,res)=>{
-
- const s = settings();
-
- const courses = db.prepare(`
-   SELECT * FROM courses
-   WHERE published=1
-   ORDER BY id DESC
-   LIMIT 6
- `).all();
-
- const posts = db.prepare(`
-   SELECT posts.*,teachers.name AS teacher_name
-   FROM posts
-   LEFT JOIN teachers ON teachers.id=posts.teacher_id
-   ORDER BY posts.id DESC
-   LIMIT 6
- `).all();
-
- res.send(layout("Home",`
-
- <section class="hero">
-   <span class="badge">PREMIUM LEARNING PLATFORM</span>
-
-   <h1>
-    Learn.<br>
-    <span class="gradient">Practice. Master.</span>
-   </h1>
-
-   <p class="muted">
-    ${esc(s.founder_bio)}
-   </p>
-
-   <a class="btn" href="/courses">
-    Explore Courses →
-   </a>
- </section>
-
- <section class="section">
-  <h2 class="sectionTitle">Popular Courses</h2>
-
-  <div class="grid">
-
-  ${
-    courses.length
-      ? courses.map(c=>`
-        <div class="card">
-
-         ${
-          c.thumbnail
-          ? `<img class="courseImg"
-                  src="${esc(c.thumbnail)}"
-                  alt="">`
-          : `<div class="courseImg"></div>`
-         }
-
-         <span class="badge">${esc(c.mode)}</span>
-
-         <h3 style="margin-top:10px">
-          ${esc(c.title)}
-         </h3>
-
-         <p class="muted">
-          ${esc((c.description||"").slice(0,120))}
-         </p>
-
-         <div class="row" style="margin-top:14px">
-          <span class="price">
-           ₹${Number(c.price).toLocaleString("en-IN")}
-          </span>
-          <a class="btn" href="/course/${c.id}">
-           View
-          </a>
-         </div>
-
-        </div>
-      `).join("")
-      : `<div class="card">
-          <h3>Courses coming soon</h3>
-          <p class="muted">
-           Teacher dashboard se courses publish honge.
-          </p>
-         </div>`
-  }
-
-  </div>
- </section>
-
- <section class="section">
-  <h2 class="sectionTitle">Founder</h2>
-
-  <div class="card founder">
-
-   <img
-    src="${esc(s.founder_photo || "/founder.jpg")}"
-    onerror="this.src='/founder.jpg'"
-    alt="Founder">
-
-   <div>
-    <span class="badge">
-     ${esc(s.founder_role)}
-    </span>
-
-    <h2 style="margin-top:9px">
-     ${esc(s.founder_name)}
-    </h2>
-
-    <p class="muted" style="margin-top:9px">
-     ${esc(s.founder_bio)}
-    </p>
-   </div>
-
-  </div>
- </section>
-
- <section class="section">
-  <h2 class="sectionTitle">Latest Posts</h2>
-
-  <div class="grid">
-
-   ${
-    posts.map(p=>`
-     <div class="card">
-      <small>${esc(p.teacher_name || "TAMAL")}</small>
-      <h3 style="margin:8px 0">
-       ${esc(p.title)}
-      </h3>
-      <div class="post">
-       ${esc(p.content || "")}
-      </div>
-     </div>
-    `).join("")
-   }
-
-  </div>
- </section>
-
- `,req));
-});
-
-/* =========================================================
-   COURSES
-   ========================================================= */
-
-app.get("/courses",(req,res)=>{
-
- const q = req.query.q || "";
-
- const courses = db.prepare(`
-  SELECT * FROM courses
-  WHERE published=1
-  AND (
-    title LIKE ?
-    OR category LIKE ?
-    OR description LIKE ?
-  )
-  ORDER BY id DESC
- `).all(
-  `%${q}%`,
-  `%${q}%`,
-  `%${q}%`
- );
-
- res.send(layout("Courses",`
-
- <section class="hero">
-  <h1>Courses</h1>
-  <p class="muted">
-   Online aur offline learning.
-  </p>
-
-  <form style="margin-top:18px">
-   <input
-    name="q"
-    value="${esc(q)}"
-    placeholder="Search courses..."
-   >
-  </form>
- </section>
-
- <div class="grid">
-
- ${
- courses.map(c=>`
-  <div class="card">
-
-   ${
-    c.thumbnail
-    ? `<img class="courseImg"
-            src="${esc(c.thumbnail)}">`
-    : `<div class="courseImg"></div>`
-   }
-
-   <span class="badge">
-    ${esc(c.category || "Learning")}
-   </span>
-
-   <h2 style="margin:10px 0">
-    ${esc(c.title)}
-   </h2>
-
-   <p class="muted">
-    ${esc(c.description || "")}
-   </p>
-
-   <p style="margin-top:12px">
-    <b>Mode:</b> ${esc(c.mode)}
-   </p>
-
-   <p>
-    <b>Duration:</b> ${esc(c.duration || "-")}
-   </p>
-
-   <div class="row">
-    <span class="price">
-     ₹${Number(c.price).toLocaleString("en-IN")}
-    </span>
-
-    <a class="btn" href="/course/${c.id}">
-     Details
-    </a>
-   </div>
-
-  </div>
- `).join("")
- }
-
- </div>
-
- `,req));
-});
-
-/* =========================================================
-   COURSE DETAIL
-   ========================================================= */
-
-app.get("/course/:id",(req,res)=>{
-
- const c = db.prepare(`
-  SELECT courses.*,teachers.name AS teacher_name
-  FROM courses
-  LEFT JOIN teachers ON teachers.id=courses.teacher_id
-  WHERE courses.id=?
- `).get(req.params.id);
-
- if(!c){
-  return res.status(404).send(
-   layout("Not Found",`
-    <div class="card">
-     Course not found.
-    </div>
-   `,req)
-  );
- }
-
- const lessons = db.prepare(`
-  SELECT * FROM lessons
-  WHERE course_id=?
-  ORDER BY position,id
- `).all(c.id);
-
- const enrolled = req.session.studentId
-  ? db.prepare(`
-      SELECT * FROM enrollments
-      WHERE student_id=? AND course_id=?
-    `).get(req.session.studentId,c.id)
-  : null;
-
- res.send(layout(c.title,`
-
- <div class="card">
-
-  ${
-   c.thumbnail
-   ? `<img class="courseImg" src="${esc(c.thumbnail)}">`
-   : ""
-  }
-
-  <span class="badge">
-   ${esc(c.mode)}
-  </span>
-
-  <h1 style="margin:12px 0">
-   ${esc(c.title)}
-  </h1>
-
-  <p class="muted">
-   ${esc(c.description || "")}
-  </p>
-
-  <div class="stats">
-
-   <div class="stat">
-    Mode
-    <strong>${esc(c.mode)}</strong>
-   </div>
-
-   <div class="stat">
-    Duration
-    <strong>${esc(c.duration || "-")}</strong>
-   </div>
-
-   <div class="stat">
-    Price
-    <strong>
-     ₹${Number(c.price).toLocaleString("en-IN")}
-    </strong>
-   </div>
-
-   <div class="stat">
-    Teacher
-    <strong>${esc(c.teacher_name || "-")}</strong>
-   </div>
-
-  </div>
-
-  <h2>What you will learn</h2>
-
-  <div class="notice" style="margin-top:12px">
-   ${esc(c.syllabus || "Structured lessons, practice and tests.")}
-  </div>
-
-  ${
-   enrolled
-   ? `<div class="notice success">
-       You are enrolled in this course.
-       <br>
-       Mode: ${esc(enrolled.mode)}
-       <br>
-       Status: ${esc(enrolled.status)}
-      </div>`
-   : c.price > 0
-     ? `
-       <div class="notice">
-        <b>Choose your mode</b>
-       </div>
-
-       <a class="btn"
-          href="/buy/${c.id}?mode=ONLINE">
-          Buy Online / UPI
-       </a>
-
-       <a class="btn secondary"
-          href="/buy/${c.id}?mode=OFFLINE">
-          Offline Enrolment
-       </a>
-       `
-     : `
-       ${
-        req.se
